@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/meilisearch/meilisearch-go"
@@ -11,6 +12,10 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+
+	mb_cud_consumer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/consumer"
+	mb_cud_queue_provisioning "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/provisioning/cud_exchange/queue"
+	mb_cud_seeders "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/seeders/cud_exchange"
 )
 
 const (
@@ -34,7 +39,7 @@ func (e *Environment) RunConnectionEnvironment() (
 	redis_barang *redis.Client,
 	redis_engagement *redis.Client,
 	search_engine meilisearch.ServiceManager,
-	notification *amqp091.Connection,
+	cud_consumer *mb_cud_consumer.Consumer,
 ) {
 
 	dsn := fmt.Sprintf(
@@ -95,7 +100,45 @@ func (e *Environment) RunConnectionEnvironment() (
 	})
 
 	connStr := fmt.Sprintf("amqp://%s:%s@%s:%s/", e.RMQ_USER, e.RMQ_PASS, e.RMQ_HOST, e.RMQ_PORT)
-	notification, _ = amqp091.Dial(connStr)
+	notification, _ := amqp091.Dial(connStr)
+	cud_ch, err := notification.Channel()
+	if err != nil {
+		log.Fatalf("Failed to open a channel: %v", err)
+	}
+	cud_consumer = &mb_cud_consumer.Consumer{
+		Ch: cud_ch,
+		QueueCreate: &mb_cud_queue_provisioning.CreateQueue{
+			ExchangeName: mb_cud_seeders.ExchangeName,
+			QueueName:    mb_cud_seeders.Create,
+			QueueBind:    mb_cud_queue_provisioning.CreateQueue{}.BindingName(),
+			Durable:      true,
+			AutoDelete:   false,
+			Internal:     false,
+			NoWait:       false,
+			Exclusive:    false,
+		},
+		QueueUpdate: &mb_cud_queue_provisioning.UpdateQueue{
+			ExchangeName: mb_cud_seeders.ExchangeName,
+			QueueName:    mb_cud_seeders.Update,
+			QueueBind:    mb_cud_queue_provisioning.UpdateQueue{}.BindingName(),
+			Durable:      true,
+			AutoDelete:   false,
+			Internal:     false,
+			NoWait:       false,
+			Exclusive:    false,
+		},
+		QueueDelete: &mb_cud_queue_provisioning.DeleteQueue{
+			ExchangeName: mb_cud_seeders.ExchangeName,
+			QueueName:    mb_cud_seeders.Delete,
+			QueueBind:    mb_cud_queue_provisioning.DeleteQueue{}.BindingName(),
+			Durable:      true,
+			AutoDelete:   false,
+			Internal:     false,
+			NoWait:       false,
+			Exclusive:    false,
+		},
+		Mu: sync.Mutex{},
+	}
 
 	search_engine = meilisearch.New(fmt.Sprintf("http://%s:%s", e.MEILIHOST, e.MEILIPORT), meilisearch.WithAPIKey(e.MEILIKEY))
 

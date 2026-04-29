@@ -5,17 +5,18 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"os/signal"
 	"strconv"
 	"sync"
+	"syscall"
 
 	"github.com/joho/godotenv"
 	"github.com/meilisearch/meilisearch-go"
-	"github.com/rabbitmq/amqp091-go"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/config"
-
+	mb_cud_consumer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/consumer"
 )
 
 type Connection struct {
@@ -24,7 +25,7 @@ type Connection struct {
 	RDSBARANG     *redis.Client
 	RDSENGAGEMENT *redis.Client
 	SE            meilisearch.ServiceManager
-	NOTIFICATION  *amqp091.Connection
+	CUD_CONSUMER  *mb_cud_consumer.Consumer
 }
 
 func Getenvi(key, fallback string) string {
@@ -36,19 +37,18 @@ func Getenvi(key, fallback string) string {
 
 func Run() {
 	var conn Connection
-	err := godotenv.Load()
-	if err != nil {
+
+	if err := godotenv.Load(); err != nil {
 		log.Fatalf("❌ Tidak ada file .env")
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	var wg sync.WaitGroup
-
+	// parsing env
 	rdsentity, _ := strconv.Atoi(Getenvi("RDSENTITY", "0"))
 	rdsbarang, _ := strconv.Atoi(Getenvi("RDSBARANG", "0"))
-	rdsengagement, _ := strconv.Atoi(Getenvi("RDSENGAGEMET", "0"))
+	rdsengagement, _ := strconv.Atoi(Getenvi("RDSENGAGEMENT", "0")) // ✅ typo fix
 
 	env := config.Environment{
 		DBHOST:             Getenvi("DBHOST", "NIL"),
@@ -71,16 +71,31 @@ func Run() {
 		RMQ_NOTIF_EXCHANGE: Getenvi("RMQ_NOTIF_EXCHANGE", "NIL"),
 	}
 
-	dsn := fmt.Sprintf(
-		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Jakarta",
-		env.DBHOST, env.DBUSER, env.DBPASS, env.DBNAME, env.DBPORT,
-	)
+	// init connection
+	conn.DB, conn.RDSENTITY, conn.RDSBARANG, conn.RDSENGAGEMENT, conn.SE, conn.CUD_CONSUMER =
+		env.RunConnectionEnvironment()
 
-	conn.DB, conn.RDSENTITY, conn.RDSBARANG, conn.RDSENGAGEMENT, conn.SE, conn.NOTIFICATION = env.RunConnectionEnvironment()
+	var wg sync.WaitGroup
 
-	Watcher(&conn, ctx, &wg, dsn, env.RMQ_NOTIF_EXCHANGE)
+	// 🟢 start consumer
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		conn.CUD_CONSUMER.WatchPublish(ctx)
+	}()
 
-	fmt.Println("🟢 Watcher berjalan... tekan CTRL+C untuk exit")
-	wg.Wait()
-	defer conn.NOTIFICATION.Close()
+	fmt.Println("Watcher berjalan... tekan CTRL+C untuk exit")
+
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+
+	<-sig
+
+	fmt.Println("Shutting down...")
+
+	cancel() // stop semua goroutine via context
+
+	wg.Wait() // tunggu semua selesai
+
+	fmt.Println("Shutdown selesai")
 }
