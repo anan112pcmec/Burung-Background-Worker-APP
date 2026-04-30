@@ -17,6 +17,7 @@ import (
 
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/config"
 	mb_cud_consumer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/consumer"
+
 )
 
 type Connection struct {
@@ -81,7 +82,7 @@ func Run() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		conn.CUD_CONSUMER.WatchPublish(ctx)
+		conn.CUD_CONSUMER.WatchPublish(ctx, conn.DB, *conn.RDSBARANG, *conn.RDSENGAGEMENT, conn.SE)
 	}()
 
 	fmt.Println("Watcher berjalan... tekan CTRL+C untuk exit")

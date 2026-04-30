@@ -1,0 +1,25 @@
+package stsk_seller
+
+const (
+	AlamatGudang              string = "alamat_gudang"
+	BarangDiDiskon            string = "barang_di_diskon"
+	BarangInduk               string = "barang_induk"
+	BrandData                 string = "brand_data"
+	DiskonProduk              string = "diskon_produk"
+	DistributorData           string = "distributor_data"
+	Etalase                   string = "etalase"
+	Follower                  string = "follower"
+	JenisSellerValidation     string = "jenis_seller_validation"
+	Rekening                  string = "rekening"
+	KategoriBarang            string = "kategori_barang"
+	Keranjang                 string = "keranjang"
+	MediaSellerBannerFoto     string = "media_seller_banner_foto"
+	MediaSellerFotoProfil     string = "media_seller_foto_profil"
+	MediaSellerTokoFisikFoto  string = "media_seller_toko_fisik_foto"
+	PayoutSeller              string = "payout_seller"
+	Pengiriman                string = "pengiriman"
+	PengirimanEkspedisi       string = "pengiriman_ekspedisi"
+	ThresholdOrderSellers     string = "threshold_order_sellers"
+	ThresholdTransaksiSellers string = "threshold_transaksi_sellers"
+	Transaksi                 string = "transaksi"
+)

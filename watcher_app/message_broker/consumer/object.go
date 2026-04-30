@@ -4,7 +4,10 @@ import (
 	"context"
 	"sync"
 
+	"github.com/meilisearch/meilisearch-go"
 	"github.com/rabbitmq/amqp091-go"
+	"github.com/redis/go-redis/v9"
+	"gorm.io/gorm"
 
 	mb_cud_queue_provisioning "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/provisioning/cud_exchange/queue"
 )
@@ -17,7 +20,7 @@ type Consumer struct {
 	Mu          sync.Mutex
 }
 
-func (c *Consumer) WatchPublish(ctx context.Context) error {
+func (c *Consumer) WatchPublish(ctx context.Context, Threshold *gorm.DB, rds_barang, rds_session redis.Client, se meilisearch.ServiceManager) error {
 
 	// 🔒 QoS biar gak overconsume
 	c.Mu.Lock()
