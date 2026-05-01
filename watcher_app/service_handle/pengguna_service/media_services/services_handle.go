@@ -1,0 +1,57 @@
+package media_pengguna_handle
+
+import (
+	"fmt"
+
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
+	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+)
+
+func UpdateUbahFotoProfilPengguna(Data mb_cud_serializer.ParsedDataMessage) error {
+
+	var Objek models.MediaPenggunaProfilFoto
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
+		return fmt.Errorf("gagal mengolah data")
+	} else {
+		fmt.Println(Objek)
+	}
+
+	return nil
+}
+
+func DeleteHapusFotoProfilPengguna(Data mb_cud_serializer.ParsedDataMessage) error {
+
+	var Objek models.MediaPenggunaProfilFoto
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
+		return fmt.Errorf("gagal mengolah data")
+	} else {
+		fmt.Println(Objek)
+	}
+
+	return nil
+}
+
+func CreateTambahMediaReviewFoto(Data mb_cud_serializer.ParsedDataMessage) error {
+
+	var Objek models.MediaReviewFoto
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
+		return fmt.Errorf("gagal mengolah data")
+	} else {
+		fmt.Println(Objek)
+	}
+
+	return nil
+}
+
+func CreateTambahMediaReviewVideo(Data mb_cud_serializer.ParsedDataMessage) error {
+
+	var Objek models.MediaReviewVideo
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
+		return fmt.Errorf("gagal mengolah data")
+	} else {
+		fmt.Println(Objek)
+	}
+
+	return nil
+}

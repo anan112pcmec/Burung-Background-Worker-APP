@@ -5,8 +5,10 @@ import (
 
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
-	alamat_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service/pengguna_service/alamat_services"
-	barang_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service/pengguna_service/barang_services"
+	alamat_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/alamat_services"
+	barang_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/barang_services"
+	credential_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/credential_services"
+	media_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/media_services"
 )
 
 func PenggunaUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data *T) error {
@@ -35,6 +37,23 @@ func PenggunaUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_c
 			if err := barang_pengguna_handle.UpdateEditKeranjangBarang(d); err != nil {
 				return err
 			}
+		case "ValidateUbahPasswordPenggunaViaOtp":
+			if err := credential_pengguna_handle.UpdateValidateUbahPasswordPenggunaViaOtp(d); err != nil {
+				return err
+			}
+		case "ValidateUbahPasswordPenggunaViaPin":
+			if err := credential_pengguna_handle.UpdateValidateUbahPasswordPenggunaViaPin(d); err != nil {
+				return err
+			}
+		case "UpdateSecretPinPengguna":
+			if err := credential_pengguna_handle.UpdateSecretPinPengguna(d); err != nil {
+				return err
+			}
+		case models.MediaPenggunaProfilFoto.TableName(models.MediaPenggunaProfilFoto{}):
+			if err := media_pengguna_handle.UpdateUbahFotoProfilPengguna(d); err != nil {
+				return err
+			}
+
 		}
 
 	case mb_cud_serializer.ConsumeDataProto:
