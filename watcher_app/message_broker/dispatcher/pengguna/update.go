@@ -9,6 +9,8 @@ import (
 	barang_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/barang_services"
 	credential_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/credential_services"
 	media_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/media_services"
+	profiling_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/profiling_services"
+	social_media_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/social_media_services"
 )
 
 func PenggunaUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data *T) error {
@@ -51,6 +53,18 @@ func PenggunaUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_c
 			}
 		case models.MediaPenggunaProfilFoto.TableName(models.MediaPenggunaProfilFoto{}):
 			if err := media_pengguna_handle.UpdateUbahFotoProfilPengguna(d); err != nil {
+				return err
+			}
+		case models.Pengguna.TableName(models.Pengguna{}):
+			if err := profiling_pengguna_handle.UpdateUbahPersonalProfilingPengguna(d); err != nil {
+				return err
+			}
+		case "EngageTautkanSocialMediaPengguna":
+			if err := social_media_pengguna_handle.UpdateEngageTautkanSocialMediaPengguna(d); err != nil {
+				return err
+			}
+		case "EngageHapusSocialMedia":
+			if err := social_media_pengguna_handle.UpdateEngageHapusSocialMedia(d); err != nil {
 				return err
 			}
 

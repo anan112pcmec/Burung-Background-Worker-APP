@@ -12,7 +12,6 @@ import (
 	consume_seller_dispatcher "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/dispatcher/seller"
 	mb_cud_seeders "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/seeders/cud_exchange"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
-
 )
 
 func (c *Consumer) HandleCreate(ctx context.Context, msgs <-chan amqp091.Delivery) {
