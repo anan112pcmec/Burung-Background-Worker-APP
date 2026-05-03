@@ -10,6 +10,7 @@ import (
 	credential_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/credential_services"
 	media_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/media_services"
 	social_media_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/social_media_services"
+	transaction_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/transaction_services"
 	wishlist_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/wishlist_services"
 )
 
@@ -69,6 +70,18 @@ func PenggunaCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_c
 			}
 		case models.Wishlist.TableName(models.Wishlist{}):
 			if err := wishlist_pengguna_handle.CreateTambahBarangKeWishlist(d); err != nil {
+				return err
+			}
+		case "LockTransaksiVa":
+			if err := transaction_pengguna_handle.CreateLockTransaksiVa(d); err != nil {
+				return err
+			}
+		case "LockTransaksiWallet":
+			if err := transaction_pengguna_handle.CreateLockTransaksiWallet(d); err != nil {
+				return err
+			}
+		case "LockTransaksiGerai":
+			if err := transaction_pengguna_handle.CreateLockTransaksiGerai(d); err != nil {
 				return err
 			}
 
