@@ -5,7 +5,10 @@ import (
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	alamat_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/alamat_services"
 	barang_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/barang_services"
-
+	credential_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/credential_services"
+	diskon_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/diskon_services"
+	etalase_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/etalase_services"
+	jenis_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/jenis_services"
 )
 
 func SellerUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data T) error {
@@ -33,6 +36,34 @@ func SellerUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud
 			}
 		case models.KomentarChild.TableName(models.KomentarChild{}):
 			if err := barang_seller_handle.UpdateEditChildKomentar(d); err != nil {
+				return err
+			}
+		case "ValidateUbahPasswordSeller":
+			if err := credential_seller_handle.UpdateValidateUbahPasswordSeller(d); err != nil {
+				return err
+			}
+		case "EditRekeningSeller":
+			if err := credential_seller_handle.UpdateEditRekeningSeller(d); err != nil {
+				return err
+			}
+		case "SetDefaultRekeningSeller":
+			if err := credential_seller_handle.UpdateSetDefaultRekeningSeller(d); err != nil {
+				return err
+			}
+		case models.DiskonProduk.TableName(models.DiskonProduk{}):
+			if err := diskon_seller_handle.UpdateEditDiskonProduk(d); err != nil {
+				return err
+			}
+		case models.Etalase.TableName(models.Etalase{}):
+			if err := etalase_seller_handle.UpdateEditEtalaseSeller(d); err != nil {
+				return err
+			}
+		case models.DistributorData.TableName(models.DistributorData{}):
+			if err := jenis_seller_handle.UpdateEditDataDistributor(d); err != nil {
+				return err
+			}
+		case models.BrandData.TableName(models.BrandData{}):
+			if err := jenis_seller_handle.UpdateEditDataBrand(d); err != nil {
 				return err
 			}
 
