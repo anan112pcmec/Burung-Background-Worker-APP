@@ -9,6 +9,8 @@ import (
 	diskon_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/diskon_services"
 	etalase_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/etalase_services"
 	jenis_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/jenis_services"
+	media_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/media_services"
+
 )
 
 func SellerCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data T) error {
@@ -64,6 +66,82 @@ func SellerCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud
 			}
 		case models.BrandData.TableName(models.BrandData{}):
 			if err := jenis_seller_handle.CreateMasukanDataBrand(d); err != nil {
+				return err
+			}
+		case models.MediaSellerProfilFoto.TableName(models.MediaSellerProfilFoto{}):
+			if err := media_seller_handle.CreateUbahFotoProfilSeller(d); err != nil {
+				return err
+			}
+		case models.MediaSellerBannerFoto.TableName(models.MediaSellerBannerFoto{}):
+			if err := media_seller_handle.CreateUbahFotoBannerSeller(d); err != nil {
+				return err
+			}
+		case models.MediaSellerTokoFisikFoto.TableName(models.MediaSellerTokoFisikFoto{}):
+			if err := media_seller_handle.CreateTambahkanFotoTokoFisikSeller(d); err != nil {
+				return err
+			}
+		case models.MediaEtalaseFoto.TableName(models.MediaEtalaseFoto{}):
+			if err := media_seller_handle.CreateUbahFotoEtalaseSeller(d); err != nil {
+				return err
+			}
+		case models.MediaBarangIndukFoto.TableName(models.MediaBarangIndukFoto{}):
+			if err := media_seller_handle.CreateTambahkanMediaBarangIndukFoto(d); err != nil {
+				return err
+			}
+		case models.MediaBarangIndukVideo.TableName(models.MediaBarangIndukVideo{}):
+			if err := media_seller_handle.CreateUbahBarangIndukVideo(d); err != nil {
+				return err
+			}
+		case models.MediaKategoriBarangFoto.TableName(models.MediaKategoriBarangFoto{}):
+			if err := media_seller_handle.CreateUbahKategoriBarangFoto(d); err != nil {
+				return err
+			}
+		case models.MediaDistributorDataDokumen.TableName(models.MediaDistributorDataDokumen{}):
+			if err := media_seller_handle.CreateTambahDistributorDataDokumen(d); err != nil {
+				return err
+			}
+		case models.MediaDistributorDataNPWPFoto.TableName(models.MediaDistributorDataNPWPFoto{}):
+			if err := media_seller_handle.CreateTambahMediaDistributorDataNPWPFoto(d); err != nil {
+				return err
+			}
+		case models.MediaDistributorDataNIBFoto.TableName(models.MediaDistributorDataNIBFoto{}):
+			if err := media_seller_handle.CreateTambahDistributorDataNIBFoto(d); err != nil {
+				return err
+			}
+		case models.MediaDistributorDataSuratKerjasamaDokumen.TableName(models.MediaDistributorDataSuratKerjasamaDokumen{}):
+			if err := media_seller_handle.CreateTambahDistributorDataDokumen(d); err != nil {
+				return err
+			}
+		case models.MediaBrandDataPerwakilanDokumen.TableName(models.MediaBrandDataPerwakilanDokumen{}):
+			if err := media_seller_handle.CreateTambahBrandDataPerwakilanDokumen(d); err != nil {
+				return err
+			}
+		case models.MediaBrandDataSertifikatFoto.TableName(models.MediaBrandDataSertifikatFoto{}):
+			if err := media_seller_handle.CreateTambahMediaBrandDataSertifikatFoto(d); err != nil {
+				return err
+			}
+		case models.MediaBrandDataNIBFoto.TableName(models.MediaBrandDataNIBFoto{}):
+			if err := media_seller_handle.CreateTambahMediaBrandDataNIBFoto(d); err != nil {
+				return err
+			}
+		case models.MediaBrandDataNPWPFoto.TableName(models.MediaBrandDataNPWPFoto{}):
+			if err := media_seller_handle.CreateTambahMediaBrandNPWPFoto(d); err != nil {
+				return err
+			}
+		case models.MediaBrandDataLogoFoto.TableName(models.MediaBrandDataLogoFoto{}):
+			if err := media_seller_handle.CreateTambahMediaBrandDataLogoFoto(d); err != nil {
+				return err
+			}
+		case models.MediaBrandDataSuratKerjasamaDokumen.TableName(models.MediaBrandDataSuratKerjasamaDokumen{}):
+			if err := media_seller_handle.CreateTambahBrandDataSuratKerjasamaDokumen(d); err != nil {
+				return err
+			}
+		case models.MediaTransaksiApprovedFoto.TableName(models.MediaTransaksiApprovedFoto{}):
+			if err := media_seller_handle.CreateTambahMediaTransaksiApprovedFoto(d); err != nil {
+				return err
+			}
+		case models.MediaTransaksiApprovedVideo.TableName(models.MediaTransaksiApprovedVideo{}):
+			if err := media_seller_handle.CreateTambahMediaTransaksiApprovedVideo(d); err != nil {
 				return err
 			}
 
