@@ -10,7 +10,7 @@ import (
 	etalase_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/etalase_services"
 	jenis_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/jenis_services"
 	media_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/media_services"
-
+	profiling_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/profiling_services"
 )
 
 func SellerUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data T) error {
@@ -130,6 +130,14 @@ func SellerUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud
 			}
 		case models.MediaBrandDataSuratKerjasamaDokumen.TableName(models.MediaBrandDataSuratKerjasamaDokumen{}):
 			if err := media_seller_handle.UpdateTambahBrandDataSuratKerjasamaDokumen(d); err != nil {
+				return err
+			}
+		case "UpdatePersonalSeller":
+			if err := profiling_seller_handle.UpdateUpdatePersonalSeller(d); err != nil {
+				return err
+			}
+		case "UpdateInfoGeneralPublic":
+			if err := profiling_seller_handle.UpdateUpdateInfoGeneralPublic(d); err != nil {
 				return err
 			}
 
