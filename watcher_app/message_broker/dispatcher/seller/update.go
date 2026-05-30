@@ -1,6 +1,8 @@
 package consume_seller_dispatcher
 
 import (
+	"fmt"
+
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	alamat_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/alamat_services"
@@ -11,6 +13,8 @@ import (
 	jenis_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/jenis_services"
 	media_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/media_services"
 	profiling_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/profiling_services"
+	social_media_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/social_media_services"
+	transaksi_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/transaksi_services"
 )
 
 func SellerUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data T) error {
@@ -18,140 +22,144 @@ func SellerUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud
 	switch v := any(data).(type) {
 	case mb_cud_serializer.ConsumeDataJson:
 		d = v.Parse()
-
-		switch d.TableName {
-		case models.AlamatGudang.TableName(models.AlamatGudang{}):
-			if err := alamat_seller_handle.UpdateEditAlamatGudang(d); err != nil {
-				return err
-			}
-		case models.BarangInduk.TableName(models.BarangInduk{}):
-			if err := barang_seller_handle.UpdateEditBarangInduk(d); err != nil {
-				return err
-			}
-		case models.KategoriBarang.TableName(models.KategoriBarang{}):
-			if err := barang_seller_handle.UpdateEditKategoriBarang(d); err != nil {
-				return err
-			}
-		case models.Komentar.TableName(models.Komentar{}):
-			if err := barang_seller_handle.UpdateEditKomentarBarang(d); err != nil {
-				return err
-			}
-		case models.KomentarChild.TableName(models.KomentarChild{}):
-			if err := barang_seller_handle.UpdateEditChildKomentar(d); err != nil {
-				return err
-			}
-		case "ValidateUbahPasswordSeller":
-			if err := credential_seller_handle.UpdateValidateUbahPasswordSeller(d); err != nil {
-				return err
-			}
-		case "EditRekeningSeller":
-			if err := credential_seller_handle.UpdateEditRekeningSeller(d); err != nil {
-				return err
-			}
-		case "SetDefaultRekeningSeller":
-			if err := credential_seller_handle.UpdateSetDefaultRekeningSeller(d); err != nil {
-				return err
-			}
-		case models.DiskonProduk.TableName(models.DiskonProduk{}):
-			if err := diskon_seller_handle.UpdateEditDiskonProduk(d); err != nil {
-				return err
-			}
-		case models.Etalase.TableName(models.Etalase{}):
-			if err := etalase_seller_handle.UpdateEditEtalaseSeller(d); err != nil {
-				return err
-			}
-		case models.DistributorData.TableName(models.DistributorData{}):
-			if err := jenis_seller_handle.UpdateEditDataDistributor(d); err != nil {
-				return err
-			}
-		case models.BrandData.TableName(models.BrandData{}):
-			if err := jenis_seller_handle.UpdateEditDataBrand(d); err != nil {
-				return err
-			}
-		case models.MediaSellerProfilFoto.TableName(models.MediaSellerProfilFoto{}):
-			if err := media_seller_handle.UpdateUbahFotoProfilSeller(d); err != nil {
-				return err
-			}
-		case models.MediaSellerBannerFoto.TableName(models.MediaSellerBannerFoto{}):
-			if err := media_seller_handle.UpdateUbahFotoBannerSeller(d); err != nil {
-				return err
-			}
-		case models.MediaEtalaseFoto.TableName(models.MediaEtalaseFoto{}):
-			if err := media_seller_handle.UpdateUbahFotoEtalaseSeller(d); err != nil {
-				return err
-			}
-		case models.MediaBarangIndukVideo.TableName(models.MediaBarangIndukVideo{}):
-			if err := media_seller_handle.UpdateUbahBarangIndukVideo(d); err != nil {
-				return err
-			}
-		case models.MediaKategoriBarangFoto.TableName(models.MediaKategoriBarangFoto{}):
-			if err := media_seller_handle.UpdateUbahKategoriBarangFoto(d); err != nil {
-				return err
-			}
-		case models.MediaDistributorDataDokumen.TableName(models.MediaDistributorDataDokumen{}):
-			if err := media_seller_handle.UpdateTambahDistributorDataDokumen(d); err != nil {
-				return err
-			}
-		case models.MediaDistributorDataNPWPFoto.TableName(models.MediaDistributorDataNPWPFoto{}):
-			if err := media_seller_handle.UpdateTambahMediaDistributorDataNPWPFoto(d); err != nil {
-				return err
-			}
-		case models.MediaDistributorDataNIBFoto.TableName(models.MediaDistributorDataNIBFoto{}):
-			if err := media_seller_handle.UpdateTambahDistributorDataNIBFoto(d); err != nil {
-				return err
-			}
-		case models.MediaDistributorDataSuratKerjasamaDokumen.TableName(models.MediaDistributorDataSuratKerjasamaDokumen{}):
-			if err := media_seller_handle.UpdateTambahDistributorDataDokumen(d); err != nil {
-				return err
-			}
-		case models.MediaBrandDataPerwakilanDokumen.TableName(models.MediaBrandDataPerwakilanDokumen{}):
-			if err := media_seller_handle.UpdateTambahBrandDataPerwakilanDokumen(d); err != nil {
-				return err
-			}
-		case models.MediaBrandDataPerwakilanDokumen.TableName(models.MediaBrandDataPerwakilanDokumen{}):
-			if err := media_seller_handle.UpdateTambahBrandDataPerwakilanDokumen(d); err != nil {
-				return err
-			}
-		case models.MediaBrandDataSertifikatFoto.TableName(models.MediaBrandDataSertifikatFoto{}):
-			if err := media_seller_handle.UpdateTambahMediaBrandDataSertifikatFoto(d); err != nil {
-				return err
-			}
-		case models.MediaBrandDataNIBFoto.TableName(models.MediaBrandDataNIBFoto{}):
-			if err := media_seller_handle.UpdateTambahMediaBrandDataNIBFoto(d); err != nil {
-				return err
-			}
-		case models.MediaBrandDataNPWPFoto.TableName(models.MediaBrandDataNPWPFoto{}):
-			if err := media_seller_handle.UpdateTambahMediaBrandNPWPFoto(d); err != nil {
-				return err
-			}
-		case models.MediaBrandDataLogoFoto.TableName(models.MediaBrandDataLogoFoto{}):
-			if err := media_seller_handle.UpdateTambahMediaBrandDataLogoFoto(d); err != nil {
-				return err
-			}
-		case models.MediaBrandDataSuratKerjasamaDokumen.TableName(models.MediaBrandDataSuratKerjasamaDokumen{}):
-			if err := media_seller_handle.UpdateTambahBrandDataSuratKerjasamaDokumen(d); err != nil {
-				return err
-			}
-		case "UpdatePersonalSeller":
-			if err := profiling_seller_handle.UpdateUpdatePersonalSeller(d); err != nil {
-				return err
-			}
-		case "UpdateInfoGeneralPublic":
-			if err := profiling_seller_handle.UpdateUpdateInfoGeneralPublic(d); err != nil {
-				return err
-			}
-
-		}
-
 	case mb_cud_serializer.ConsumeDataProto:
 		d = v.Parse()
+	default:
+		return fmt.Errorf("unsupported data type")
+	}
 
-		switch d.TableName {
-		case models.AlamatGudang.TableName(models.AlamatGudang{}):
-			if err := alamat_seller_handle.UpdateEditAlamatGudang(d); err != nil {
-				return err
-			}
-
+	switch d.TableName {
+	case models.AlamatGudang{}.TableName(): // 1
+		if err := alamat_seller_handle.UpdateEditAlamatGudang(d); err != nil {
+			return err
+		}
+	case models.BarangInduk{}.TableName(): // 2
+		if err := barang_seller_handle.UpdateEditBarangInduk(d); err != nil {
+			return err
+		}
+	case models.KategoriBarang{}.TableName(): // 3
+		if err := barang_seller_handle.UpdateEditKategoriBarang(d); err != nil {
+			return err
+		}
+	case models.Komentar{}.TableName(): // 4
+		if err := barang_seller_handle.UpdateEditKomentarBarang(d); err != nil {
+			return err
+		}
+	case models.KomentarChild{}.TableName(): // 5
+		if err := barang_seller_handle.UpdateEditChildKomentar(d); err != nil {
+			return err
+		}
+	case "ValidateUbahPasswordSeller": // 6
+		if err := credential_seller_handle.UpdateValidateUbahPasswordSeller(d); err != nil {
+			return err
+		}
+	case "EditRekeningSeller": // 7
+		if err := credential_seller_handle.UpdateEditRekeningSeller(d); err != nil {
+			return err
+		}
+	case "SetDefaultRekeningSeller": // 8
+		if err := credential_seller_handle.UpdateSetDefaultRekeningSeller(d); err != nil {
+			return err
+		}
+	case models.DiskonProduk{}.TableName(): // 9
+		if err := diskon_seller_handle.UpdateEditDiskonProduk(d); err != nil {
+			return err
+		}
+	case models.Etalase{}.TableName(): // 10
+		if err := etalase_seller_handle.UpdateEditEtalaseSeller(d); err != nil {
+			return err
+		}
+	case models.DistributorData{}.TableName(): // 11
+		if err := jenis_seller_handle.UpdateEditDataDistributor(d); err != nil {
+			return err
+		}
+	case models.BrandData{}.TableName(): // 12
+		if err := jenis_seller_handle.UpdateEditDataBrand(d); err != nil {
+			return err
+		}
+	case models.MediaSellerProfilFoto{}.TableName(): // 13
+		if err := media_seller_handle.UpdateUbahFotoProfilSeller(d); err != nil {
+			return err
+		}
+	case models.MediaSellerBannerFoto{}.TableName(): // 14
+		if err := media_seller_handle.UpdateUbahFotoBannerSeller(d); err != nil {
+			return err
+		}
+	case models.MediaEtalaseFoto{}.TableName(): // 15
+		if err := media_seller_handle.UpdateUbahFotoEtalaseSeller(d); err != nil {
+			return err
+		}
+	case models.MediaBarangIndukVideo{}.TableName(): // 16
+		if err := media_seller_handle.UpdateUbahBarangIndukVideo(d); err != nil {
+			return err
+		}
+	case models.MediaKategoriBarangFoto{}.TableName(): // 17
+		if err := media_seller_handle.UpdateUbahKategoriBarangFoto(d); err != nil {
+			return err
+		}
+	case models.MediaDistributorDataDokumen{}.TableName(): // 18
+		if err := media_seller_handle.UpdateTambahDistributorDataDokumen(d); err != nil {
+			return err
+		}
+	case models.MediaDistributorDataNPWPFoto{}.TableName(): // 19
+		if err := media_seller_handle.UpdateTambahMediaDistributorDataNPWPFoto(d); err != nil {
+			return err
+		}
+	case models.MediaDistributorDataNIBFoto{}.TableName(): // 20
+		if err := media_seller_handle.UpdateTambahDistributorDataNIBFoto(d); err != nil {
+			return err
+		}
+	case models.MediaDistributorDataSuratKerjasamaDokumen{}.TableName(): // 21
+		if err := media_seller_handle.UpdateTambahDistributorDataDokumen(d); err != nil {
+			return err
+		}
+	case models.MediaBrandDataPerwakilanDokumen{}.TableName(): // 22
+		if err := media_seller_handle.UpdateTambahBrandDataPerwakilanDokumen(d); err != nil {
+			return err
+		}
+	case models.MediaBrandDataPerwakilanDokumen{}.TableName(): // 23 (Duplikat bawaan asli)
+		if err := media_seller_handle.UpdateTambahBrandDataPerwakilanDokumen(d); err != nil {
+			return err
+		}
+	case models.MediaBrandDataSertifikatFoto{}.TableName(): // 24
+		if err := media_seller_handle.UpdateTambahMediaBrandDataSertifikatFoto(d); err != nil {
+			return err
+		}
+	case models.MediaBrandDataNIBFoto{}.TableName(): // 25
+		if err := media_seller_handle.UpdateTambahMediaBrandDataNIBFoto(d); err != nil {
+			return err
+		}
+	case models.MediaBrandDataNPWPFoto{}.TableName(): // 26
+		if err := media_seller_handle.UpdateTambahMediaBrandNPWPFoto(d); err != nil {
+			return err
+		}
+	case models.MediaBrandDataLogoFoto{}.TableName(): // 27
+		if err := media_seller_handle.UpdateTambahMediaBrandDataLogoFoto(d); err != nil {
+			return err
+		}
+	case models.MediaBrandDataSuratKerjasamaDokumen{}.TableName(): // 28
+		if err := media_seller_handle.UpdateTambahBrandDataSuratKerjasamaDokumen(d); err != nil {
+			return err
+		}
+	case "UpdatePersonalSeller": // 29
+		if err := profiling_seller_handle.UpdateUpdatePersonalSeller(d); err != nil {
+			return err
+		}
+	case "UpdateInfoGeneralPublic": // 30
+		if err := profiling_seller_handle.UpdateUpdateInfoGeneralPublic(d); err != nil {
+			return err
+		}
+	case models.EntitySocialMedia{}.TableName(): // 31
+		if err := social_media_seller_handle.UpdatedngageSocialMediaSeller(d); err != nil {
+			return err
+		}
+	case "ApproveOrderTransaksi": // 32
+		if err := transaksi_seller_handle.UpdateApproveOrderTransaksi(d); err != nil {
+			return err
+		}
+	case "UnApproveOrderTransaksi": // 33
+		if err := transaksi_seller_handle.UpdatedUnApproveOrderTransaksi(d); err != nil {
+			return err
 		}
 	}
 
