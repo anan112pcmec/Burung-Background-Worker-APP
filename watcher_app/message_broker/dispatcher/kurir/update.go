@@ -9,6 +9,7 @@ import (
 	informasi_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/informasi_services"
 	media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/media_services"
 	pengiriman_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/pengiriman_services"
+	profiling_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/profiling_services"
 
 )
 
@@ -198,6 +199,14 @@ func KurirUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 		}
 	case "kurirNonaktifkanBidUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateNonaktifkanBidKurirIIkurirNonaktifkanBidUpdatedPublish(d); err != nil {
+			return err
+		}
+	case "kurirDataPersonalProfilingUpdatedPublish":
+		if err := profiling_kurir_handle.UpdatePersonalProfilingKurir(d); err != nil {
+			return err
+		}
+	case "kurirDataGeneralProfilingUpdatedPublish":
+		if err := profiling_kurir_handle.UpdateGeneralProfilingKurir(d); err != nil {
 			return err
 		}
 	}

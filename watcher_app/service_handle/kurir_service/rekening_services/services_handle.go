@@ -1,4 +1,4 @@
-package profiling_kurir_handle
+package rekening_kurir_handle
 
 import (
 	"fmt"
@@ -6,10 +6,11 @@ import (
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+
 )
 
-func UpdatePersonalProfilingKurir(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Kurir
+func CreateMasukanRekeningKurir(Data mb_cud_serializer.ParsedDataMessage) error {
+	var Objek models.RekeningKurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -19,8 +20,18 @@ func UpdatePersonalProfilingKurir(Data mb_cud_serializer.ParsedDataMessage) erro
 	return nil
 }
 
-func UpdateGeneralProfilingKurir(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Kurir
+func UpdateEditRekeningKurir(Data mb_cud_serializer.ParsedDataMessage) error {
+	var Objek models.RekeningKurir
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
+		return fmt.Errorf("gagal mengolah data alamat")
+	}
+
+	fmt.Println("Berhasil mendapatkan data", Objek.ID)
+	return nil
+}
+
+func DeleteHapusRekeningKurir(Data mb_cud_serializer.ParsedDataMessage) error {
+	var Objek models.RekeningKurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
