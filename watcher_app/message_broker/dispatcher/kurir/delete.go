@@ -7,6 +7,7 @@ import (
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	alamat_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/alamat_services"
 	media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/media_services"
+	pengiriman_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/pengiriman_services"
 )
 
 func KurirDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data T) error {
@@ -45,7 +46,18 @@ func KurirDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 		if err := media_kurir_handle.DeleteHapusMediaInformasiKurirKTPFoto(d); err != nil {
 			return err
 		}
-
+	case "bidKurirNonEksDeletePublish":
+		if err := pengiriman_kurir_handle.DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(d); err != nil {
+			return err
+		}
+	case "bidKurirEksDeletePublish":
+		if err := pengiriman_kurir_handle.DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(d); err != nil {
+			return err
+		}
+	case "bidKurirDataDeletePublish":
+		if err := pengiriman_kurir_handle.DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(d); err != nil {
+			return err
+		}
 	}
 	return nil
 }

@@ -8,7 +8,7 @@ import (
 	alamat_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/alamat_services"
 	informasi_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/informasi_services"
 	media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/media_services"
-
+	pengiriman_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/pengiriman_services"
 )
 
 func KurirCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data T) error {
@@ -67,7 +67,34 @@ func KurirCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 		if err := media_kurir_handle.CreateTambahMediaPengirimanEkspedisiSampaiAgentFoto(d); err != nil {
 			return err
 		}
-
+	case "bidKurirDataCreatePublish":
+		if err := pengiriman_kurir_handle.CreateAktifkanBidKurir(d); err != nil {
+			return err
+		}
+	case "bidKurirNonEksSchedulerCreatePublish":
+		if err := pengiriman_kurir_handle.CreateAmbilPengirimanNonEksManualRegulerIIBidKurirNonEksSchedulerCreatePublish(d); err != nil {
+			return err
+		}
+	case "bidKurirEksSchedulerCreatePublish":
+		if err := pengiriman_kurir_handle.CreateAmbilPengirimanEksManualRegulerIIbidKurirEksSchedulerCreatePublish(d); err != nil {
+			return err
+		}
+	case "payOutSellerCreatePublish":
+		if err := pengiriman_kurir_handle.CreateSampaiPengirimanNonEksIIpayOutSellerCreatePublish(d); err != nil {
+			return err
+		}
+	case "payOutKurirCreatePublish":
+		if err := pengiriman_kurir_handle.CreateSampaiPengirimanNonEksIIpayOutKurirCreatePublish(d); err != nil {
+			return err
+		}
+	case "jejakPengirimanEksCreatePublish":
+		if err := pengiriman_kurir_handle.CreatePickedUpPengirimanEksIIjejakPengirimanEksCreatePublish(d); err != nil {
+			return err
+		}
+	case "payOutKurirEksCreatePublish":
+		if err := pengiriman_kurir_handle.CreateSampaiPengirimanEksIIpayOutKurirEksCreatePublish(d); err != nil {
+			return err
+		}
 	}
 
 	return nil

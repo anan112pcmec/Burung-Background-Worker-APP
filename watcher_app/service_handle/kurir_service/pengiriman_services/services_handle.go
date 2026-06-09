@@ -8,8 +8,19 @@ import (
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 )
 
-func UpdateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage) error {
+func CreateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.BidKurirData
+
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
+		return fmt.Errorf("gagal mengolah data alamat")
+	}
+
+	fmt.Println("Berhasil mendapatkan data", Objek.ID)
+	return nil
+}
+
+func UpdateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage) error {
+	var Objek models.Kurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -41,7 +52,7 @@ func CreateAmbilPengirimanNonEksManualRegulerIIBidKurirNonEksSchedulerCreatePubl
 	return nil
 }
 
-func UpdateAmbilPengirimanNonEksManualRegulerIIPengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateAmbilPengirimanNonEksManualRegulerIIpengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.Pengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -52,7 +63,7 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIPengirimanUpdatedPublish(Data mb_
 	return nil
 }
 
-func UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataAmbilPengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -107,7 +118,7 @@ func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataUpdatedPublish(Data mb_c
 	return nil
 }
 
-func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataStatusUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataAmbilPengirimanEksStatusUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -140,7 +151,7 @@ func UpdateLockSiapAntarBidKurirIINonEksScheduler(Data mb_cud_serializer.ParsedD
 	return nil
 }
 
-func UpdateLockSiapAntarBidKurirIIbidKurirDataUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateLockSiapAntarBidKurirIIbidKurirDataLockSiapAntarUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -151,7 +162,7 @@ func UpdateLockSiapAntarBidKurirIIbidKurirDataUpdatedPublish(Data mb_cud_seriali
 	return nil
 }
 
-func UpdateLockSiapAntarBidKurirIIkurirUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateLockSiapAntarBidKurirIIkurirLockSiapAntarUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.Kurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -173,7 +184,7 @@ func CreatePickedUpPengirimanNonEksIIjejakPengirimanCreatePublish(Data mb_cud_se
 	return nil
 }
 
-func UpdatePickedUpPengirimanNonEksIIdataSchedulerUpdated(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdatePickedUpPengirimanNonEksIIschedulerPickedUpNonEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.BidKurirNonEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -184,7 +195,7 @@ func UpdatePickedUpPengirimanNonEksIIdataSchedulerUpdated(Data mb_cud_serializer
 	return nil
 }
 
-func UpdatedPickedUpPengirimanNonEksIIpengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdatedPickedUpPengirimanNonEksIIpengirimanPickedUpNonEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.Pengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -195,7 +206,7 @@ func UpdatedPickedUpPengirimanNonEksIIpengirimanUpdatedPublish(Data mb_cud_seria
 	return nil
 }
 
-func UpdatedPickedUpPengirimanNonEksIItransaksiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdatedPickedUpPengirimanNonEksIItransaksiPickedUpNonEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.Transaksi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -206,7 +217,7 @@ func UpdatedPickedUpPengirimanNonEksIItransaksiUpdatedPublish(Data mb_cud_serial
 	return nil
 }
 
-func UpdateKirimPengirimanNonEksIIbidKurirSchedulerUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateKirimPengirimanNonEksIIbidKurirPengirimanNonEksSchedulerUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.BidKurirNonEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -217,7 +228,7 @@ func UpdateKirimPengirimanNonEksIIbidKurirSchedulerUpdatedPublish(Data mb_cud_se
 	return nil
 }
 
-func UpdateKirimPengirimanNonEksIIpengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateKirimPengirimanNonEksIIpengirimanPengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.Pengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -228,7 +239,7 @@ func UpdateKirimPengirimanNonEksIIpengirimanUpdatedPublish(Data mb_cud_serialize
 	return nil
 }
 
-func UpdateKirimPengirimanNonEksIIjejakPengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateKirimPengirimanNonEksIIjejakpengirimanPengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.JejakPengiriman
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -260,7 +271,7 @@ func DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(Data mb_cud_seria
 	return nil
 }
 
-func UpdateSampaiPengirimanNonEksIIpengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateSampaiPengirimanNonEksIIpengirimanSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.Pengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -271,7 +282,7 @@ func UpdateSampaiPengirimanNonEksIIpengirimanUpdatedPublish(Data mb_cud_serializ
 	return nil
 }
 
-func UpdateSampaiPengirimanNonEksIIbidKurirDataUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateSampaiPengirimanNonEksIIbidKurirDataSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -282,7 +293,7 @@ func UpdateSampaiPengirimanNonEksIIbidKurirDataUpdatedPublish(Data mb_cud_serial
 	return nil
 }
 
-func UpdateSampaiPengirimanNonEksIIjejakPengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateSampaiPengirimanNonEksIIjejakPengirimanSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.JejakPengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -293,7 +304,7 @@ func UpdateSampaiPengirimanNonEksIIjejakPengirimanUpdatedPublish(Data mb_cud_ser
 	return nil
 }
 
-func UpdateSampaiPengirimanNonEksIItransaksiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateSampaiPengirimanNonEksIItransaksiSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.Transaksi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -337,7 +348,7 @@ func CreatePickedUpPengirimanEksIIjejakPengirimanEksCreatePublish(Data mb_cud_se
 	return nil
 }
 
-func UpdatePickedUpPengirimanEksIIschedulerUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdatePickedUpPengirimanEksIIschedulerEksPickedUpUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.BidKurirEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -348,7 +359,7 @@ func UpdatePickedUpPengirimanEksIIschedulerUpdatedPublish(Data mb_cud_serializer
 	return nil
 }
 
-func UpdatePickedUpPengirimanEksIIpengirimanEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdatePickedUpPengirimanEksIIpengirimanEksPickedUpUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.PengirimanEkspedisi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -359,7 +370,7 @@ func UpdatePickedUpPengirimanEksIIpengirimanEksUpdatedPublish(Data mb_cud_serial
 	return nil
 }
 
-func UpdatePickedUpPengirimanEksIItransaksiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdatePickedUpPengirimanEksIItransaksiPickedUpUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.Transaksi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -370,7 +381,7 @@ func UpdatePickedUpPengirimanEksIItransaksiUpdatedPublish(Data mb_cud_serializer
 	return nil
 }
 
-func UpdateKirimPengirimanEksIIschedulerUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateKirimPengirimanEksIIschedulerPengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.BidKurirEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -392,7 +403,7 @@ func UpdateKirimPengirimanEksIIpengirimanEksUpdatedPublish(Data mb_cud_serialize
 	return nil
 }
 
-func UpdateKirimPengirimanEksIIjejakPengirimanEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateKirimPengirimanEksIIpengirimanPengirimanEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.JejakPengirimanEkspedisi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -403,7 +414,7 @@ func UpdateKirimPengirimanEksIIjejakPengirimanEksUpdatedPublish(Data mb_cud_seri
 	return nil
 }
 
-func UpdateInformasiPerjalananPengiimanEks(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateInformasiPerjalananPengirimanEks(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.JejakPengirimanEkspedisi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -425,7 +436,7 @@ func DeleteSampaipengirimanEksIIbidKurirEksDeletePublish(Data mb_cud_serializer.
 	return nil
 }
 
-func UpdateSampaiPengirimanEksIIpengirimanEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateSampaiPengirimanEksIIpengirimanSampaiEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.PengirimanEkspedisi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -436,7 +447,7 @@ func UpdateSampaiPengirimanEksIIpengirimanEksUpdatedPublish(Data mb_cud_serializ
 	return nil
 }
 
-func UpdateSampaiPengirimanEksIIbidKurirDataUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateSampaiPengirimanEksIIbidKurirDataEksSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -447,7 +458,7 @@ func UpdateSampaiPengirimanEksIIbidKurirDataUpdatedPublish(Data mb_cud_serialize
 	return nil
 }
 
-func UpdateSampaiPengirimanEksIIjejakPengirimanEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateSampaiPengirimanEksIIjejakPengirimanEksSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.JejakPengirimanEkspedisi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -458,7 +469,7 @@ func UpdateSampaiPengirimanEksIIjejakPengirimanEksUpdatedPublish(Data mb_cud_ser
 	return nil
 }
 
-func UpdateSampaiPengirimanEksIItransaksiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateSampaiPengirimanEksIItransaksiSampaiEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.Transaksi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -469,7 +480,7 @@ func UpdateSampaiPengirimanEksIItransaksiUpdatedPublish(Data mb_cud_serializer.P
 	return nil
 }
 
-func UpdateSampaiPengirimanEksIIpayOutKurirCreatePublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func CreateSampaiPengirimanEksIIpayOutKurirEksCreatePublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.PayOutKurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -480,7 +491,7 @@ func UpdateSampaiPengirimanEksIIpayOutKurirCreatePublish(Data mb_cud_serializer.
 	return nil
 }
 
-func UpdateSampaiPengirimanEksIIkurirUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateSampaiPengirimanEksIIkurirUpdatedSampaiEksPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.Kurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -502,7 +513,7 @@ func DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(Data mb_cud_serializer
 	return nil
 }
 
-func UpdateNonaktifkanBidKurirIIkurirUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateNonaktifkanBidKurirIIkurirNonaktifkanBidUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.Kurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
