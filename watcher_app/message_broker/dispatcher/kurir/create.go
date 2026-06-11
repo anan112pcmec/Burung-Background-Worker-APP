@@ -5,10 +5,13 @@ import (
 
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+	auth_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/auth"
 	alamat_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/alamat_services"
 	informasi_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/informasi_services"
 	media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/media_services"
 	pengiriman_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/pengiriman_services"
+	rekening_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/rekening_services"
+	social_media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/social_media_services"
 )
 
 func KurirCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data T) error {
@@ -23,6 +26,10 @@ func KurirCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 	}
 
 	switch d.TableName {
+	case models.Kurir{}.TableName():
+		if err := auth_handle.CreateValidateKurirRegistration(d); err != nil {
+			return err
+		}
 	case models.AlamatKurir{}.TableName():
 		if err := alamat_kurir_handle.CreateMasukanAlamatKurir(d); err != nil {
 			return err
@@ -93,6 +100,14 @@ func KurirCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 		}
 	case "payOutKurirEksCreatePublish":
 		if err := pengiriman_kurir_handle.CreateSampaiPengirimanEksIIpayOutKurirEksCreatePublish(d); err != nil {
+			return err
+		}
+	case models.RekeningKurir{}.TableName():
+		if err := rekening_kurir_handle.CreateMasukanRekeningKurir(d); err != nil {
+			return err
+		}
+	case models.EntitySocialMedia{}.TableName():
+		if err := social_media_kurir_handle.CreateEngagementSocialMediaKurir(d); err != nil {
 			return err
 		}
 	}

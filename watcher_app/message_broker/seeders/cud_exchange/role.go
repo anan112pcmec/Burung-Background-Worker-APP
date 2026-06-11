@@ -1,7 +1,7 @@
 package mb_cud_seeders
 
-const(
+const (
 	Pengguna string = "pengguna"
-	Seller string = "seller"
-	Kurir string = "kurir"
+	Seller   string = "seller"
+	Kurir    string = "kurir"
 )

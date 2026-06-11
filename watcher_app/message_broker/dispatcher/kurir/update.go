@@ -5,12 +5,14 @@ import (
 
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+	auth_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/auth"
 	alamat_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/alamat_services"
 	informasi_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/informasi_services"
 	media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/media_services"
 	pengiriman_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/pengiriman_services"
 	profiling_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/profiling_services"
-
+	rekening_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/rekening_services"
+	social_media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/social_media_services"
 )
 
 func KurirUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data T) error {
@@ -25,6 +27,10 @@ func KurirUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 	}
 
 	switch d.TableName {
+	case "KurirLogin":
+		if err := auth_handle.UpdateKurirLogin(d); err != nil {
+			return err
+		}
 	case models.AlamatKurir{}.TableName():
 		if err := alamat_kurir_handle.UpdatedEditAlamatKurir(d); err != nil {
 			return err
@@ -207,6 +213,14 @@ func KurirUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 		}
 	case "kurirDataGeneralProfilingUpdatedPublish":
 		if err := profiling_kurir_handle.UpdateGeneralProfilingKurir(d); err != nil {
+			return err
+		}
+	case models.RekeningKurir{}.TableName():
+		if err := rekening_kurir_handle.UpdateEditRekeningKurir(d); err != nil {
+			return err
+		}
+	case models.EntitySocialMedia{}.TableName():
+		if err := social_media_kurir_handle.UpdateEngagementSocialMediaKurir(d); err != nil {
 			return err
 		}
 	}

@@ -5,6 +5,7 @@ import (
 
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+	auth_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/auth"
 	alamat_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/alamat_services"
 	barang_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/barang_services"
 	credential_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/credential_services"
@@ -26,6 +27,10 @@ func PenggunaUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_c
 	}
 
 	switch d.TableName {
+	case "PenggunaLogin":
+		if err := auth_handle.UpdatePenggunaLogin(d); err != nil {
+			return err
+		}
 	case models.AlamatPengguna.TableName(models.AlamatPengguna{}):
 		if err := alamat_pengguna_handle.UpdateAlamatPub(d); err != nil {
 			return err

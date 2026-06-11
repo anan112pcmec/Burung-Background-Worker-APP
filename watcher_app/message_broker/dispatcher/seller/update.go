@@ -5,6 +5,7 @@ import (
 
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+	auth_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/auth"
 	alamat_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/alamat_services"
 	barang_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/barang_services"
 	credential_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/credential_services"
@@ -29,6 +30,10 @@ func SellerUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud
 	}
 
 	switch d.TableName {
+	case "SellerLogin":
+		if err := auth_handle.UpdateSellerLogin(d); err != nil {
+			return err
+		}
 	case models.AlamatGudang{}.TableName(): // 1
 		if err := alamat_seller_handle.UpdateEditAlamatGudang(d); err != nil {
 			return err

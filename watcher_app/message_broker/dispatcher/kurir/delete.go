@@ -8,6 +8,8 @@ import (
 	alamat_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/alamat_services"
 	media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/media_services"
 	pengiriman_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/pengiriman_services"
+	rekening_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/rekening_services"
+
 )
 
 func KurirDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data T) error {
@@ -56,6 +58,10 @@ func KurirDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 		}
 	case "bidKurirDataDeletePublish":
 		if err := pengiriman_kurir_handle.DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(d); err != nil {
+			return err
+		}
+	case models.RekeningKurir{}.TableName():
+		if err := rekening_kurir_handle.DeleteHapusRekeningKurir(d); err != nil {
 			return err
 		}
 	}
