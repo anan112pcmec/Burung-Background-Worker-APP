@@ -4,6 +4,7 @@ go 1.24.1
 
 require (
 	github.com/andybalholm/brotli v1.1.1 // indirect
+	github.com/apache/cassandra-gocql-driver/v2 v2.1.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
@@ -21,6 +22,7 @@ require (
 	golang.org/x/crypto v0.37.0 // indirect
 	golang.org/x/sync v0.13.0 // indirect
 	golang.org/x/text v0.24.0 // indirect
+	gopkg.in/inf.v0 v0.9.1 // indirect
 	gorm.io/driver/postgres v1.6.0 // indirect
 	gorm.io/gorm v1.30.3 // indirect
 )

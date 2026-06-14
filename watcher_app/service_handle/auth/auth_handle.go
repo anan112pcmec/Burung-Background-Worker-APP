@@ -8,36 +8,6 @@ import (
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 )
 
-func UpdatePenggunaLogin(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Pengguna models.Pengguna
-	if err := helper.DecodeJSONBody(Data, &Pengguna); err != nil {
-		return fmt.Errorf("gagal mengolah data alamat")
-	}
-
-	fmt.Println("Berhasil mendapatkan data", Pengguna.ID)
-	return nil
-}
-
-func UpdateSellerLogin(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Seller
-	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
-		return fmt.Errorf("gagal mengolah data alamat")
-	}
-
-	fmt.Println("Berhasil mendapatkan data", Objek.ID)
-	return nil
-}
-
-func UpdateKurirLogin(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Kurir
-	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
-		return fmt.Errorf("gagal mengolah data alamat")
-	}
-
-	fmt.Println("Berhasil mendapatkan data", Objek.ID)
-	return nil
-}
-
 func CreateValidatePenggunaRegistration(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Pengguna models.Pengguna
 	if err := helper.DecodeJSONBody(Data, &Pengguna); err != nil {
@@ -59,6 +29,36 @@ func CreateValidateSellerRegistration(Data mb_cud_serializer.ParsedDataMessage) 
 }
 
 func CreateValidateKurirRegistration(Data mb_cud_serializer.ParsedDataMessage) error {
+	var Objek models.Kurir
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
+		return fmt.Errorf("gagal mengolah data alamat")
+	}
+
+	fmt.Println("Berhasil mendapatkan data", Objek.ID)
+	return nil
+}
+
+func UpdatePenggunaLogin(Data mb_cud_serializer.ParsedDataMessage) error {
+	var Pengguna models.Pengguna
+	if err := helper.DecodeJSONBody(Data, &Pengguna); err != nil {
+		return fmt.Errorf("gagal mengolah data alamat")
+	}
+
+	fmt.Println("Berhasil mendapatkan data", Pengguna.ID)
+	return nil
+}
+
+func UpdateSellerLogin(Data mb_cud_serializer.ParsedDataMessage) error {
+	var Objek models.Seller
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
+		return fmt.Errorf("gagal mengolah data alamat")
+	}
+
+	fmt.Println("Berhasil mendapatkan data", Objek.ID)
+	return nil
+}
+
+func UpdateKurirLogin(Data mb_cud_serializer.ParsedDataMessage) error {
 	var Objek models.Kurir
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
