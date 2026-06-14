@@ -19,6 +19,8 @@ type EntitySocialMedia struct {
 	Metadata   []byte
 	EntityType string
 	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	DeletedAt  *time.Time
 	Pencatatan
 }
 
