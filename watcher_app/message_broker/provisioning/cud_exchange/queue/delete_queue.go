@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/rabbitmq/amqp091-go"
-
 	mb_cud_seeders "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/seeders/cud_exchange"
+	"github.com/rabbitmq/amqp091-go"
 )
 
 type DeleteQueue struct {

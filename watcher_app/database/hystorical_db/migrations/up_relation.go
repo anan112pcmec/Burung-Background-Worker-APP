@@ -1,0 +1,41 @@
+package historical_migrations
+
+import (
+	"context"
+	"fmt"
+	"sync"
+	"time"
+
+	gocql "github.com/apache/cassandra-gocql-driver/v2"
+
+	historical_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/hystorical_db/models"
+)
+
+func UpRelation(ctx context.Context, session *gocql.Session) []error {
+	var errs []error
+	var wg sync.WaitGroup
+	var mu sync.RWMutex
+
+	for _, model := range model_list {
+		wg.Add(1)
+		fctx, cancel := context.WithTimeout(ctx, time.Second*6)
+		go func(konteks context.Context, ctxCancel context.CancelFunc, m interface{}) {
+			defer wg.Done()
+			defer ctxCancel()
+
+			if historicalModel, ok := m.(historical_models.Method); ok {
+				if err := historicalModel.CreateTable(ctx, session); err != nil {
+					mu.Lock()
+					errs = append(errs, err)
+					mu.Unlock()
+				}
+			} else {
+				fmt.Printf("Objek %T tidak mengimplementasikan historical_models.Method\n", m)
+			}
+		}(fctx, cancel, model)
+	}
+	wg.Wait()
+
+	return errs
+
+}

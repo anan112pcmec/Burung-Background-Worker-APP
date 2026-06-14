@@ -10,6 +10,7 @@ import (
 	"sync"
 	"syscall"
 
+	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"github.com/joho/godotenv"
 	"github.com/meilisearch/meilisearch-go"
 	"github.com/redis/go-redis/v9"
@@ -17,7 +18,6 @@ import (
 
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/config"
 	mb_cud_consumer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/consumer"
-
 )
 
 type Connection struct {
@@ -27,6 +27,7 @@ type Connection struct {
 	RDSENGAGEMENT *redis.Client
 	SE            meilisearch.ServiceManager
 	CUD_CONSUMER  *mb_cud_consumer.Consumer
+	HDB           *gocql.Session
 }
 
 func Getenvi(key, fallback string) string {
@@ -70,11 +71,14 @@ func Run() {
 		RMQ_PASS:           Getenvi("RMQ_PASS", "NIL"),
 		RMQ_PORT:           Getenvi("RMQ_PORT", "NIL"),
 		RMQ_NOTIF_EXCHANGE: Getenvi("RMQ_NOTIF_EXCHANGE", "NIL"),
+		CASS_KEYSPACE:      Getenvi("CASS_KEYSPACE", "NIL"),
+		CASS_USER:          Getenvi("CASS_USER", "NIL"),
+		CASS_PASS:          Getenvi("CASS_PASS", "NIL"),
+		CASS_PORT:          Getenvi("CASS_PORT", "NIL"),
 	}
 
 	// init connection
-	conn.DB, conn.RDSENTITY, conn.RDSBARANG, conn.RDSENGAGEMENT, conn.SE, conn.CUD_CONSUMER =
-		env.RunConnectionEnvironment()
+	conn.DB, conn.RDSENTITY, conn.RDSBARANG, conn.RDSENGAGEMENT, conn.SE, conn.CUD_CONSUMER, conn.HDB = env.RunConnectionEnvironment()
 
 	var wg sync.WaitGroup
 

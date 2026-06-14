@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"github.com/meilisearch/meilisearch-go"
 	"github.com/rabbitmq/amqp091-go"
 	"github.com/redis/go-redis/v9"
@@ -31,6 +32,7 @@ type Environment struct {
 	MEILIHOST, MEILIKEY, MEILIPORT                   string
 	RMQ_HOST, RMQ_USER, RMQ_PASS, EXCHANGE, RMQ_PORT string
 	RMQ_NOTIF_EXCHANGE                               string
+	CASS_KEYSPACE, CASS_USER, CASS_PASS, CASS_PORT   string
 }
 
 func (e *Environment) RunConnectionEnvironment() (
@@ -40,6 +42,7 @@ func (e *Environment) RunConnectionEnvironment() (
 	redis_engagement *redis.Client,
 	search_engine meilisearch.ServiceManager,
 	cud_consumer *mb_cud_consumer.Consumer,
+	cass_session *gocql.Session,
 ) {
 
 	dsn := fmt.Sprintf(
@@ -180,6 +183,25 @@ func (e *Environment) RunConnectionEnvironment() (
 	}
 
 	log.Printf("✅ Sortable attributes berhasil di-update! Task UID: %d\n", task4.TaskUID)
+
+	cluster := gocql.NewCluster(fmt.Sprintf("127.0.0.1:%s", e.CASS_PORT))
+	cluster.Keyspace = e.CASS_KEYSPACE
+	cluster.ReconnectionPolicy = &gocql.ExponentialReconnectionPolicy{
+		MaxRetries:      8,                // 9 total percobaan (0s, 1s, 2s, 4s, 8s, 16s, 30s, 30s, 30s)
+		InitialInterval: 1 * time.Second,  // Dimulai pada 1 detik
+		MaxInterval:     30 * time.Second, // Membatasi pertumbuhan eksponensial hingga 30 detik
+	}
+	cluster.Authenticator = gocql.PasswordAuthenticator{
+		Username: e.CASS_USER,
+		Password: e.CASS_PASS,
+	}
+
+	cass_session, err = cluster.CreateSession()
+	if err != nil {
+		log.Fatal("gagal membuat session dengan cassandra", err)
+	} else {
+		fmt.Println("berhasil terhubung ke cassandra")
+	}
 
 	return
 }
