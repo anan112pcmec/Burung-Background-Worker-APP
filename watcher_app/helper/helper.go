@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"reflect"
+	"strings"
 
 	"github.com/rabbitmq/amqp091-go"
 
@@ -65,4 +67,35 @@ func DecodeJSONBody(data mb_cud_serializer.ParsedDataMessage, dst interface{}) e
 	}
 
 	return nil
+}
+
+func StructToJSONMap(v interface{}) map[string]interface{} {
+	result := make(map[string]interface{})
+
+	val := reflect.ValueOf(v)
+	if val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+
+	typ := val.Type()
+
+	for i := 0; i < val.NumField(); i++ {
+		field := typ.Field(i)
+
+		// ambil tag json
+		jsonTag := field.Tag.Get("json")
+		if jsonTag == "" || jsonTag == "-" {
+			continue
+		}
+
+		// buang opsi omitempty, dll
+		jsonKey := strings.Split(jsonTag, ",")[0]
+		if jsonKey == "" {
+			continue
+		}
+
+		result[jsonKey] = val.Field(i).Interface()
+	}
+
+	return result
 }
