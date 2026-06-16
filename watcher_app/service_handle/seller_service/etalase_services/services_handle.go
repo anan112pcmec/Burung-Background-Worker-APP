@@ -3,13 +3,13 @@ package etalase_seller_handle
 import (
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 )
 
 func CreateTambahEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Etalase
+	var Objek sot_models.Etalase
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -19,7 +19,7 @@ func CreateTambahEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func UpdateEditEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Etalase
+	var Objek sot_models.Etalase
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -29,7 +29,7 @@ func UpdateEditEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func DeleteHapusEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Etalase
+	var Objek sot_models.Etalase
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -39,7 +39,7 @@ func DeleteHapusEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func CreateTambahkanBarangKeEtalase(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BarangKeEtalase
+	var Objek sot_models.BarangKeEtalase
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -49,7 +49,7 @@ func CreateTambahkanBarangKeEtalase(Data mb_cud_serializer.ParsedDataMessage) er
 }
 
 func DeleteHapusBarangDariEtalase(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BarangKeEtalase
+	var Objek sot_models.BarangKeEtalase
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {

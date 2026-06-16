@@ -4,15 +4,16 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	sot_threshold_seeders_nama "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/threshold/seeders/nama_threshold"
 	"gorm.io/gorm"
+
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_threshold_seeders_nama "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/threshold/seeders/nama_threshold"
 )
 
 type BrandDataThreshold struct {
-	ID          int64            `gorm:"primaryKey;autoIncrement" json:"id_brand_data_threshold"`
-	IdBrandData int64            `gorm:"column:id_brand_data;index;not null" json:"id_brand_data"`
-	BrandData   models.BrandData `gorm:"foreignKey:IdBrandData;references:ID" json:"-"`
+	ID          int64                `gorm:"primaryKey;autoIncrement" json:"id_brand_data_threshold"`
+	IdBrandData int64                `gorm:"column:id_brand_data;index;not null" json:"id_brand_data"`
+	BrandData   sot_models.BrandData `gorm:"foreignKey:IdBrandData;references:ID" json:"-"`
 
 	MediaBrandDataLogoBrandFoto         int32 `gorm:"column:media_brand_data_logo_brand_foto;type:int4;default:0" json:"media_brand_data_logo_brand_foto"`
 	MediaBrandDataNibFoto               int32 `gorm:"column:media_brand_data_nib_foto;type:int4;default:0" json:"media_brand_data_nib_foto"`
@@ -109,9 +110,9 @@ func (b *BrandDataThreshold) CustomDecrement(ctx context.Context, db *gorm.DB, k
 }
 
 type DistributorDataThreshold struct {
-	ID                int64                  `gorm:"primaryKey;autoIncrement" json:"id_distributor_data_threshold"`
-	IdDistributorData int64                  `gorm:"column:id_distributor_data;index;not null" json:"id_distributor_data"`
-	DistributorData   models.DistributorData `gorm:"foreignKey:IdDistributorData;references:ID" json:"-"`
+	ID                int64                      `gorm:"primaryKey;autoIncrement" json:"id_distributor_data_threshold"`
+	IdDistributorData int64                      `gorm:"column:id_distributor_data;index;not null" json:"id_distributor_data"`
+	DistributorData   sot_models.DistributorData `gorm:"foreignKey:IdDistributorData;references:ID" json:"-"`
 
 	MediaDistributorDataDokumen               int32 `gorm:"column:media_distributor_data_dokumen;type:int4;default:0" json:"media_distributor_data_dokumen"`
 	MediaDistributorDataNibFoto               int32 `gorm:"column:media_distributor_data_nib_foto;type:int4;default:0" json:"media_distributor_data_nib_foto"`
@@ -207,9 +208,9 @@ func (d *DistributorDataThreshold) CustomDecrement(ctx context.Context, db *gorm
 
 // 13. EtalaseThreshold
 type EtalaseThreshold struct {
-	ID        int64          `gorm:"primaryKey;autoIncrement" json:"id_etalase_threshold"`
-	IdEtalase int64          `gorm:"column:id_etalase;index;not null" json:"id_etalase"`
-	Etalase   models.Etalase `gorm:"foreignKey:IdEtalase;references:ID" json:"-"`
+	ID        int64              `gorm:"primaryKey;autoIncrement" json:"id_etalase_threshold"`
+	IdEtalase int64              `gorm:"column:id_etalase;index;not null" json:"id_etalase"`
+	Etalase   sot_models.Etalase `gorm:"foreignKey:IdEtalase;references:ID" json:"-"`
 
 	BarangKeEtalase  int32 `gorm:"column:barang_ke_etalase;type:int4;default:0" json:"barang_ke_etalase"`
 	MediaEtalaseFoto int32 `gorm:"column:media_etalase_foto;type:int4;default:0" json:"media_etalase_foto"`
@@ -303,9 +304,9 @@ func (e *EtalaseThreshold) CustomDecrement(ctx context.Context, db *gorm.DB, kj 
 
 // 14. ReviewThreshold
 type ReviewThreshold struct {
-	ID       int64         `gorm:"primaryKey;autoIncrement" json:"id_review_threshold"`
-	IdReview int64         `gorm:"column:id_review;index;not null" json:"id_review"`
-	Review   models.Review `gorm:"foreignKey:IdReview;references:ID" json:"-"`
+	ID       int64             `gorm:"primaryKey;autoIncrement" json:"id_review_threshold"`
+	IdReview int64             `gorm:"column:id_review;index;not null" json:"id_review"`
+	Review   sot_models.Review `gorm:"foreignKey:IdReview;references:ID" json:"-"`
 
 	MediaReviewFoto  int32 `gorm:"column:media_review_foto;type:int4;default:0" json:"media_review_foto"`
 	MediaReviewVideo int32 `gorm:"column:media_review_video;type:int4;default:0" json:"media_review_video"`
@@ -401,9 +402,9 @@ func (r *ReviewThreshold) CustomDecrement(ctx context.Context, db *gorm.DB, kj [
 
 // 15. InformasiKendaraanKurirThreshold
 type InformasiKendaraanKurirThreshold struct {
-	ID                        int64                          `gorm:"primaryKey;autoIncrement" json:"id_informasi_kendaraan_kurir_threshold"`
-	IdInformasiKendaraanKurir int64                          `gorm:"column:id_informasi_kendaraan_kurir;index;not null" json:"id_informasi_kendaraan_kurir"`
-	InformasiKendaraanKurir   models.InformasiKendaraanKurir `gorm:"foreignKey:IdInformasiKendaraanKurir;references:ID" json:"-"`
+	ID                        int64                              `gorm:"primaryKey;autoIncrement" json:"id_informasi_kendaraan_kurir_threshold"`
+	IdInformasiKendaraanKurir int64                              `gorm:"column:id_informasi_kendaraan_kurir;index;not null" json:"id_informasi_kendaraan_kurir"`
+	InformasiKendaraanKurir   sot_models.InformasiKendaraanKurir `gorm:"foreignKey:IdInformasiKendaraanKurir;references:ID" json:"-"`
 
 	MediaBpkbFoto      int32 `gorm:"column:media_informasi_kendaraan_kurir_bpkb_foto;type:int4;default:0" json:"media_informasi_kendaraan_kurir_bpkb_foto"`
 	MediaKendaraanFoto int32 `gorm:"column:media_informasi_kendaraan_kurir_kendaraan_foto;type:int4;default:0" json:"media_informasi_kendaraan_kurir_kendaraan_foto"`
@@ -498,9 +499,9 @@ func (i *InformasiKendaraanKurirThreshold) CustomDecrement(ctx context.Context, 
 
 // 16. BidKurirDataThreshold
 type BidKurirDataThreshold struct {
-	ID             int64               `gorm:"primaryKey;autoIncrement" json:"id_bid_kurir_data_threshold"`
-	IdBidKurirData int64               `gorm:"column:id_bid_kurir_data;index;not null" json:"id_bid_kurir_data"`
-	BidKurirData   models.BidKurirData `gorm:"foreignKey:IdBidKurirData;references:ID" json:"-"`
+	ID             int64                   `gorm:"primaryKey;autoIncrement" json:"id_bid_kurir_data_threshold"`
+	IdBidKurirData int64                   `gorm:"column:id_bid_kurir_data;index;not null" json:"id_bid_kurir_data"`
+	BidKurirData   sot_models.BidKurirData `gorm:"foreignKey:IdBidKurirData;references:ID" json:"-"`
 
 	BidKurirEksScheduler    int32 `gorm:"column:bid_kurir_eks_scheduler;type:int4;default:0" json:"bid_kurir_eks_scheduler"`
 	BidKurirNonEksScheduler int32 `gorm:"column:bid_kurir_non_eks_scheduler;type:int4;default:0" json:"bid_kurir_non_eks_scheduler"`
@@ -594,9 +595,9 @@ func (b *BidKurirDataThreshold) CustomDecrement(ctx context.Context, db *gorm.DB
 
 // 17. DiskonProdukThreshold
 type DiskonProdukThreshold struct {
-	ID             int64               `gorm:"primaryKey;autoIncrement" json:"id_diskon_produk_threshold"`
-	IdDiskonProduk int64               `gorm:"column:id_diskon_produk;index;not null" json:"id_diskon_produk"`
-	DiskonProduk   models.DiskonProduk `gorm:"foreignKey:IdDiskonProduk;references:ID" json:"-"`
+	ID             int64                   `gorm:"primaryKey;autoIncrement" json:"id_diskon_produk_threshold"`
+	IdDiskonProduk int64                   `gorm:"column:id_diskon_produk;index;not null" json:"id_diskon_produk"`
+	DiskonProduk   sot_models.DiskonProduk `gorm:"foreignKey:IdDiskonProduk;references:ID" json:"-"`
 
 	BarangDiDiskon int32 `gorm:"column:barang_di_diskon;type:int4;default:0" json:"barang_di_diskon"`
 }
@@ -689,9 +690,9 @@ func (d *DiskonProdukThreshold) CustomDecrement(ctx context.Context, db *gorm.DB
 
 // 18. KomentarThreshold
 type KomentarThreshold struct {
-	ID         int64           `gorm:"primaryKey;autoIncrement" json:"id_komentar_threshold"`
-	IdKomentar int64           `gorm:"column:id_komentar;index;not null" json:"id_komentar"`
-	Komentar   models.Komentar `gorm:"foreignKey:IdKomentar;references:ID" json:"-"`
+	ID         int64               `gorm:"primaryKey;autoIncrement" json:"id_komentar_threshold"`
+	IdKomentar int64               `gorm:"column:id_komentar;index;not null" json:"id_komentar"`
+	Komentar   sot_models.Komentar `gorm:"foreignKey:IdKomentar;references:ID" json:"-"`
 
 	KomentarChild int32 `gorm:"column:komentar_child;type:int4;default:0" json:"komentar_child"`
 }
@@ -784,9 +785,9 @@ func (k *KomentarThreshold) CustomDecrement(ctx context.Context, db *gorm.DB, kj
 
 // 19. InformasiKurirThreshold
 type InformasiKurirThreshold struct {
-	ID               int64                 `gorm:"primaryKey;autoIncrement" json:"id_informasi_kurir_threshold"`
-	IdInformasiKurir int64                 `gorm:"column:id_informasi_kurir;index;not null" json:"id_informasi_kurir"`
-	InformasiKurir   models.InformasiKurir `gorm:"foreignKey:IdInformasiKurir;references:ID" json:"-"`
+	ID               int64                     `gorm:"primaryKey;autoIncrement" json:"id_informasi_kurir_threshold"`
+	IdInformasiKurir int64                     `gorm:"column:id_informasi_kurir;index;not null" json:"id_informasi_kurir"`
+	InformasiKurir   sot_models.InformasiKurir `gorm:"foreignKey:IdInformasiKurir;references:ID" json:"-"`
 
 	MediaKtpFoto int32 `gorm:"column:media_informasi_kurir_ktp_foto;type:int4;default:0" json:"media_informasi_kurir_ktp_foto"`
 }
@@ -881,9 +882,9 @@ func (i *InformasiKurirThreshold) CustomDecrement(ctx context.Context, db *gorm.
 
 // 21. RekeningSellerThreshold
 type RekeningSellerThreshold struct {
-	ID               int64                 `gorm:"primaryKey;autoIncrement" json:"id_rekening_seller_threshold"`
-	IdRekeningSeller int64                 `gorm:"column:id_rekening_seller;index;not null" json:"id_rekening_seller"`
-	RekeningSeller   models.RekeningSeller `gorm:"foreignKey:IdRekeningSeller;references:ID" json:"-"`
+	ID               int64                     `gorm:"primaryKey;autoIncrement" json:"id_rekening_seller_threshold"`
+	IdRekeningSeller int64                     `gorm:"column:id_rekening_seller;index;not null" json:"id_rekening_seller"`
+	RekeningSeller   sot_models.RekeningSeller `gorm:"foreignKey:IdRekeningSeller;references:ID" json:"-"`
 
 	KategoriBarang int32 `gorm:"column:kategori_barang;type:int4;default:0" json:"kategori_barang"`
 }
@@ -975,9 +976,9 @@ func (r *RekeningSellerThreshold) CustomDecrement(ctx context.Context, db *gorm.
 }
 
 type AlamatGudangThreshold struct {
-	ID             int64               `gorm:"primaryKey;autoIncrement" json:"id_alamat_gudang_threshold"`
-	IdAlamatGudang int64               `gorm:"column:id_alamat_gudang;index;not null" json:"id_alamat_gudang"`
-	AlamatGudang   models.AlamatGudang `gorm:"foreignKey:IdAlamatGudang;references:ID" json:"-"`
+	ID             int64                   `gorm:"primaryKey;autoIncrement" json:"id_alamat_gudang_threshold"`
+	IdAlamatGudang int64                   `gorm:"column:id_alamat_gudang;index;not null" json:"id_alamat_gudang"`
+	AlamatGudang   sot_models.AlamatGudang `gorm:"foreignKey:IdAlamatGudang;references:ID" json:"-"`
 
 	KategoriBarang      int32 `gorm:"column:kategori_barang;type:int4;default:0" json:"kategori_barang"`
 	Pengiriman          int32 `gorm:"column:pengiriman;type:int4;default:0" json:"pengiriman"`
@@ -1072,9 +1073,9 @@ func (a AlamatGudangThreshold) CustomDecrement(id_fk int64, ctx context.Context,
 }
 
 type AlamatPenggunaThreshold struct {
-	ID               int64                 `gorm:"primaryKey;autoIncrement" json:"id_alamat_pengguna_threshold"`
-	IdAlamatPengguna int64                 `gorm:"column:id_alamat_pengguna;index;not null" json:"id_alamat_pengguna"`
-	AlamatPengguna   models.AlamatPengguna `gorm:"foreignKey:IdAlamatPengguna;references:ID" json:"-"`
+	ID               int64                     `gorm:"primaryKey;autoIncrement" json:"id_alamat_pengguna_threshold"`
+	IdAlamatPengguna int64                     `gorm:"column:id_alamat_pengguna;index;not null" json:"id_alamat_pengguna"`
+	AlamatPengguna   sot_models.AlamatPengguna `gorm:"foreignKey:IdAlamatPengguna;references:ID" json:"-"`
 
 	Pengiriman int32 `gorm:"column:pengiriman;type:int4;default:0" json:"pengiriman"`
 	Transaksi  int32 `gorm:"column:transaksi;type:int4;default:0" json:"transaksi"`
@@ -1168,9 +1169,9 @@ func (a *AlamatPenggunaThreshold) CustomDecrement(ctx context.Context, db *gorm.
 
 // 22. AlamatEkspedisiThreshold
 type AlamatEkspedisiThreshold struct {
-	ID                int64                  `gorm:"primaryKey;autoIncrement" json:"id_alamat_ekspedisi_threshold"`
-	IdAlamatEkspedisi int64                  `gorm:"column:id_alamat_ekspedisi;index;not null" json:"id_alamat_ekspedisi"`
-	AlamatEkspedisi   models.AlamatEkspedisi `gorm:"foreignKey:IdAlamatEkspedisi;references:ID" json:"-"`
+	ID                int64                      `gorm:"primaryKey;autoIncrement" json:"id_alamat_ekspedisi_threshold"`
+	IdAlamatEkspedisi int64                      `gorm:"column:id_alamat_ekspedisi;index;not null" json:"id_alamat_ekspedisi"`
+	AlamatEkspedisi   sot_models.AlamatEkspedisi `gorm:"foreignKey:IdAlamatEkspedisi;references:ID" json:"-"`
 
 	PengirimanEkspedisi int32 `gorm:"column:pengiriman_ekspedisi;type:int4;default:0" json:"pengiriman_ekspedisi"`
 }

@@ -3,13 +3,13 @@ package informasi_kurir_handle
 import (
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 )
 
 func CreateAjukanInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.InformasiKendaraanKurir
+	var Objek sot_models.InformasiKendaraanKurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -20,7 +20,7 @@ func CreateAjukanInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage) er
 }
 
 func UpdateEditInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.InformasiKendaraanKurir
+	var Objek sot_models.InformasiKendaraanKurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -31,7 +31,7 @@ func UpdateEditInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage) erro
 }
 
 func CreateAjukanInformasiKurir(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.InformasiKurir
+	var Objek sot_models.InformasiKurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -42,7 +42,7 @@ func CreateAjukanInformasiKurir(Data mb_cud_serializer.ParsedDataMessage) error 
 }
 
 func UpdateEditInformasiKurir(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.InformasiKurir
+	var Objek sot_models.InformasiKurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")

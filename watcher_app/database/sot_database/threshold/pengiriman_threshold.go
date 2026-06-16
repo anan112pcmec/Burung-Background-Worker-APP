@@ -6,14 +6,14 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	sot_threshold_seeders_nama "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/threshold/seeders/nama_threshold"
 )
 
 type PengirimanEkspedisiThreshold struct {
-	ID                    int64                      `gorm:"primaryKey;autoIncrement" json:"id_pengiriman_ekspedisi_threshold"`
-	IdPengirimanEkspedisi int64                      `gorm:"column:id_pengiriman_ekspedisi;index;not null" json:"id_pengiriman_ekspedisi"`
-	PengirimanEkspedisi   models.PengirimanEkspedisi `gorm:"foreignKey:IdPengirimanEkspedisi;references:ID" json:"-"`
+	ID                    int64                          `gorm:"primaryKey;autoIncrement" json:"id_pengiriman_ekspedisi_threshold"`
+	IdPengirimanEkspedisi int64                          `gorm:"column:id_pengiriman_ekspedisi;index;not null" json:"id_pengiriman_ekspedisi"`
+	PengirimanEkspedisi   sot_models.PengirimanEkspedisi `gorm:"foreignKey:IdPengirimanEkspedisi;references:ID" json:"-"`
 
 	BidKurirEksScheduler                    int32 `gorm:"column:bid_kurir_eks_scheduler;type:int4;default:0" json:"bid_kurir_eks_scheduler"`
 	MediaPengirimanEkspedisiPickedUpFoto    int32 `gorm:"column:media_pengiriman_ekspedisi_picked_up_foto;type:int4;default:0" json:"media_pengiriman_ekspedisi_picked_up_foto"`
@@ -107,9 +107,9 @@ func (p *PengirimanEkspedisiThreshold) CustomDecrement(ctx context.Context, db *
 }
 
 type PengirimanNonEkspedisiThreshold struct {
-	ID           int64             `gorm:"primaryKey;autoIncrement" json:"id_pengiriman_non_ekspedisi_threshold"`
-	IdPengiriman int64             `gorm:"column:id_pengiriman;index;not null" json:"id_pengiriman"`
-	Pengiriman   models.Pengiriman `gorm:"foreignKey:IdPengiriman;references:ID" json:"-"`
+	ID           int64                 `gorm:"primaryKey;autoIncrement" json:"id_pengiriman_non_ekspedisi_threshold"`
+	IdPengiriman int64                 `gorm:"column:id_pengiriman;index;not null" json:"id_pengiriman"`
+	Pengiriman   sot_models.Pengiriman `gorm:"foreignKey:IdPengiriman;references:ID" json:"-"`
 
 	BidKurirNonEksScheduler     int32 `gorm:"column:bid_kurir_non_eks_scheduler;type:int4;default:0" json:"bid_kurir_non_eks_scheduler"`
 	MediaPengirimanPickedUpFoto int32 `gorm:"column:media_pengiriman_picked_up_foto;type:int4;default:0" json:"media_pengiriman_picked_up_foto"`

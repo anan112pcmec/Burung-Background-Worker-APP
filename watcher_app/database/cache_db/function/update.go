@@ -1,4 +1,4 @@
-package session_cache_db
+package cache_db_function
 
 import (
 	"context"
@@ -7,11 +7,12 @@ import (
 
 	"github.com/redis/go-redis/v9"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	session_cache_db "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/session"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 )
 
-func UpdateSessionData[T models.Pengguna | models.Seller | models.Kurir](ctx context.Context, rds_session redis.Client, key_session string, data T) error {
+func UpdateSessionData[T sot_models.Pengguna | sot_models.Seller | sot_models.Kurir](ctx context.Context, rds_session redis.Client, key_session string, data T) error {
 	fctx, cancel := context.WithTimeout(ctx, 6*time.Second)
 	defer cancel()
 
@@ -24,23 +25,23 @@ func UpdateSessionData[T models.Pengguna | models.Seller | models.Kurir](ctx con
 	var keyz string
 
 	switch v := any(data).(type) {
-	case models.Pengguna:
+	case sot_models.Pengguna:
 		fields = helper.StructToJSONMap(v)
-		if err, key := GetSessionKey(&v); err != nil {
+		if err, key := session_cache_db.GetSessionKey(&v); err != nil {
 			return err
 		} else {
 			keyz = key
 		}
-	case models.Seller:
+	case sot_models.Seller:
 		fields = helper.StructToJSONMap(v)
-		if err, key := GetSessionKey(&v); err != nil {
+		if err, key := session_cache_db.GetSessionKey(&v); err != nil {
 			return err
 		} else {
 			keyz = key
 		}
-	case models.Kurir:
+	case sot_models.Kurir:
 		fields = helper.StructToJSONMap(v)
-		if err, key := GetSessionKey(&v); err != nil {
+		if err, key := session_cache_db.GetSessionKey(&v); err != nil {
 			return err
 		} else {
 			keyz = key

@@ -3,7 +3,7 @@ package consume_kurir_dispatcher
 import (
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	auth_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/auth"
 	alamat_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/alamat_services"
@@ -26,51 +26,51 @@ func KurirCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 	}
 
 	switch d.TableName {
-	case models.Kurir{}.TableName():
+	case sot_models.Kurir{}.TableName():
 		if err := auth_handle.CreateValidateKurirRegistration(d); err != nil {
 			return err
 		}
-	case models.AlamatKurir{}.TableName():
+	case sot_models.AlamatKurir{}.TableName():
 		if err := alamat_kurir_handle.CreateMasukanAlamatKurir(d); err != nil {
 			return err
 		}
-	case models.InformasiKendaraanKurir{}.TableName():
+	case sot_models.InformasiKendaraanKurir{}.TableName():
 		if err := informasi_kurir_handle.CreateAjukanInformasiKendaraan(d); err != nil {
 			return err
 		}
-	case models.InformasiKurir{}.TableName():
+	case sot_models.InformasiKurir{}.TableName():
 		if err := informasi_kurir_handle.CreateAjukanInformasiKurir(d); err != nil {
 			return err
 		}
-	case models.MediaInformasiKendaraanKurirKendaraanFoto{}.TableName():
+	case sot_models.MediaInformasiKendaraanKurirKendaraanFoto{}.TableName():
 		if err := media_kurir_handle.CreateTambahMediaInformasiKendaraanKurirKendaraanFoto(d); err != nil {
 			return err
 		}
-	case models.MediaInformasiKendaraanKurirBPKBFoto{}.TableName():
+	case sot_models.MediaInformasiKendaraanKurirBPKBFoto{}.TableName():
 		if err := media_kurir_handle.CreateTambahInformasiKendaraanKurirBPKBFoto(d); err != nil {
 			return err
 		}
-	case models.MediaInformasiKendaraanKurirSTNKFoto{}.TableName():
+	case sot_models.MediaInformasiKendaraanKurirSTNKFoto{}.TableName():
 		if err := media_kurir_handle.CreateTambahInformasiKendaraanKurirSTNKFoto(d); err != nil {
 			return err
 		}
-	case models.MediaInformasiKurirKTPFoto{}.TableName():
+	case sot_models.MediaInformasiKurirKTPFoto{}.TableName():
 		if err := media_kurir_handle.CreateTambahMediaInformasiKurirKTPFoto(d); err != nil {
 			return err
 		}
-	case models.MediaPengirimanPickedUpFoto{}.TableName():
+	case sot_models.MediaPengirimanPickedUpFoto{}.TableName():
 		if err := media_kurir_handle.CreateTambahMediaPengirimanPickedUpFoto(d); err != nil {
 			return err
 		}
-	case models.MediaPengirimanSampaiFoto{}.TableName():
+	case sot_models.MediaPengirimanSampaiFoto{}.TableName():
 		if err := media_kurir_handle.CreateTambahMediaPengirimanSampaiFoto(d); err != nil {
 			return err
 		}
-	case models.MediaPengirimanEkspedisiPickedUpFoto{}.TableName():
+	case sot_models.MediaPengirimanEkspedisiPickedUpFoto{}.TableName():
 		if err := media_kurir_handle.CreateTambahMediaPengirimanEkspedisiPickedUpFoto(d); err != nil {
 			return err
 		}
-	case models.MediaPengirimanEkspedisiSampaiAgentFoto{}.TableName():
+	case sot_models.MediaPengirimanEkspedisiSampaiAgentFoto{}.TableName():
 		if err := media_kurir_handle.CreateTambahMediaPengirimanEkspedisiSampaiAgentFoto(d); err != nil {
 			return err
 		}
@@ -102,11 +102,11 @@ func KurirCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 		if err := pengiriman_kurir_handle.CreateSampaiPengirimanEksIIpayOutKurirEksCreatePublish(d); err != nil {
 			return err
 		}
-	case models.RekeningKurir{}.TableName():
+	case sot_models.RekeningKurir{}.TableName():
 		if err := rekening_kurir_handle.CreateMasukanRekeningKurir(d); err != nil {
 			return err
 		}
-	case models.EntitySocialMedia{}.TableName():
+	case sot_models.EntitySocialMedia{}.TableName():
 		if err := social_media_kurir_handle.CreateEngagementSocialMediaKurir(d); err != nil {
 			return err
 		}

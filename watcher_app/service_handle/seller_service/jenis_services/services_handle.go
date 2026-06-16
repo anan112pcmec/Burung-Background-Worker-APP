@@ -3,13 +3,13 @@ package jenis_seller_handle
 import (
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 )
 
 func CreateMasukanDataDistributor(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.DistributorData
+	var Objek sot_models.DistributorData
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -19,7 +19,7 @@ func CreateMasukanDataDistributor(Data mb_cud_serializer.ParsedDataMessage) erro
 }
 
 func UpdateEditDataDistributor(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.DistributorData
+	var Objek sot_models.DistributorData
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -29,7 +29,7 @@ func UpdateEditDataDistributor(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func DeleteHapusDataDistributor(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.DistributorData
+	var Objek sot_models.DistributorData
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -39,7 +39,7 @@ func DeleteHapusDataDistributor(Data mb_cud_serializer.ParsedDataMessage) error 
 }
 
 func CreateMasukanDataBrand(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BrandData
+	var Objek sot_models.BrandData
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -49,7 +49,7 @@ func CreateMasukanDataBrand(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func UpdateEditDataBrand(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BrandData
+	var Objek sot_models.BrandData
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -59,7 +59,7 @@ func UpdateEditDataBrand(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func DeleteHapusDataBrand(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BrandData
+	var Objek sot_models.BrandData
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {

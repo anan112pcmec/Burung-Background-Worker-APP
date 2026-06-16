@@ -3,7 +3,7 @@ package consume_kurir_dispatcher
 import (
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	alamat_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/alamat_services"
 	media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/media_services"
@@ -24,27 +24,27 @@ func KurirDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 	}
 
 	switch d.TableName {
-	case models.AlamatKurir{}.TableName():
+	case sot_models.AlamatKurir{}.TableName():
 		if err := alamat_kurir_handle.DeleteHapusAlamatKurir(d); err != nil {
 			return err
 		}
-	case models.MediaKurirProfilFoto{}.TableName():
+	case sot_models.MediaKurirProfilFoto{}.TableName():
 		if err := media_kurir_handle.DeleteHapusKurirProfilFoto(d); err != nil {
 			return err
 		}
-	case models.MediaInformasiKendaraanKurirKendaraanFoto{}.TableName():
+	case sot_models.MediaInformasiKendaraanKurirKendaraanFoto{}.TableName():
 		if err := media_kurir_handle.DeleteHapusMediaInformasiKendaraanKurirKendaraanFoto(d); err != nil {
 			return err
 		}
-	case models.MediaInformasiKendaraanKurirBPKBFoto{}.TableName():
+	case sot_models.MediaInformasiKendaraanKurirBPKBFoto{}.TableName():
 		if err := media_kurir_handle.DeleteHapusInformasiKendaraanKurirBPKBFoto(d); err != nil {
 			return err
 		}
-	case models.MediaInformasiKendaraanKurirSTNKFoto{}.TableName():
+	case sot_models.MediaInformasiKendaraanKurirSTNKFoto{}.TableName():
 		if err := media_kurir_handle.DeleteHapusInformasiKendaraanKurirSTNKFoto(d); err != nil {
 			return err
 		}
-	case models.MediaInformasiKurirKTPFoto{}.TableName():
+	case sot_models.MediaInformasiKurirKTPFoto{}.TableName():
 		if err := media_kurir_handle.DeleteHapusMediaInformasiKurirKTPFoto(d); err != nil {
 			return err
 		}
@@ -60,7 +60,7 @@ func KurirDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 		if err := pengiriman_kurir_handle.DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(d); err != nil {
 			return err
 		}
-	case models.RekeningKurir{}.TableName():
+	case sot_models.RekeningKurir{}.TableName():
 		if err := rekening_kurir_handle.DeleteHapusRekeningKurir(d); err != nil {
 			return err
 		}

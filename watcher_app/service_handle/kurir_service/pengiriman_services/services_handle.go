@@ -3,13 +3,13 @@ package pengiriman_kurir_handle
 import (
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 )
 
 func CreateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirData
+	var Objek sot_models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -20,7 +20,7 @@ func CreateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func UpdateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Kurir
+	var Objek sot_models.Kurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -31,7 +31,7 @@ func UpdateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func UpdateUpdatePosisiBidKurir(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirData
+	var Objek sot_models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -42,7 +42,7 @@ func UpdateUpdatePosisiBidKurir(Data mb_cud_serializer.ParsedDataMessage) error 
 }
 
 func CreateAmbilPengirimanNonEksManualRegulerIIBidKurirNonEksSchedulerCreatePublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirNonEksScheduler
+	var Objek sot_models.BidKurirNonEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -53,7 +53,7 @@ func CreateAmbilPengirimanNonEksManualRegulerIIBidKurirNonEksSchedulerCreatePubl
 }
 
 func UpdateAmbilPengirimanNonEksManualRegulerIIpengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Pengiriman
+	var Objek sot_models.Pengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -64,7 +64,7 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIpengirimanUpdatedPublish(Data mb_
 }
 
 func UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataAmbilPengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirData
+	var Objek sot_models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -75,7 +75,7 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataAmbilPengirimanUpdate
 }
 
 func UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataStatusUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirData
+	var Objek sot_models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -86,7 +86,7 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataStatusUpdatedPublish(
 }
 
 func CreateAmbilPengirimanEksManualRegulerIIbidKurirEksSchedulerCreatePublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirEksScheduler
+	var Objek sot_models.BidKurirEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -97,7 +97,7 @@ func CreateAmbilPengirimanEksManualRegulerIIbidKurirEksSchedulerCreatePublish(Da
 }
 
 func UpdateAmbilPengirimanEksManualRegulerIIpengirimanEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Pengiriman
+	var Objek sot_models.Pengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -108,7 +108,7 @@ func UpdateAmbilPengirimanEksManualRegulerIIpengirimanEksUpdatedPublish(Data mb_
 }
 
 func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirData
+	var Objek sot_models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -119,7 +119,7 @@ func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataUpdatedPublish(Data mb_c
 }
 
 func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataAmbilPengirimanEksStatusUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirData
+	var Objek sot_models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -130,7 +130,7 @@ func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataAmbilPengirimanEksStatus
 }
 
 func UpdateLockSiapAntarBidKurirIIEksScheduler(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirEksScheduler
+	var Objek sot_models.BidKurirEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -141,7 +141,7 @@ func UpdateLockSiapAntarBidKurirIIEksScheduler(Data mb_cud_serializer.ParsedData
 }
 
 func UpdateLockSiapAntarBidKurirIINonEksScheduler(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirNonEksScheduler
+	var Objek sot_models.BidKurirNonEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -152,7 +152,7 @@ func UpdateLockSiapAntarBidKurirIINonEksScheduler(Data mb_cud_serializer.ParsedD
 }
 
 func UpdateLockSiapAntarBidKurirIIbidKurirDataLockSiapAntarUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirData
+	var Objek sot_models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -163,7 +163,7 @@ func UpdateLockSiapAntarBidKurirIIbidKurirDataLockSiapAntarUpdatedPublish(Data m
 }
 
 func UpdateLockSiapAntarBidKurirIIkurirLockSiapAntarUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Kurir
+	var Objek sot_models.Kurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -174,7 +174,7 @@ func UpdateLockSiapAntarBidKurirIIkurirLockSiapAntarUpdatedPublish(Data mb_cud_s
 }
 
 func CreatePickedUpPengirimanNonEksIIjejakPengirimanCreatePublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.JejakPengiriman
+	var Objek sot_models.JejakPengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -185,7 +185,7 @@ func CreatePickedUpPengirimanNonEksIIjejakPengirimanCreatePublish(Data mb_cud_se
 }
 
 func UpdatePickedUpPengirimanNonEksIIschedulerPickedUpNonEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirNonEksScheduler
+	var Objek sot_models.BidKurirNonEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -196,7 +196,7 @@ func UpdatePickedUpPengirimanNonEksIIschedulerPickedUpNonEksUpdatedPublish(Data 
 }
 
 func UpdatedPickedUpPengirimanNonEksIIpengirimanPickedUpNonEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Pengiriman
+	var Objek sot_models.Pengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -207,7 +207,7 @@ func UpdatedPickedUpPengirimanNonEksIIpengirimanPickedUpNonEksUpdatedPublish(Dat
 }
 
 func UpdatedPickedUpPengirimanNonEksIItransaksiPickedUpNonEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Transaksi
+	var Objek sot_models.Transaksi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -218,7 +218,7 @@ func UpdatedPickedUpPengirimanNonEksIItransaksiPickedUpNonEksUpdatedPublish(Data
 }
 
 func UpdateKirimPengirimanNonEksIIbidKurirPengirimanNonEksSchedulerUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirNonEksScheduler
+	var Objek sot_models.BidKurirNonEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -229,7 +229,7 @@ func UpdateKirimPengirimanNonEksIIbidKurirPengirimanNonEksSchedulerUpdatedPublis
 }
 
 func UpdateKirimPengirimanNonEksIIpengirimanPengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Pengiriman
+	var Objek sot_models.Pengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -240,7 +240,7 @@ func UpdateKirimPengirimanNonEksIIpengirimanPengirimanUpdatedPublish(Data mb_cud
 }
 
 func UpdateKirimPengirimanNonEksIIjejakpengirimanPengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.JejakPengiriman
+	var Objek sot_models.JejakPengiriman
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
 	}
@@ -250,7 +250,7 @@ func UpdateKirimPengirimanNonEksIIjejakpengirimanPengirimanUpdatedPublish(Data m
 }
 
 func UpdateUpdateInformasiPerjalananPengirimanNonEks(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.JejakPengiriman
+	var Objek sot_models.JejakPengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -261,7 +261,7 @@ func UpdateUpdateInformasiPerjalananPengirimanNonEks(Data mb_cud_serializer.Pars
 }
 
 func DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirNonEksScheduler
+	var Objek sot_models.BidKurirNonEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -272,7 +272,7 @@ func DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(Data mb_cud_seria
 }
 
 func UpdateSampaiPengirimanNonEksIIpengirimanSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Pengiriman
+	var Objek sot_models.Pengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -283,7 +283,7 @@ func UpdateSampaiPengirimanNonEksIIpengirimanSampaiUpdatedPublish(Data mb_cud_se
 }
 
 func UpdateSampaiPengirimanNonEksIIbidKurirDataSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirData
+	var Objek sot_models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -294,7 +294,7 @@ func UpdateSampaiPengirimanNonEksIIbidKurirDataSampaiUpdatedPublish(Data mb_cud_
 }
 
 func UpdateSampaiPengirimanNonEksIIjejakPengirimanSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.JejakPengiriman
+	var Objek sot_models.JejakPengiriman
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -305,7 +305,7 @@ func UpdateSampaiPengirimanNonEksIIjejakPengirimanSampaiUpdatedPublish(Data mb_c
 }
 
 func UpdateSampaiPengirimanNonEksIItransaksiSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Transaksi
+	var Objek sot_models.Transaksi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -316,7 +316,7 @@ func UpdateSampaiPengirimanNonEksIItransaksiSampaiUpdatedPublish(Data mb_cud_ser
 }
 
 func CreateSampaiPengirimanNonEksIIpayOutSellerCreatePublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.PayOutSeller
+	var Objek sot_models.PayOutSeller
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -327,7 +327,7 @@ func CreateSampaiPengirimanNonEksIIpayOutSellerCreatePublish(Data mb_cud_seriali
 }
 
 func CreateSampaiPengirimanNonEksIIpayOutKurirCreatePublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.PayOutKurir
+	var Objek sot_models.PayOutKurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -338,7 +338,7 @@ func CreateSampaiPengirimanNonEksIIpayOutKurirCreatePublish(Data mb_cud_serializ
 }
 
 func CreatePickedUpPengirimanEksIIjejakPengirimanEksCreatePublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.JejakPengirimanEkspedisi
+	var Objek sot_models.JejakPengirimanEkspedisi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -349,7 +349,7 @@ func CreatePickedUpPengirimanEksIIjejakPengirimanEksCreatePublish(Data mb_cud_se
 }
 
 func UpdatePickedUpPengirimanEksIIschedulerEksPickedUpUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirEksScheduler
+	var Objek sot_models.BidKurirEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -360,7 +360,7 @@ func UpdatePickedUpPengirimanEksIIschedulerEksPickedUpUpdatedPublish(Data mb_cud
 }
 
 func UpdatePickedUpPengirimanEksIIpengirimanEksPickedUpUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.PengirimanEkspedisi
+	var Objek sot_models.PengirimanEkspedisi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -371,7 +371,7 @@ func UpdatePickedUpPengirimanEksIIpengirimanEksPickedUpUpdatedPublish(Data mb_cu
 }
 
 func UpdatePickedUpPengirimanEksIItransaksiPickedUpUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Transaksi
+	var Objek sot_models.Transaksi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -382,7 +382,7 @@ func UpdatePickedUpPengirimanEksIItransaksiPickedUpUpdatedPublish(Data mb_cud_se
 }
 
 func UpdateKirimPengirimanEksIIschedulerPengirimanUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirEksScheduler
+	var Objek sot_models.BidKurirEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -393,7 +393,7 @@ func UpdateKirimPengirimanEksIIschedulerPengirimanUpdatedPublish(Data mb_cud_ser
 }
 
 func UpdateKirimPengirimanEksIIpengirimanEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.PengirimanEkspedisi
+	var Objek sot_models.PengirimanEkspedisi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -404,7 +404,7 @@ func UpdateKirimPengirimanEksIIpengirimanEksUpdatedPublish(Data mb_cud_serialize
 }
 
 func UpdateKirimPengirimanEksIIpengirimanPengirimanEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.JejakPengirimanEkspedisi
+	var Objek sot_models.JejakPengirimanEkspedisi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -415,7 +415,7 @@ func UpdateKirimPengirimanEksIIpengirimanPengirimanEksUpdatedPublish(Data mb_cud
 }
 
 func UpdateInformasiPerjalananPengirimanEks(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.JejakPengirimanEkspedisi
+	var Objek sot_models.JejakPengirimanEkspedisi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -426,7 +426,7 @@ func UpdateInformasiPerjalananPengirimanEks(Data mb_cud_serializer.ParsedDataMes
 }
 
 func DeleteSampaipengirimanEksIIbidKurirEksDeletePublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirEksScheduler
+	var Objek sot_models.BidKurirEksScheduler
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -437,7 +437,7 @@ func DeleteSampaipengirimanEksIIbidKurirEksDeletePublish(Data mb_cud_serializer.
 }
 
 func UpdateSampaiPengirimanEksIIpengirimanSampaiEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.PengirimanEkspedisi
+	var Objek sot_models.PengirimanEkspedisi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -448,7 +448,7 @@ func UpdateSampaiPengirimanEksIIpengirimanSampaiEksUpdatedPublish(Data mb_cud_se
 }
 
 func UpdateSampaiPengirimanEksIIbidKurirDataEksSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirData
+	var Objek sot_models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -459,7 +459,7 @@ func UpdateSampaiPengirimanEksIIbidKurirDataEksSampaiUpdatedPublish(Data mb_cud_
 }
 
 func UpdateSampaiPengirimanEksIIjejakPengirimanEksSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.JejakPengirimanEkspedisi
+	var Objek sot_models.JejakPengirimanEkspedisi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -470,7 +470,7 @@ func UpdateSampaiPengirimanEksIIjejakPengirimanEksSampaiUpdatedPublish(Data mb_c
 }
 
 func UpdateSampaiPengirimanEksIItransaksiSampaiEksUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Transaksi
+	var Objek sot_models.Transaksi
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -481,7 +481,7 @@ func UpdateSampaiPengirimanEksIItransaksiSampaiEksUpdatedPublish(Data mb_cud_ser
 }
 
 func CreateSampaiPengirimanEksIIpayOutKurirEksCreatePublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.PayOutKurir
+	var Objek sot_models.PayOutKurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -492,7 +492,7 @@ func CreateSampaiPengirimanEksIIpayOutKurirEksCreatePublish(Data mb_cud_serializ
 }
 
 func UpdateSampaiPengirimanEksIIkurirUpdatedSampaiEksPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Kurir
+	var Objek sot_models.Kurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -503,7 +503,7 @@ func UpdateSampaiPengirimanEksIIkurirUpdatedSampaiEksPublish(Data mb_cud_seriali
 }
 
 func DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BidKurirData
+	var Objek sot_models.BidKurirData
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
@@ -514,7 +514,7 @@ func DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(Data mb_cud_serializer
 }
 
 func UpdateNonaktifkanBidKurirIIkurirNonaktifkanBidUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Kurir
+	var Objek sot_models.Kurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")

@@ -3,14 +3,14 @@ package media_pengguna_handle
 import (
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 )
 
 func UpdateUbahFotoProfilPengguna(Data mb_cud_serializer.ParsedDataMessage) error {
 
-	var Objek models.MediaPenggunaProfilFoto
+	var Objek sot_models.MediaPenggunaProfilFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -22,7 +22,7 @@ func UpdateUbahFotoProfilPengguna(Data mb_cud_serializer.ParsedDataMessage) erro
 
 func DeleteHapusFotoProfilPengguna(Data mb_cud_serializer.ParsedDataMessage) error {
 
-	var Objek models.MediaPenggunaProfilFoto
+	var Objek sot_models.MediaPenggunaProfilFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -34,7 +34,7 @@ func DeleteHapusFotoProfilPengguna(Data mb_cud_serializer.ParsedDataMessage) err
 
 func CreateTambahMediaReviewFoto(Data mb_cud_serializer.ParsedDataMessage) error {
 
-	var Objek models.MediaReviewFoto
+	var Objek sot_models.MediaReviewFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -46,7 +46,7 @@ func CreateTambahMediaReviewFoto(Data mb_cud_serializer.ParsedDataMessage) error
 
 func CreateTambahMediaReviewVideo(Data mb_cud_serializer.ParsedDataMessage) error {
 
-	var Objek models.MediaReviewVideo
+	var Objek sot_models.MediaReviewVideo
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {

@@ -1,4 +1,4 @@
-package models
+package sot_models
 
 type PayOutKurir struct {
 	ID               int64  `gorm:"primaryKey;autoIncrement" json:"id_payout_kurir"`

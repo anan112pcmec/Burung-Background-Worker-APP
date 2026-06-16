@@ -1,4 +1,4 @@
-package models
+package sot_models
 
 import "time"
 

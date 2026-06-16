@@ -4,15 +4,16 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	sot_threshold_seeders_nama "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/threshold/seeders/nama_threshold"
 	"gorm.io/gorm"
+
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_threshold_seeders_nama "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/threshold/seeders/nama_threshold"
 )
 
 type PenggunaThreshold struct {
-	ID         int64           `gorm:"primaryKey;autoIncrement" json:"id_pengguna_threshold"`
-	IdPengguna int64           `gorm:"column:id_pengguna;not null" json:"id_pengguna"`
-	Pengguna   models.Pengguna `gorm:"foreignKey:IdPengguna;references:ID" json:"-"`
+	ID         int64               `gorm:"primaryKey;autoIncrement" json:"id_pengguna_threshold"`
+	IdPengguna int64               `gorm:"column:id_pengguna;not null" json:"id_pengguna"`
+	Pengguna   sot_models.Pengguna `gorm:"foreignKey:IdPengguna;references:ID" json:"-"`
 
 	// Counters
 	AlamatPengguna      int32 `gorm:"column:alamat_pengguna;type:int4;default:0" json:"alamat_pengguna"`
@@ -114,9 +115,9 @@ func (p *PenggunaThreshold) CustomDecrement(ctx context.Context, db *gorm.DB, kj
 }
 
 type SellerThreshold struct {
-	ID       int64         `gorm:"primaryKey;autoIncrement" json:"id_seller_threshold"`
-	IdSeller int64         `gorm:"column:id_seller;not null" json:"id_seller"`
-	Seller   models.Seller `gorm:"foreignKey:IdSeller;references:ID" json:"-"`
+	ID       int64             `gorm:"primaryKey;autoIncrement" json:"id_seller_threshold"`
+	IdSeller int64             `gorm:"column:id_seller;not null" json:"id_seller"`
+	Seller   sot_models.Seller `gorm:"foreignKey:IdSeller;references:ID" json:"-"`
 
 	// Counters
 	AlamatGudang              int32 `gorm:"column:alamat_gudang;type:int4;default:0" json:"alamat_gudang"`
@@ -229,9 +230,9 @@ func (s *SellerThreshold) CustomDecrement(ctx context.Context, db *gorm.DB, kj [
 }
 
 type KurirThreshold struct {
-	ID      int64        `gorm:"primaryKey;autoIncrement" json:"id_kurir_threshold"`
-	IdKurir int64        `gorm:"column:id_kurir;not null" json:"id_kurir"`
-	Kurir   models.Kurir `gorm:"foreignKey:IdKurir;references:ID" json:"-"`
+	ID      int64            `gorm:"primaryKey;autoIncrement" json:"id_kurir_threshold"`
+	IdKurir int64            `gorm:"column:id_kurir;not null" json:"id_kurir"`
+	Kurir   sot_models.Kurir `gorm:"foreignKey:IdKurir;references:ID" json:"-"`
 
 	// Counters
 	AlamatKurir             int32 `gorm:"column:alamat_kurir;type:int4;default:0" json:"alamat_kurir"`

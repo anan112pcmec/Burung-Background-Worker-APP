@@ -3,7 +3,7 @@ package consume_kurir_dispatcher
 import (
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	auth_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/auth"
 	alamat_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/alamat_services"
@@ -31,35 +31,35 @@ func KurirUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 		if err := auth_handle.UpdateKurirLogin(d); err != nil {
 			return err
 		}
-	case models.AlamatKurir{}.TableName():
+	case sot_models.AlamatKurir{}.TableName():
 		if err := alamat_kurir_handle.UpdatedEditAlamatKurir(d); err != nil {
 			return err
 		}
-	case models.InformasiKendaraanKurir{}.TableName():
+	case sot_models.InformasiKendaraanKurir{}.TableName():
 		if err := informasi_kurir_handle.UpdateEditInformasiKendaraan(d); err != nil {
 			return err
 		}
-	case models.InformasiKurir{}.TableName():
+	case sot_models.InformasiKurir{}.TableName():
 		if err := informasi_kurir_handle.UpdateEditInformasiKurir(d); err != nil {
 			return err
 		}
-	case models.MediaKurirProfilFoto{}.TableName():
+	case sot_models.MediaKurirProfilFoto{}.TableName():
 		if err := media_kurir_handle.UpdateUbahKurirProfilFoto(d); err != nil {
 			return err
 		}
-	case models.MediaInformasiKendaraanKurirKendaraanFoto{}.TableName():
+	case sot_models.MediaInformasiKendaraanKurirKendaraanFoto{}.TableName():
 		if err := media_kurir_handle.UpdateTambahMediaInformasiKendaraanKurirKendaraanFoto(d); err != nil {
 			return err
 		}
-	case models.MediaInformasiKendaraanKurirBPKBFoto{}.TableName():
+	case sot_models.MediaInformasiKendaraanKurirBPKBFoto{}.TableName():
 		if err := media_kurir_handle.UpdateTambahInformasiKendaraanKurirBPKBFoto(d); err != nil {
 			return err
 		}
-	case models.MediaInformasiKendaraanKurirSTNKFoto{}.TableName():
+	case sot_models.MediaInformasiKendaraanKurirSTNKFoto{}.TableName():
 		if err := media_kurir_handle.UpdateTambahInformasiKendaraanKurirSTNKFoto(d); err != nil {
 			return err
 		}
-	case models.MediaInformasiKurirKTPFoto{}.TableName():
+	case sot_models.MediaInformasiKurirKTPFoto{}.TableName():
 		if err := media_kurir_handle.UpdateTambahMediaInformasiKurirKTPFoto(d); err != nil {
 			return err
 		}
@@ -215,11 +215,11 @@ func KurirUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 		if err := profiling_kurir_handle.UpdateGeneralProfilingKurir(d); err != nil {
 			return err
 		}
-	case models.RekeningKurir{}.TableName():
+	case sot_models.RekeningKurir{}.TableName():
 		if err := rekening_kurir_handle.UpdateEditRekeningKurir(d); err != nil {
 			return err
 		}
-	case models.EntitySocialMedia{}.TableName():
+	case sot_models.EntitySocialMedia{}.TableName():
 		if err := social_media_kurir_handle.UpdateEngagementSocialMediaKurir(d); err != nil {
 			return err
 		}

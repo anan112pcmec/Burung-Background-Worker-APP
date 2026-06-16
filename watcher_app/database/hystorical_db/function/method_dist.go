@@ -1,4 +1,4 @@
-package historical_db_dist
+package historical_db_function
 
 import (
 	"context"

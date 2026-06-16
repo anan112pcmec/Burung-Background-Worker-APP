@@ -3,13 +3,13 @@ package barang_seller_handle
 import (
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 )
 
 func CreateMasukanBarangInduk(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BarangInduk
+	var Objek sot_models.BarangInduk
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -19,7 +19,7 @@ func CreateMasukanBarangInduk(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func UpdateEditBarangInduk(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.BarangInduk
+	var Objek sot_models.BarangInduk
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -29,7 +29,7 @@ func UpdateEditBarangInduk(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func DeleteHapusBarangInduk(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.AlamatGudang
+	var Objek sot_models.AlamatGudang
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -39,7 +39,7 @@ func DeleteHapusBarangInduk(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func UpdateEditKategoriBarang(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.KategoriBarang
+	var Objek sot_models.KategoriBarang
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -49,7 +49,7 @@ func UpdateEditKategoriBarang(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func CreateMasukanKategoriBarang(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.KategoriBarang
+	var Objek sot_models.KategoriBarang
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -59,7 +59,7 @@ func CreateMasukanKategoriBarang(Data mb_cud_serializer.ParsedDataMessage) error
 }
 
 func DeleteHapusBarangKategori(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.KategoriBarang
+	var Objek sot_models.KategoriBarang
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -69,7 +69,7 @@ func DeleteHapusBarangKategori(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func CreateMasukanKomentarBarang(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Komentar
+	var Objek sot_models.Komentar
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -79,7 +79,7 @@ func CreateMasukanKomentarBarang(Data mb_cud_serializer.ParsedDataMessage) error
 }
 
 func UpdateEditKomentarBarang(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Komentar
+	var Objek sot_models.Komentar
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -89,7 +89,7 @@ func UpdateEditKomentarBarang(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func DeleteHapusKomentarBarang(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Komentar
+	var Objek sot_models.Komentar
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -99,7 +99,7 @@ func DeleteHapusKomentarBarang(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func CreateMasukanChildKomentar(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.KomentarChild
+	var Objek sot_models.KomentarChild
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -109,7 +109,7 @@ func CreateMasukanChildKomentar(Data mb_cud_serializer.ParsedDataMessage) error 
 }
 
 func UpdateEditChildKomentar(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.KomentarChild
+	var Objek sot_models.KomentarChild
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -119,7 +119,7 @@ func UpdateEditChildKomentar(Data mb_cud_serializer.ParsedDataMessage) error {
 }
 
 func DeleteHapusChildKomentar(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.KomentarChild
+	var Objek sot_models.KomentarChild
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {

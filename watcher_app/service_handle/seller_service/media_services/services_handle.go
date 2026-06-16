@@ -3,13 +3,13 @@ package media_seller_handle
 import (
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 )
 
 func CreateUbahFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaSellerProfilFoto
+	var Objek sot_models.MediaSellerProfilFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -19,7 +19,7 @@ func CreateUbahFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage) error 
 }
 
 func UpdateUbahFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaSellerProfilFoto
+	var Objek sot_models.MediaSellerProfilFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -29,7 +29,7 @@ func UpdateUbahFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage) error 
 }
 
 func DeleteHapusFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaSellerProfilFoto
+	var Objek sot_models.MediaSellerProfilFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -39,7 +39,7 @@ func DeleteHapusFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage) error
 }
 
 func CreateUbahFotoBannerSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaSellerBannerFoto
+	var Objek sot_models.MediaSellerBannerFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -49,7 +49,7 @@ func CreateUbahFotoBannerSeller(Data mb_cud_serializer.ParsedDataMessage) error 
 }
 
 func UpdateUbahFotoBannerSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaSellerBannerFoto
+	var Objek sot_models.MediaSellerBannerFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -59,7 +59,7 @@ func UpdateUbahFotoBannerSeller(Data mb_cud_serializer.ParsedDataMessage) error 
 }
 
 func DeleteHapusFotoBannerSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaSellerBannerFoto
+	var Objek sot_models.MediaSellerBannerFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -69,7 +69,7 @@ func DeleteHapusFotoBannerSeller(Data mb_cud_serializer.ParsedDataMessage) error
 }
 
 func CreateTambahkanFotoTokoFisikSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaSellerTokoFisikFoto
+	var Objek sot_models.MediaSellerTokoFisikFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -79,7 +79,7 @@ func CreateTambahkanFotoTokoFisikSeller(Data mb_cud_serializer.ParsedDataMessage
 }
 
 func DeleteHapusFotoTokoFisikSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaSellerTokoFisikFoto
+	var Objek sot_models.MediaSellerTokoFisikFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -89,7 +89,7 @@ func DeleteHapusFotoTokoFisikSeller(Data mb_cud_serializer.ParsedDataMessage) er
 }
 
 func CreateUbahFotoEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaEtalaseFoto
+	var Objek sot_models.MediaEtalaseFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -99,7 +99,7 @@ func CreateUbahFotoEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage) error
 }
 
 func UpdateUbahFotoEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaEtalaseFoto
+	var Objek sot_models.MediaEtalaseFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -109,7 +109,7 @@ func UpdateUbahFotoEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage) error
 }
 
 func DeleteHapusFotoEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaEtalaseFoto
+	var Objek sot_models.MediaEtalaseFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -119,7 +119,7 @@ func DeleteHapusFotoEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage) erro
 }
 
 func CreateTambahkanMediaBarangIndukFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBarangIndukFoto
+	var Objek sot_models.MediaBarangIndukFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -129,7 +129,7 @@ func CreateTambahkanMediaBarangIndukFoto(Data mb_cud_serializer.ParsedDataMessag
 }
 
 func DeleteHapusMediaBarangIndukFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBarangIndukFoto
+	var Objek sot_models.MediaBarangIndukFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -139,7 +139,7 @@ func DeleteHapusMediaBarangIndukFoto(Data mb_cud_serializer.ParsedDataMessage) e
 }
 
 func CreateUbahBarangIndukVideo(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBarangIndukVideo
+	var Objek sot_models.MediaBarangIndukVideo
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -149,7 +149,7 @@ func CreateUbahBarangIndukVideo(Data mb_cud_serializer.ParsedDataMessage) error 
 }
 
 func UpdateUbahBarangIndukVideo(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBarangIndukVideo
+	var Objek sot_models.MediaBarangIndukVideo
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -159,7 +159,7 @@ func UpdateUbahBarangIndukVideo(Data mb_cud_serializer.ParsedDataMessage) error 
 }
 
 func DeleteHapusBarangIndukVideo(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBarangIndukVideo
+	var Objek sot_models.MediaBarangIndukVideo
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -169,7 +169,7 @@ func DeleteHapusBarangIndukVideo(Data mb_cud_serializer.ParsedDataMessage) error
 }
 
 func CreateUbahKategoriBarangFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaKategoriBarangFoto
+	var Objek sot_models.MediaKategoriBarangFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -179,7 +179,7 @@ func CreateUbahKategoriBarangFoto(Data mb_cud_serializer.ParsedDataMessage) erro
 }
 
 func UpdateUbahKategoriBarangFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaKategoriBarangFoto
+	var Objek sot_models.MediaKategoriBarangFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -189,7 +189,7 @@ func UpdateUbahKategoriBarangFoto(Data mb_cud_serializer.ParsedDataMessage) erro
 }
 
 func DeleteHapusKategoriBarangFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaKategoriBarangFoto
+	var Objek sot_models.MediaKategoriBarangFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -199,7 +199,7 @@ func DeleteHapusKategoriBarangFoto(Data mb_cud_serializer.ParsedDataMessage) err
 }
 
 func CreateTambahDistributorDataDokumen(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaDistributorDataDokumen
+	var Objek sot_models.MediaDistributorDataDokumen
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -209,7 +209,7 @@ func CreateTambahDistributorDataDokumen(Data mb_cud_serializer.ParsedDataMessage
 }
 
 func UpdateTambahDistributorDataDokumen(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaDistributorDataDokumen
+	var Objek sot_models.MediaDistributorDataDokumen
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -219,7 +219,7 @@ func UpdateTambahDistributorDataDokumen(Data mb_cud_serializer.ParsedDataMessage
 }
 
 func DeleteHapusMediaDistributorDataDokumen(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaDistributorDataDokumen
+	var Objek sot_models.MediaDistributorDataDokumen
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -229,7 +229,7 @@ func DeleteHapusMediaDistributorDataDokumen(Data mb_cud_serializer.ParsedDataMes
 }
 
 func CreateTambahMediaDistributorDataNPWPFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaDistributorDataNPWPFoto
+	var Objek sot_models.MediaDistributorDataNPWPFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -239,7 +239,7 @@ func CreateTambahMediaDistributorDataNPWPFoto(Data mb_cud_serializer.ParsedDataM
 }
 
 func UpdateTambahMediaDistributorDataNPWPFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaDistributorDataNPWPFoto
+	var Objek sot_models.MediaDistributorDataNPWPFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -249,7 +249,7 @@ func UpdateTambahMediaDistributorDataNPWPFoto(Data mb_cud_serializer.ParsedDataM
 }
 
 func DeleteHapusMediaDistributorDataNPWPFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaDistributorDataNPWPFoto
+	var Objek sot_models.MediaDistributorDataNPWPFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -259,7 +259,7 @@ func DeleteHapusMediaDistributorDataNPWPFoto(Data mb_cud_serializer.ParsedDataMe
 }
 
 func CreateTambahDistributorDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaDistributorDataNIBFoto
+	var Objek sot_models.MediaDistributorDataNIBFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -269,7 +269,7 @@ func CreateTambahDistributorDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage
 }
 
 func UpdateTambahDistributorDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaDistributorDataNIBFoto
+	var Objek sot_models.MediaDistributorDataNIBFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -279,7 +279,7 @@ func UpdateTambahDistributorDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage
 }
 
 func DeleteHapusDistributorDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaDistributorDataNIBFoto
+	var Objek sot_models.MediaDistributorDataNIBFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -289,7 +289,7 @@ func DeleteHapusDistributorDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage)
 }
 
 func CreateTambahDistributorDataSuratKerjasamaDokumen(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaDistributorDataSuratKerjasamaDokumen
+	var Objek sot_models.MediaDistributorDataSuratKerjasamaDokumen
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -299,7 +299,7 @@ func CreateTambahDistributorDataSuratKerjasamaDokumen(Data mb_cud_serializer.Par
 }
 
 func UpdateTambahDistributorDataSuratKerjasamaDokumen(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaDistributorDataSuratKerjasamaDokumen
+	var Objek sot_models.MediaDistributorDataSuratKerjasamaDokumen
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -309,7 +309,7 @@ func UpdateTambahDistributorDataSuratKerjasamaDokumen(Data mb_cud_serializer.Par
 }
 
 func DeleteHapusDistributorDataSuratKerjasamaDokumen(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaDistributorDataSuratKerjasamaDokumen
+	var Objek sot_models.MediaDistributorDataSuratKerjasamaDokumen
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -319,7 +319,7 @@ func DeleteHapusDistributorDataSuratKerjasamaDokumen(Data mb_cud_serializer.Pars
 }
 
 func CreateTambahBrandDataPerwakilanDokumen(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataPerwakilanDokumen
+	var Objek sot_models.MediaBrandDataPerwakilanDokumen
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -329,7 +329,7 @@ func CreateTambahBrandDataPerwakilanDokumen(Data mb_cud_serializer.ParsedDataMes
 }
 
 func UpdateTambahBrandDataPerwakilanDokumen(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataPerwakilanDokumen
+	var Objek sot_models.MediaBrandDataPerwakilanDokumen
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -339,7 +339,7 @@ func UpdateTambahBrandDataPerwakilanDokumen(Data mb_cud_serializer.ParsedDataMes
 }
 
 func DeleteHapusBrandDataPerwakilanDokumen(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataPerwakilanDokumen
+	var Objek sot_models.MediaBrandDataPerwakilanDokumen
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -349,7 +349,7 @@ func DeleteHapusBrandDataPerwakilanDokumen(Data mb_cud_serializer.ParsedDataMess
 }
 
 func CreateTambahMediaBrandDataSertifikatFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataSertifikatFoto
+	var Objek sot_models.MediaBrandDataSertifikatFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -359,7 +359,7 @@ func CreateTambahMediaBrandDataSertifikatFoto(Data mb_cud_serializer.ParsedDataM
 }
 
 func UpdateTambahMediaBrandDataSertifikatFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataSertifikatFoto
+	var Objek sot_models.MediaBrandDataSertifikatFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -369,7 +369,7 @@ func UpdateTambahMediaBrandDataSertifikatFoto(Data mb_cud_serializer.ParsedDataM
 }
 
 func DeleteHapusMediaBrandDataSertifikatFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataSertifikatFoto
+	var Objek sot_models.MediaBrandDataSertifikatFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -379,7 +379,7 @@ func DeleteHapusMediaBrandDataSertifikatFoto(Data mb_cud_serializer.ParsedDataMe
 }
 
 func CreateTambahMediaBrandDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataNIBFoto
+	var Objek sot_models.MediaBrandDataNIBFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -389,7 +389,7 @@ func CreateTambahMediaBrandDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage)
 }
 
 func UpdateTambahMediaBrandDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataNIBFoto
+	var Objek sot_models.MediaBrandDataNIBFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -399,7 +399,7 @@ func UpdateTambahMediaBrandDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage)
 }
 
 func DeleteHapusMediaBrandDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataNIBFoto
+	var Objek sot_models.MediaBrandDataNIBFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -409,7 +409,7 @@ func DeleteHapusMediaBrandDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage) 
 }
 
 func CreateTambahMediaBrandNPWPFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataNPWPFoto
+	var Objek sot_models.MediaBrandDataNPWPFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -419,7 +419,7 @@ func CreateTambahMediaBrandNPWPFoto(Data mb_cud_serializer.ParsedDataMessage) er
 }
 
 func UpdateTambahMediaBrandNPWPFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataNPWPFoto
+	var Objek sot_models.MediaBrandDataNPWPFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -429,7 +429,7 @@ func UpdateTambahMediaBrandNPWPFoto(Data mb_cud_serializer.ParsedDataMessage) er
 }
 
 func DeleteHapusMediaBrandNPWPFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataNPWPFoto
+	var Objek sot_models.MediaBrandDataNPWPFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -439,7 +439,7 @@ func DeleteHapusMediaBrandNPWPFoto(Data mb_cud_serializer.ParsedDataMessage) err
 }
 
 func CreateTambahMediaBrandDataLogoFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataLogoFoto
+	var Objek sot_models.MediaBrandDataLogoFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -449,7 +449,7 @@ func CreateTambahMediaBrandDataLogoFoto(Data mb_cud_serializer.ParsedDataMessage
 }
 
 func UpdateTambahMediaBrandDataLogoFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataLogoFoto
+	var Objek sot_models.MediaBrandDataLogoFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -459,7 +459,7 @@ func UpdateTambahMediaBrandDataLogoFoto(Data mb_cud_serializer.ParsedDataMessage
 }
 
 func DeleteHapusMediaBrandDataLogoFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataLogoFoto
+	var Objek sot_models.MediaBrandDataLogoFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -469,7 +469,7 @@ func DeleteHapusMediaBrandDataLogoFoto(Data mb_cud_serializer.ParsedDataMessage)
 }
 
 func CreateTambahBrandDataSuratKerjasamaDokumen(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataSuratKerjasamaDokumen
+	var Objek sot_models.MediaBrandDataSuratKerjasamaDokumen
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -479,7 +479,7 @@ func CreateTambahBrandDataSuratKerjasamaDokumen(Data mb_cud_serializer.ParsedDat
 }
 
 func UpdateTambahBrandDataSuratKerjasamaDokumen(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataSuratKerjasamaDokumen
+	var Objek sot_models.MediaBrandDataSuratKerjasamaDokumen
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -489,7 +489,7 @@ func UpdateTambahBrandDataSuratKerjasamaDokumen(Data mb_cud_serializer.ParsedDat
 }
 
 func DeleteHapusBrandDataSuratKerjasamaDokumen(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaBrandDataSuratKerjasamaDokumen
+	var Objek sot_models.MediaBrandDataSuratKerjasamaDokumen
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -499,7 +499,7 @@ func DeleteHapusBrandDataSuratKerjasamaDokumen(Data mb_cud_serializer.ParsedData
 }
 
 func CreateTambahMediaTransaksiApprovedFoto(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaTransaksiApprovedFoto
+	var Objek sot_models.MediaTransaksiApprovedFoto
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -509,7 +509,7 @@ func CreateTambahMediaTransaksiApprovedFoto(Data mb_cud_serializer.ParsedDataMes
 }
 
 func CreateTambahMediaTransaksiApprovedVideo(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.MediaTransaksiApprovedVideo
+	var Objek sot_models.MediaTransaksiApprovedVideo
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {

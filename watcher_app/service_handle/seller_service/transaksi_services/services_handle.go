@@ -3,14 +3,14 @@ package transaksi_seller_handle
 import (
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 
 )
 
 func UpdateApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Transaksi
+	var Objek sot_models.Transaksi
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -20,7 +20,7 @@ func UpdateApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage) error
 }
 
 func CreateKirimOrderTransaksiEkspedisi(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.PengirimanEkspedisi
+	var Objek sot_models.PengirimanEkspedisi
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -30,7 +30,7 @@ func CreateKirimOrderTransaksiEkspedisi(Data mb_cud_serializer.ParsedDataMessage
 }
 
 func CreateKirimOrderTransaksiBiasa(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Pengiriman
+	var Objek sot_models.Pengiriman
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {
@@ -40,7 +40,7 @@ func CreateKirimOrderTransaksiBiasa(Data mb_cud_serializer.ParsedDataMessage) er
 }
 
 func UpdatedUnApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek models.Transaksi
+	var Objek sot_models.Transaksi
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data")
 	} else {

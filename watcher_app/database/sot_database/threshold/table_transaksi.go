@@ -6,14 +6,14 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	sot_threshold_seeders_nama "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/threshold/seeders/nama_threshold"
 )
 
 type TransaksiThreshold struct {
-	ID          int64            `gorm:"primaryKey;autoIncrement" json:"id_transaksi_threshold"`
-	IdTransaksi int64            `gorm:"column:id_transaksi;index;not null" json:"id_transaksi"`
-	Transaksi   models.Transaksi `gorm:"foreignKey:IdTransaksi;references:ID" json:"-"`
+	ID          int64                `gorm:"primaryKey;autoIncrement" json:"id_transaksi_threshold"`
+	IdTransaksi int64                `gorm:"column:id_transaksi;index;not null" json:"id_transaksi"`
+	Transaksi   sot_models.Transaksi `gorm:"foreignKey:IdTransaksi;references:ID" json:"-"`
 
 	MediaTransaksiApprovedFoto  int32 `gorm:"column:media_transaksi_approved_foto;type:int4;default:0" json:"media_transaksi_approved_foto"`
 	MediaTransaksiApprovedVideo int32 `gorm:"column:media_transaksi_approved_video;type:int4;default:0" json:"media_transaksi_approved_video"`
@@ -108,22 +108,22 @@ func (t *TransaksiThreshold) CustomDecrement(ctx context.Context, db *gorm.DB, k
 }
 
 type ThresholdOrderSeller struct {
-	ID         int64         `gorm:"primaryKey;autoIncrement" json:"id_threshold_order_seller"`
-	IdSeller   int32         `gorm:"column:id_seller;not null" json:"id_seller_threshold_order_seller"`
-	Seller     models.Seller `gorm:"foreignKey:IdSeller;references:ID" json:"-"`
-	Dibatalkan int64         `gorm:"column:dibatalkan;type:int8;not null;default:0" json:"dibatalkan_threshold_order_seller"`
-	Dibayar    int64         `gorm:"column:dibayar;type:int8;not null;default:0" json:"dibayar_threshold_order_seller"`
-	Diproses   int64         `gorm:"column:diproses;type:int8;not null;default:0" json:"diproses_threshold_order_seller"`
-	Waiting    int64         `gorm:"column:waiting;type:int8;not null;default:0" json:"waiting_threshold_order_seller"`
-	Dikirim    int64         `gorm:"column:dikirim;type:int8;not null;default:0" json:"dikirim_threshold_order_seller"`
-	Sampai     int64         `gorm:"column:sampai;type:int8;not null;default:0" json:"sampai_threshold_order_seller"`
-	Total      int64         `gorm:"column:total;type:int8;not null;default:0" json:"total_threshold_order_seller"`
+	ID         int64             `gorm:"primaryKey;autoIncrement" json:"id_threshold_order_seller"`
+	IdSeller   int32             `gorm:"column:id_seller;not null" json:"id_seller_threshold_order_seller"`
+	Seller     sot_models.Seller `gorm:"foreignKey:IdSeller;references:ID" json:"-"`
+	Dibatalkan int64             `gorm:"column:dibatalkan;type:int8;not null;default:0" json:"dibatalkan_threshold_order_seller"`
+	Dibayar    int64             `gorm:"column:dibayar;type:int8;not null;default:0" json:"dibayar_threshold_order_seller"`
+	Diproses   int64             `gorm:"column:diproses;type:int8;not null;default:0" json:"diproses_threshold_order_seller"`
+	Waiting    int64             `gorm:"column:waiting;type:int8;not null;default:0" json:"waiting_threshold_order_seller"`
+	Dikirim    int64             `gorm:"column:dikirim;type:int8;not null;default:0" json:"dikirim_threshold_order_seller"`
+	Sampai     int64             `gorm:"column:sampai;type:int8;not null;default:0" json:"sampai_threshold_order_seller"`
+	Total      int64             `gorm:"column:total;type:int8;not null;default:0" json:"total_threshold_order_seller"`
 }
 
 type PembayaranThreshold struct {
-	ID           int64             `gorm:"primaryKey;autoIncrement" json:"id_pembayaran_threshold"`
-	IdPembayaran int64             `gorm:"column:id_pembayaran;index;not null" json:"id_pembayaran"`
-	Pembayaran   models.Pembayaran `gorm:"foreignKey:IdPembayaran;references:ID" json:"-"`
+	ID           int64                 `gorm:"primaryKey;autoIncrement" json:"id_pembayaran_threshold"`
+	IdPembayaran int64                 `gorm:"column:id_pembayaran;index;not null" json:"id_pembayaran"`
+	Pembayaran   sot_models.Pembayaran `gorm:"foreignKey:IdPembayaran;references:ID" json:"-"`
 
 	Transaksi int32 `gorm:"column:transaksi;type:int4;default:0" json:"transaksi"`
 }
@@ -215,7 +215,7 @@ func (p *PembayaranThreshold) CustomDecrement(ctx context.Context, db *gorm.DB, 
 }
 
 type TransaksiFailedThreshold struct {
-	ID                int64                  `gorm:"primaryKey;autoIncrement" json:"id_transaksi_failed_threshold"`
-	IdTransaksiFailed int64                  `gorm:"column:id_transaksi_failed;index;not null" json:"id_transaksi_failed"`
-	TransaksiFailed   models.TransaksiFailed `gorm:"foreignKey:IdTransaksiFailed;references:ID" json:"-"`
+	ID                int64                      `gorm:"primaryKey;autoIncrement" json:"id_transaksi_failed_threshold"`
+	IdTransaksiFailed int64                      `gorm:"column:id_transaksi_failed;index;not null" json:"id_transaksi_failed"`
+	TransaksiFailed   sot_models.TransaksiFailed `gorm:"foreignKey:IdTransaksiFailed;references:ID" json:"-"`
 }

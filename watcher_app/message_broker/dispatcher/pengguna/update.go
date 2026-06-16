@@ -3,7 +3,7 @@ package consume_pengguna_dispatcher
 import (
 	"fmt"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	auth_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/auth"
 	alamat_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/alamat_services"
@@ -31,19 +31,19 @@ func PenggunaUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_c
 		if err := auth_handle.UpdatePenggunaLogin(d); err != nil {
 			return err
 		}
-	case models.AlamatPengguna.TableName(models.AlamatPengguna{}):
+	case sot_models.AlamatPengguna.TableName(sot_models.AlamatPengguna{}):
 		if err := alamat_pengguna_handle.UpdateAlamatPub(d); err != nil {
 			return err
 		}
-	case models.Komentar.TableName(models.Komentar{}):
+	case sot_models.Komentar.TableName(sot_models.Komentar{}):
 		if err := barang_pengguna_handle.UpdateEditKomentarBarang(d); err != nil {
 			return err
 		}
-	case models.KomentarChild.TableName(models.KomentarChild{}):
+	case sot_models.KomentarChild.TableName(sot_models.KomentarChild{}):
 		if err := barang_pengguna_handle.UpdateEditChildKomentar(d); err != nil {
 			return err
 		}
-	case models.Keranjang.TableName(models.Keranjang{}):
+	case sot_models.Keranjang.TableName(sot_models.Keranjang{}):
 		if err := barang_pengguna_handle.UpdateEditKeranjangBarang(d); err != nil {
 			return err
 		}
@@ -59,11 +59,11 @@ func PenggunaUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_c
 		if err := credential_pengguna_handle.UpdateSecretPinPengguna(d); err != nil {
 			return err
 		}
-	case models.MediaPenggunaProfilFoto.TableName(models.MediaPenggunaProfilFoto{}):
+	case sot_models.MediaPenggunaProfilFoto.TableName(sot_models.MediaPenggunaProfilFoto{}):
 		if err := media_pengguna_handle.UpdateUbahFotoProfilPengguna(d); err != nil {
 			return err
 		}
-	case models.Pengguna.TableName(models.Pengguna{}):
+	case sot_models.Pengguna.TableName(sot_models.Pengguna{}):
 		if err := profiling_pengguna_handle.UpdateUbahPersonalProfilingPengguna(d); err != nil {
 			return err
 		}

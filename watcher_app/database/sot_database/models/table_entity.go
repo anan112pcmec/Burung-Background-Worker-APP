@@ -1,11 +1,10 @@
-package models
+package sot_models
 
 import (
 	"fmt"
 	"time"
 
 	"gorm.io/gorm"
-
 )
 
 type Pengguna struct {

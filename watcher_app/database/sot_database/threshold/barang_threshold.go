@@ -6,14 +6,14 @@ import (
 
 	"gorm.io/gorm"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	sot_threshold_seeders_nama "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/threshold/seeders/nama_threshold"
 )
 
 type BarangIndukThreshold struct {
-	ID            int64              `gorm:"primaryKey;autoIncrement" json:"id_barang_induk_threshold"`
-	IdBarangInduk int64              `gorm:"column:id_barang_induk;index;not null" json:"id_barang_induk"`
-	BarangInduk   models.BarangInduk `gorm:"foreignKey:IdBarangInduk;references:ID" json:"-"`
+	ID            int64                  `gorm:"primaryKey;autoIncrement" json:"id_barang_induk_threshold"`
+	IdBarangInduk int64                  `gorm:"column:id_barang_induk;index;not null" json:"id_barang_induk"`
+	BarangInduk   sot_models.BarangInduk `gorm:"foreignKey:IdBarangInduk;references:ID" json:"-"`
 
 	BarangDiDiskon          int32 `gorm:"column:barang_di_diskon;type:int4;default:0" json:"barang_di_diskon"`
 	BarangDisukai           int32 `gorm:"column:barang_disukai;type:int4;default:0" json:"barang_disukai"`
@@ -128,9 +128,9 @@ func (b *BarangIndukThreshold) GetKolomCount(ctx context.Context, db *gorm.DB, k
 }
 
 type KategoriBarangThreshold struct {
-	ID               int64                 `gorm:"primaryKey;autoIncrement" json:"id_kategori_barang_threshold"`
-	IdKategoriBarang int64                 `gorm:"column:id_kategori_barang;index;not null" json:"id_kategori_barang"`
-	KategoriBarang   models.KategoriBarang `gorm:"foreignKey:IdKategoriBarang;references:ID" json:"-"`
+	ID               int64                     `gorm:"primaryKey;autoIncrement" json:"id_kategori_barang_threshold"`
+	IdKategoriBarang int64                     `gorm:"column:id_kategori_barang;index;not null" json:"id_kategori_barang"`
+	KategoriBarang   sot_models.KategoriBarang `gorm:"foreignKey:IdKategoriBarang;references:ID" json:"-"`
 
 	// Counter
 	BarangDiDiskon          int32 `gorm:"column:barang_di_diskon;type:int4;default:0" json:"barang_di_diskon"`
