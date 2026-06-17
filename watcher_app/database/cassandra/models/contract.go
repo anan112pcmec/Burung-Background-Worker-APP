@@ -1,4 +1,4 @@
-package cass_models
+﻿package cass_models
 
 import (
 	"context"
@@ -13,8 +13,10 @@ type TableName interface {
 }
 
 type Method interface {
-	CreateTable(ctx context.Context, s *gocql.Session) error
+	CreateHistoricalTable(ctx context.Context, s *gocql.Session) error
 	UpdateTable(ctx context.Context, s *gocql.Session) error
 	ParseToCUDType() map[string]interface{}
 	DropTable(ctx context.Context, s *gocql.Session) error
 }
+
+

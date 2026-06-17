@@ -1,4 +1,4 @@
-package cass_models
+﻿package cass_models
 
 import (
 	"context"
@@ -19,14 +19,13 @@ type RekeningSeller struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       *time.Time
-	Pencatatan
 }
 
 func (RekeningSeller) TableNameHistorical() string {
 	return "rekening_seller_historical"
 }
 
-func (r *RekeningSeller) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (r *RekeningSeller) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -64,9 +63,6 @@ func (r *RekeningSeller) ParseToInsertType() map[string]interface{} {
 		"created_at":       r.CreatedAt,
 		"updated_at":       r.UpdatedAt,
 		"deleted_at":       r.DeletedAt,
-		"tahun_update":     r.TahunUpdate,
-		"bulan_update":     r.BulanUpdate,
-		"event_time":       r.EventTime,
 	}
 }
 
@@ -91,14 +87,13 @@ type RekeningKurir struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       *time.Time
-	Pencatatan
 }
 
 func (RekeningKurir) TableNameHistorical() string {
 	return "rekening_kurir_historical"
 }
 
-func (r *RekeningKurir) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (r *RekeningKurir) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -134,9 +129,6 @@ func (r *RekeningKurir) ParseToInsertType() map[string]interface{} {
 		"created_at":       r.CreatedAt,
 		"updated_at":       r.UpdatedAt,
 		"deleted_at":       r.DeletedAt,
-		"tahun_update":     r.TahunUpdate,
-		"bulan_update":     r.BulanUpdate,
-		"event_time":       r.EventTime,
 	}
 }
 

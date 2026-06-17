@@ -1,4 +1,4 @@
-package cass_models
+﻿package cass_models
 
 import (
 	"context"
@@ -22,14 +22,13 @@ type Pembayaran struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       gorm.DeletedAt
-	Pencatatan
 }
 
 func (Pembayaran) TableNameHistorical() string {
 	return "pembayaran_historical"
 }
 
-func (p *Pembayaran) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (p *Pembayaran) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -71,9 +70,6 @@ func (p *Pembayaran) ParseToInsertType() map[string]interface{} {
 		"created_at":        p.CreatedAt,
 		"updated_at":        p.UpdatedAt,
 		"deleted_at":        p.DeletedAt,
-		"tahun_update":      p.TahunUpdate,
-		"bulan_update":      p.BulanUpdate,
-		"event_time":        p.EventTime,
 	}
 }
 
@@ -124,14 +120,13 @@ type Transaksi struct {
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
 	DeletedAt           gorm.DeletedAt
-	Pencatatan
 }
 
 func (Transaksi) TableNameHistorical() string {
 	return "transaksi_historical"
 }
 
-func (t *Transaksi) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (t *Transaksi) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -207,9 +202,6 @@ func (t *Transaksi) ParseToInsertType() map[string]interface{} {
 		"created_at":           t.CreatedAt,
 		"updated_at":           t.UpdatedAt,
 		"deleted_at":           t.DeletedAt,
-		"tahun_update":         t.TahunUpdate,
-		"bulan_update":         t.BulanUpdate,
-		"event_time":           t.EventTime,
 	}
 }
 
@@ -253,14 +245,13 @@ type TransaksiFailed struct {
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
 	DeletedAt           gorm.DeletedAt
-	Pencatatan
 }
 
 func (TransaksiFailed) TableNameHistorical() string {
 	return "transaksi_failed_historical"
 }
 
-func (t *TransaksiFailed) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (t *TransaksiFailed) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -336,9 +327,6 @@ func (t *TransaksiFailed) ParseToInsertType() map[string]interface{} {
 		"created_at":           t.CreatedAt,
 		"updated_at":           t.UpdatedAt,
 		"deleted_at":           t.DeletedAt,
-		"tahun_update":         t.TahunUpdate,
-		"bulan_update":         t.BulanUpdate,
-		"event_time":           t.EventTime,
 	}
 }
 

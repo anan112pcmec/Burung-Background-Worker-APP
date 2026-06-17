@@ -1,4 +1,4 @@
-package cass_models
+﻿package cass_models
 
 import (
 	"context"
@@ -18,14 +18,13 @@ type MediaPenggunaProfilFoto struct {
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	DeletedAt  gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaPenggunaProfilFoto) TableNameHistorical() string {
 	return "media_pengguna_profil_foto_historical"
 }
 
-func (m *MediaPenggunaProfilFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaPenggunaProfilFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPenggunaProfilFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -59,16 +58,13 @@ func (m *MediaPenggunaProfilFoto) ParseToInsertType() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"id":           m.ID,
-		"id_pengguna":  m.IdPengguna,
-		"key":          m.Key,
-		"format":       m.Format,
-		"created_at":   m.CreatedAt,
-		"updated_at":   m.UpdatedAt,
-		"deleted_at":   deletedAtInterface,
-		"tahun_update": m.TahunUpdate,
-		"bulan_update": m.BulanUpdate,
-		"event_time":   m.EventTime,
+		"id":          m.ID,
+		"id_pengguna": m.IdPengguna,
+		"key":         m.Key,
+		"format":      m.Format,
+		"created_at":  m.CreatedAt,
+		"updated_at":  m.UpdatedAt,
+		"deleted_at":  deletedAtInterface,
 	}
 }
 
@@ -97,14 +93,13 @@ type MediaSellerProfilFoto struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaSellerProfilFoto) PathName() string {
 	return "/media_seller_profil_foto/"
 }
 
-func (m *MediaSellerProfilFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaSellerProfilFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaSellerProfilFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -138,16 +133,13 @@ func (m *MediaSellerProfilFoto) ParseToInsertType() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"id":           m.ID,
-		"id_seller":    m.IdSeller,
-		"key":          m.Key,
-		"format":       m.Format,
-		"created_at":   m.CreatedAt,
-		"updated_at":   m.UpdatedAt,
-		"deleted_at":   deletedAtInterface,
-		"tahun_update": m.TahunUpdate,
-		"bulan_update": m.BulanUpdate,
-		"event_time":   m.EventTime,
+		"id":         m.ID,
+		"id_seller":  m.IdSeller,
+		"key":        m.Key,
+		"format":     m.Format,
+		"created_at": m.CreatedAt,
+		"updated_at": m.UpdatedAt,
+		"deleted_at": deletedAtInterface,
 	}
 }
 
@@ -176,14 +168,13 @@ type MediaSellerBannerFoto struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaSellerBannerFoto) PathName() string {
 	return "/media_seller_banner_foto/"
 }
 
-func (m *MediaSellerBannerFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaSellerBannerFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaSellerBannerFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -217,16 +208,13 @@ func (m *MediaSellerBannerFoto) ParseToInsertType() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"id":           m.ID,
-		"id_seller":    m.IdSeller,
-		"key":          m.Key,
-		"format":       m.Format,
-		"created_at":   m.CreatedAt,
-		"updated_at":   m.UpdatedAt,
-		"deleted_at":   deletedAtInterface,
-		"tahun_update": m.TahunUpdate,
-		"bulan_update": m.BulanUpdate,
-		"event_time":   m.EventTime,
+		"id":         m.ID,
+		"id_seller":  m.IdSeller,
+		"key":        m.Key,
+		"format":     m.Format,
+		"created_at": m.CreatedAt,
+		"updated_at": m.UpdatedAt,
+		"deleted_at": deletedAtInterface,
 	}
 }
 
@@ -254,14 +242,13 @@ type MediaSellerTokoFisikFoto struct {
 	Format    string
 	CreatedAt time.Time
 	DeletedAt gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaSellerTokoFisikFoto) PathName() string {
 	return "/media_seller_toko_fisik_foto/"
 }
 
-func (m *MediaSellerTokoFisikFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaSellerTokoFisikFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaSellerTokoFisikFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -294,15 +281,12 @@ func (m *MediaSellerTokoFisikFoto) ParseToInsertType() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"id":           m.ID,
-		"id_seller":    m.IdSeller,
-		"key":          m.Key,
-		"format":       m.Format,
-		"created_at":   m.CreatedAt,
-		"deleted_at":   deletedAtInterface,
-		"tahun_update": m.TahunUpdate,
-		"bulan_update": m.BulanUpdate,
-		"event_time":   m.EventTime,
+		"id":         m.ID,
+		"id_seller":  m.IdSeller,
+		"key":        m.Key,
+		"format":     m.Format,
+		"created_at": m.CreatedAt,
+		"deleted_at": deletedAtInterface,
 	}
 }
 
@@ -331,14 +315,13 @@ type MediaKurirProfilFoto struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaKurirProfilFoto) PathName() string {
 	return "/media_kurir_profil_foto/"
 }
 
-func (m *MediaKurirProfilFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaKurirProfilFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaKurirProfilFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -372,16 +355,13 @@ func (m *MediaKurirProfilFoto) ParseToInsertType() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"id":           m.ID,
-		"id_kurir":     m.IdKurir,
-		"key":          m.Key,
-		"format":       m.Format,
-		"created_at":   m.CreatedAt,
-		"updated_at":   m.UpdatedAt,
-		"deleted_at":   deletedAtInterface,
-		"tahun_update": m.TahunUpdate,
-		"bulan_update": m.BulanUpdate,
-		"event_time":   m.EventTime,
+		"id":         m.ID,
+		"id_kurir":   m.IdKurir,
+		"key":        m.Key,
+		"format":     m.Format,
+		"created_at": m.CreatedAt,
+		"updated_at": m.UpdatedAt,
+		"deleted_at": deletedAtInterface,
 	}
 }
 
@@ -410,14 +390,13 @@ type MediaEtalaseFoto struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaEtalaseFoto) PathName() string {
 	return "/media_etalase_foto/"
 }
 
-func (m *MediaEtalaseFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaEtalaseFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaEtalaseFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -451,16 +430,13 @@ func (m *MediaEtalaseFoto) ParseToInsertType() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"id":           m.ID,
-		"id_etalase":   m.IdEtalase,
-		"key":          m.Key,
-		"format":       m.Format,
-		"created_at":   m.CreatedAt,
-		"updated_at":   m.UpdatedAt,
-		"deleted_at":   deletedAtInterface,
-		"tahun_update": m.TahunUpdate,
-		"bulan_update": m.BulanUpdate,
-		"event_time":   m.EventTime,
+		"id":         m.ID,
+		"id_etalase": m.IdEtalase,
+		"key":        m.Key,
+		"format":     m.Format,
+		"created_at": m.CreatedAt,
+		"updated_at": m.UpdatedAt,
+		"deleted_at": deletedAtInterface,
 	}
 }
 
@@ -488,14 +464,13 @@ type MediaBarangIndukFoto struct {
 	Format        string
 	CreatedAt     time.Time
 	DeletedAt     gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaBarangIndukFoto) PathName() string {
 	return "/media_barang_induk_foto/"
 }
 
-func (m *MediaBarangIndukFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaBarangIndukFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBarangIndukFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -534,9 +509,6 @@ func (m *MediaBarangIndukFoto) ParseToInsertType() map[string]interface{} {
 		"format":          m.Format,
 		"created_at":      m.CreatedAt,
 		"deleted_at":      deletedAtInterface,
-		"tahun_update":    m.TahunUpdate,
-		"bulan_update":    m.BulanUpdate,
-		"event_time":      m.EventTime,
 	}
 }
 
@@ -565,14 +537,13 @@ type MediaBarangIndukVideo struct {
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaBarangIndukVideo) PathName() string {
 	return "/media_barang_induk_video/"
 }
 
-func (m *MediaBarangIndukVideo) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaBarangIndukVideo) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBarangIndukVideo dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -613,9 +584,6 @@ func (m *MediaBarangIndukVideo) ParseToInsertType() map[string]interface{} {
 		"created_at":      m.CreatedAt,
 		"updated_at":      m.UpdatedAt,
 		"deleted_at":      deletedAtInterface,
-		"tahun_update":    m.TahunUpdate,
-		"bulan_update":    m.BulanUpdate,
-		"event_time":      m.EventTime,
 	}
 }
 
@@ -646,14 +614,13 @@ type MediaKategoriBarangFoto struct {
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 	DeletedAt        gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaKategoriBarangFoto) PathName() string {
 	return "/media_kategori_barang_foto/"
 }
 
-func (m *MediaKategoriBarangFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaKategoriBarangFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaKategoriBarangFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -696,9 +663,6 @@ func (m *MediaKategoriBarangFoto) ParseToInsertType() map[string]interface{} {
 		"created_at":         m.CreatedAt,
 		"updated_at":         m.UpdatedAt,
 		"deleted_at":         deletedAtInterface,
-		"tahun_update":       m.TahunUpdate,
-		"bulan_update":       m.BulanUpdate,
-		"event_time":         m.EventTime,
 	}
 }
 
@@ -727,14 +691,13 @@ type MediaDistributorDataDokumen struct {
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 	DeletedAt         gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaDistributorDataDokumen) PathName() string {
 	return "/media_distributor_data_dokumen/"
 }
 
-func (m *MediaDistributorDataDokumen) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaDistributorDataDokumen) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaDistributorDataDokumen dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -775,9 +738,6 @@ func (m *MediaDistributorDataDokumen) ParseToInsertType() map[string]interface{}
 		"created_at":          m.CreatedAt,
 		"updated_at":          m.UpdatedAt,
 		"deleted_at":          deletedAtInterface,
-		"tahun_update":        m.TahunUpdate,
-		"bulan_update":        m.BulanUpdate,
-		"event_time":          m.EventTime,
 	}
 }
 
@@ -806,14 +766,13 @@ type MediaDistributorDataNPWPFoto struct {
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 	DeletedAt         gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaDistributorDataNPWPFoto) PathName() string {
 	return "/media_distributor_data_npwp_foto/"
 }
 
-func (m *MediaDistributorDataNPWPFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaDistributorDataNPWPFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaDistributorDataNPWPFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -854,9 +813,6 @@ func (m *MediaDistributorDataNPWPFoto) ParseToInsertType() map[string]interface{
 		"created_at":          m.CreatedAt,
 		"updated_at":          m.UpdatedAt,
 		"deleted_at":          deletedAtInterface,
-		"tahun_update":        m.TahunUpdate,
-		"bulan_update":        m.BulanUpdate,
-		"event_time":          m.EventTime,
 	}
 }
 
@@ -885,14 +841,13 @@ type MediaDistributorDataNIBFoto struct {
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 	DeletedAt         gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaDistributorDataNIBFoto) PathName() string {
 	return "/media_distributor_data_nib_foto/"
 }
 
-func (m *MediaDistributorDataNIBFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaDistributorDataNIBFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaDistributorDataNIBFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -932,9 +887,6 @@ func (m *MediaDistributorDataNIBFoto) ParseToInsertType() map[string]interface{}
 		"created_at":          m.CreatedAt,
 		"updated_at":          m.UpdatedAt,
 		"deleted_at":          deletedAtInterface,
-		"tahun_update":        m.TahunUpdate,
-		"bulan_update":        m.BulanUpdate,
-		"event_time":          m.EventTime,
 	}
 }
 
@@ -963,14 +915,13 @@ type MediaDistributorDataSuratKerjasamaDokumen struct {
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 	DeletedAt         gorm.DeletedAt
-	Pencatatan
 }
 
 func (MediaDistributorDataSuratKerjasamaDokumen) PathName() string {
 	return "/media_distributor_data_surat_kerjasama_dokumen/"
 }
 
-func (m *MediaDistributorDataSuratKerjasamaDokumen) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaDistributorDataSuratKerjasamaDokumen) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaDistributorDataSuratKerjasamaDokumen dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1011,9 +962,6 @@ func (m *MediaDistributorDataSuratKerjasamaDokumen) ParseToInsertType() map[stri
 		"created_at":          m.CreatedAt,
 		"updated_at":          m.UpdatedAt,
 		"deleted_at":          deletedAtInterface,
-		"tahun_update":        m.TahunUpdate,
-		"bulan_update":        m.BulanUpdate,
-		"event_time":          m.EventTime,
 	}
 }
 
@@ -1039,14 +987,13 @@ type MediaBrandDataPerwakilanDokumen struct {
 	BrandData   BrandData
 	Key         string
 	Format      string
-	Pencatatan
 }
 
 func (MediaBrandDataPerwakilanDokumen) PathName() string {
 	return "/media_brand_data_perwakilan_dokumen/"
 }
 
-func (m *MediaBrandDataPerwakilanDokumen) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaBrandDataPerwakilanDokumen) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataPerwakilanDokumen dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1075,9 +1022,6 @@ func (m *MediaBrandDataPerwakilanDokumen) ParseToInsertType() map[string]interfa
 		"id_brand_data": m.IdBrandData,
 		"key":           m.Key,
 		"format":        m.Format,
-		"tahun_update":  m.TahunUpdate,
-		"bulan_update":  m.BulanUpdate,
-		"event_time":    m.EventTime,
 	}
 }
 
@@ -1103,14 +1047,13 @@ type MediaBrandDataSertifikatFoto struct {
 	BrandData   BrandData
 	Key         string
 	Format      string
-	Pencatatan
 }
 
 func (MediaBrandDataSertifikatFoto) PathName() string {
 	return "/media_brand_data_sertifikat_foto/"
 }
 
-func (m *MediaBrandDataSertifikatFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaBrandDataSertifikatFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataSertifikatFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1139,9 +1082,6 @@ func (m *MediaBrandDataSertifikatFoto) ParseToInsertType() map[string]interface{
 		"id_brand_data": m.IdBrandData,
 		"key":           m.Key,
 		"format":        m.Format,
-		"tahun_update":  m.TahunUpdate,
-		"bulan_update":  m.BulanUpdate,
-		"event_time":    m.EventTime,
 	}
 }
 
@@ -1167,14 +1107,13 @@ type MediaBrandDataNIBFoto struct {
 	BrandData   BrandData
 	Key         string
 	Format      string
-	Pencatatan
 }
 
 func (MediaBrandDataNIBFoto) PathName() string {
 	return "/media_brand_data_nib_foto/"
 }
 
-func (m *MediaBrandDataNIBFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaBrandDataNIBFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataNIBFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1203,9 +1142,6 @@ func (m *MediaBrandDataNIBFoto) ParseToInsertType() map[string]interface{} {
 		"id_brand_data": m.IdBrandData,
 		"key":           m.Key,
 		"format":        m.Format,
-		"tahun_update":  m.TahunUpdate,
-		"bulan_update":  m.BulanUpdate,
-		"event_time":    m.EventTime,
 	}
 }
 
@@ -1231,14 +1167,13 @@ type MediaBrandDataNPWPFoto struct {
 	BrandData   BrandData
 	Key         string
 	Format      string
-	Pencatatan
 }
 
 func (MediaBrandDataNPWPFoto) PathName() string {
 	return "/media_brand_data_npwp_foto/"
 }
 
-func (m *MediaBrandDataNPWPFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaBrandDataNPWPFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataNPWPFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1267,9 +1202,6 @@ func (m *MediaBrandDataNPWPFoto) ParseToInsertType() map[string]interface{} {
 		"id_brand_data": m.IdBrandData,
 		"key":           m.Key,
 		"format":        m.Format,
-		"tahun_update":  m.TahunUpdate,
-		"bulan_update":  m.BulanUpdate,
-		"event_time":    m.EventTime,
 	}
 }
 
@@ -1295,14 +1227,13 @@ type MediaBrandDataLogoFoto struct {
 	BrandData   BrandData
 	Key         string
 	Format      string
-	Pencatatan
 }
 
 func (MediaBrandDataLogoFoto) PathName() string {
 	return "/media_brand_data_logo_foto/"
 }
 
-func (m *MediaBrandDataLogoFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaBrandDataLogoFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataLogoFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1331,9 +1262,6 @@ func (m *MediaBrandDataLogoFoto) ParseToInsertType() map[string]interface{} {
 		"id_brand_data": m.IdBrandData,
 		"key":           m.Key,
 		"format":        m.Format,
-		"tahun_update":  m.TahunUpdate,
-		"bulan_update":  m.BulanUpdate,
-		"event_time":    m.EventTime,
 	}
 }
 
@@ -1358,14 +1286,13 @@ type MediaBrandDataSuratKerjasamaDokumen struct {
 	BrandData BrandData
 	Key       string
 	Format    string
-	Pencatatan
 }
 
 func (MediaBrandDataSuratKerjasamaDokumen) PathName() string {
 	return "/media_brand_data_surat_kerjasama_dokumen/"
 }
 
-func (m *MediaBrandDataSuratKerjasamaDokumen) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaBrandDataSuratKerjasamaDokumen) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataSuratKerjasamaDokumen dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1389,12 +1316,9 @@ func (m *MediaBrandDataSuratKerjasamaDokumen) CreateTable(ctx context.Context, s
 
 func (m *MediaBrandDataSuratKerjasamaDokumen) ParseToInsertType() map[string]interface{} {
 	return map[string]interface{}{
-		"id":           m.ID,
-		"key":          m.Key,
-		"format":       m.Format,
-		"tahun_update": m.TahunUpdate,
-		"bulan_update": m.BulanUpdate,
-		"event_time":   m.EventTime,
+		"id":     m.ID,
+		"key":    m.Key,
+		"format": m.Format,
 	}
 }
 
@@ -1420,14 +1344,13 @@ type MediaInformasiKendaraanKurirKendaraanFoto struct {
 	InformasiKendaraanKurir   InformasiKendaraanKurir
 	Key                       string
 	Format                    string
-	Pencatatan
 }
 
 func (MediaInformasiKendaraanKurirKendaraanFoto) PathName() string {
 	return "/media_informasi_kendaraan_kurir_kendaraan_foto/"
 }
 
-func (m *MediaInformasiKendaraanKurirKendaraanFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaInformasiKendaraanKurirKendaraanFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaInformasiKendaraanKurirKendaraanFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1456,9 +1379,6 @@ func (m *MediaInformasiKendaraanKurirKendaraanFoto) ParseToInsertType() map[stri
 		"id_informasi_kendaraan_kurir": m.IdInformasiKendaraanKurir,
 		"key":                          m.Key,
 		"format":                       m.Format,
-		"tahun_update":                 m.TahunUpdate,
-		"bulan_update":                 m.BulanUpdate,
-		"event_time":                   m.EventTime,
 	}
 }
 
@@ -1484,7 +1404,6 @@ type MediaInformasiKendaraanKurirBPKBFoto struct {
 	InformasiKendaraanKurir   InformasiKendaraanKurir
 	Key                       string
 	Format                    string
-	Pencatatan
 }
 
 func (MediaInformasiKendaraanKurirBPKBFoto) PathName() string {
@@ -1492,7 +1411,7 @@ func (MediaInformasiKendaraanKurirBPKBFoto) PathName() string {
 
 }
 
-func (m *MediaInformasiKendaraanKurirBPKBFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaInformasiKendaraanKurirBPKBFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaInformasiKendaraanKurirBPKBFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1521,9 +1440,6 @@ func (m *MediaInformasiKendaraanKurirBPKBFoto) ParseToInsertType() map[string]in
 		"id_informasi_kendaraan_kurir": m.IdInformasiKendaraanKurir,
 		"key":                          m.Key,
 		"format":                       m.Format,
-		"tahun_update":                 m.TahunUpdate,
-		"bulan_update":                 m.BulanUpdate,
-		"event_time":                   m.EventTime,
 	}
 }
 
@@ -1549,14 +1465,13 @@ type MediaInformasiKendaraanKurirSTNKFoto struct {
 	InformasiKendaraanKurir   InformasiKendaraanKurir
 	Key                       string
 	Format                    string
-	Pencatatan
 }
 
 func (MediaInformasiKendaraanKurirSTNKFoto) PathName() string {
 	return "/media_informasi_kendaraan_kurir_stnk_foto/"
 }
 
-func (m *MediaInformasiKendaraanKurirSTNKFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaInformasiKendaraanKurirSTNKFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaInformasiKendaraanKurirSTNKFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1585,9 +1500,6 @@ func (m *MediaInformasiKendaraanKurirSTNKFoto) ParseToInsertType() map[string]in
 		"id_informasi_kendaraan_kurir": m.IdInformasiKendaraanKurir,
 		"key":                          m.Key,
 		"format":                       m.Format,
-		"tahun_update":                 m.TahunUpdate,
-		"bulan_update":                 m.BulanUpdate,
-		"event_time":                   m.EventTime,
 	}
 }
 
@@ -1613,14 +1525,13 @@ type MediaInformasiKurirKTPFoto struct {
 	InformasiKurir   InformasiKurir
 	Key              string
 	Format           string
-	Pencatatan
 }
 
 func (MediaInformasiKurirKTPFoto) PathName() string {
 	return "/media_informasi_kurir_ktp_foto/"
 }
 
-func (m *MediaInformasiKurirKTPFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaInformasiKurirKTPFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaInformasiKurirKTPFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1649,9 +1560,6 @@ func (m *MediaInformasiKurirKTPFoto) ParseToInsertType() map[string]interface{} 
 		"id_informasi_kurir": m.IdInformasiKurir,
 		"key":                m.Key,
 		"format":             m.Format,
-		"tahun_update":       m.TahunUpdate,
-		"bulan_update":       m.BulanUpdate,
-		"event_time":         m.EventTime,
 	}
 }
 
@@ -1677,14 +1585,13 @@ type MediaReviewFoto struct {
 	Review   Review
 	Key      string
 	Format   string
-	Pencatatan
 }
 
 func (MediaReviewFoto) PathName() string {
 	return "/media_review_foto/"
 }
 
-func (m *MediaReviewFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaReviewFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaReviewFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1709,13 +1616,10 @@ func (m *MediaReviewFoto) CreateTable(ctx context.Context, session *gocql.Sessio
 
 func (m *MediaReviewFoto) ParseToInsertType() map[string]interface{} {
 	return map[string]interface{}{
-		"id":           m.ID,
-		"id_review":    m.IdReview,
-		"key":          m.Key,
-		"format":       m.Format,
-		"tahun_update": m.TahunUpdate,
-		"bulan_update": m.BulanUpdate,
-		"event_time":   m.EventTime,
+		"id":        m.ID,
+		"id_review": m.IdReview,
+		"key":       m.Key,
+		"format":    m.Format,
 	}
 }
 
@@ -1741,14 +1645,13 @@ type MediaReviewVideo struct {
 	Review   Review
 	Key      string
 	Format   string
-	Pencatatan
 }
 
 func (MediaReviewVideo) PathName() string {
 	return "/media_review_video/"
 }
 
-func (m *MediaReviewVideo) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaReviewVideo) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaReviewVideo dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1773,13 +1676,10 @@ func (m *MediaReviewVideo) CreateTable(ctx context.Context, session *gocql.Sessi
 
 func (m *MediaReviewVideo) ParseToInsertType() map[string]interface{} {
 	return map[string]interface{}{
-		"id":           m.ID,
-		"id_review":    m.IdReview,
-		"key":          m.Key,
-		"format":       m.Format,
-		"tahun_update": m.TahunUpdate,
-		"bulan_update": m.BulanUpdate,
-		"event_time":   m.EventTime,
+		"id":        m.ID,
+		"id_review": m.IdReview,
+		"key":       m.Key,
+		"format":    m.Format,
 	}
 }
 
@@ -1805,14 +1705,13 @@ type MediaTransaksiApprovedFoto struct {
 	Transaksi   Transaksi
 	Key         string
 	Format      string
-	Pencatatan
 }
 
 func (MediaTransaksiApprovedFoto) PathName() string {
 	return "/media_transaksi_approved_foto/"
 }
 
-func (m *MediaTransaksiApprovedFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaTransaksiApprovedFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaTransaksiApprovedFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1841,9 +1740,6 @@ func (m *MediaTransaksiApprovedFoto) ParseToInsertType() map[string]interface{} 
 		"id_transaksi": m.IdTransaksi,
 		"key":          m.Key,
 		"format":       m.Format,
-		"tahun_update": m.TahunUpdate,
-		"bulan_update": m.BulanUpdate,
-		"event_time":   m.EventTime,
 	}
 }
 
@@ -1869,14 +1765,13 @@ type MediaTransaksiApprovedVideo struct {
 	Transaksi   Transaksi
 	Key         string
 	Format      string
-	Pencatatan
 }
 
 func (MediaTransaksiApprovedVideo) PathName() string {
 	return "/media_transaksi_approved_video/"
 }
 
-func (m *MediaTransaksiApprovedVideo) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaTransaksiApprovedVideo) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaTransaksiApprovedVideo dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1905,9 +1800,6 @@ func (m *MediaTransaksiApprovedVideo) ParseToInsertType() map[string]interface{}
 		"id_transaksi": m.IdTransaksi,
 		"key":          m.Key,
 		"format":       m.Format,
-		"tahun_update": m.TahunUpdate,
-		"bulan_update": m.BulanUpdate,
-		"event_time":   m.EventTime,
 	}
 }
 
@@ -1933,14 +1825,13 @@ type MediaPengirimanPickedUpFoto struct {
 	Pengiriman   Pengiriman
 	Key          string
 	Format       string
-	Pencatatan
 }
 
 func (MediaPengirimanPickedUpFoto) PathName() string {
 	return "/media_pengiriman_picked_up_foto/"
 }
 
-func (m *MediaPengirimanPickedUpFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaPengirimanPickedUpFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPengirimanPickedUpFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1969,9 +1860,6 @@ func (m *MediaPengirimanPickedUpFoto) ParseToInsertType() map[string]interface{}
 		"id_pengiriman": m.IdPengiriman,
 		"key":           m.Key,
 		"format":        m.Format,
-		"tahun_update":  m.TahunUpdate,
-		"bulan_update":  m.BulanUpdate,
-		"event_time":    m.EventTime,
 	}
 }
 
@@ -1997,7 +1885,6 @@ type MediaPengirimanSampaiFoto struct {
 	Pengiriman   Pengiriman
 	Key          string
 	Format       string
-	Pencatatan
 }
 
 func (MediaPengirimanSampaiFoto) PathName() string {
@@ -2005,7 +1892,7 @@ func (MediaPengirimanSampaiFoto) PathName() string {
 
 }
 
-func (m *MediaPengirimanSampaiFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaPengirimanSampaiFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPengirimanSampaiFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2034,9 +1921,6 @@ func (m *MediaPengirimanSampaiFoto) ParseToInsertType() map[string]interface{} {
 		"id_pengiriman": m.IdPengiriman,
 		"key":           m.Key,
 		"format":        m.Format,
-		"tahun_update":  m.TahunUpdate,
-		"bulan_update":  m.BulanUpdate,
-		"event_time":    m.EventTime,
 	}
 }
 
@@ -2062,14 +1946,13 @@ type MediaPengirimanEkspedisiPickedUpFoto struct {
 	PengirimanEkspedisi   PengirimanEkspedisi
 	Key                   string
 	Format                string
-	Pencatatan
 }
 
 func (MediaPengirimanEkspedisiPickedUpFoto) PathName() string {
 	return "/media_pengiriman_ekspedisi_picked_up_foto/"
 }
 
-func (m *MediaPengirimanEkspedisiPickedUpFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaPengirimanEkspedisiPickedUpFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPengirimanEkspedisiPickedUpFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2098,9 +1981,6 @@ func (m *MediaPengirimanEkspedisiPickedUpFoto) ParseToInsertType() map[string]in
 		"id_pengiriman_ekspedisi": m.IdPengirimanEkspedisi,
 		"key":                     m.Key,
 		"format":                  m.Format,
-		"tahun_update":            m.TahunUpdate,
-		"bulan_update":            m.BulanUpdate,
-		"event_time":              m.EventTime,
 	}
 }
 
@@ -2126,14 +2006,13 @@ type MediaPengirimanEkspedisiSampaiAgentFoto struct {
 	PengirimanEkspedisi   PengirimanEkspedisi
 	Key                   string
 	Format                string
-	Pencatatan
 }
 
 func (MediaPengirimanEkspedisiSampaiAgentFoto) PathName() string {
 	return "/media_pengiriman_ekspedisi_sampai_agent_foto/"
 }
 
-func (m *MediaPengirimanEkspedisiSampaiAgentFoto) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (m *MediaPengirimanEkspedisiSampaiAgentFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPengirimanEkspedisiSampaiAgentFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2162,9 +2041,6 @@ func (m *MediaPengirimanEkspedisiSampaiAgentFoto) ParseToInsertType() map[string
 		"id_pengiriman_ekspedisi": m.IdPengirimanEkspedisi,
 		"key":                     m.Key,
 		"format":                  m.Format,
-		"tahun_update":            m.TahunUpdate,
-		"bulan_update":            m.BulanUpdate,
-		"event_time":              m.EventTime,
 	}
 }
 

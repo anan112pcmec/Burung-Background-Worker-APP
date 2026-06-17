@@ -8,10 +8,10 @@ type Pencatatan struct {
 	EventTime   time.Time
 }
 
-func (p Pencatatan) Sekarang() *Pencatatan {
+func Sekarang() Pencatatan {
 	now := time.Now()
 
-	return &Pencatatan{
+	return Pencatatan{
 		TahunUpdate: now.Year(),
 		BulanUpdate: int(now.Month()),
 		EventTime:   now,

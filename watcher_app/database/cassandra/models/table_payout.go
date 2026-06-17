@@ -1,4 +1,4 @@
-package cass_models
+﻿package cass_models
 
 import (
 	"context"
@@ -34,14 +34,13 @@ type PayOutKurir struct {
 	BeneficiaryEmail string
 	IdempotencyKey   string
 	IsVirtualAccount bool
-	Pencatatan
 }
 
 func (p PayOutKurir) TableNameHistorical() string {
 	return "pay_out_kurir_historical"
 }
 
-func (p *PayOutKurir) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (p *PayOutKurir) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan seluruh field di struct PayOutKurir dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -112,9 +111,6 @@ func (p *PayOutKurir) ParseToInsertType() map[string]interface{} {
 		"beneficiary_email":  p.BeneficiaryEmail,
 		"idempotency_key":    p.IdempotencyKey,
 		"is_virtual_account": p.IsVirtualAccount,
-		"tahun_update":       p.TahunUpdate,
-		"bulan_update":       p.BulanUpdate,
-		"event_time":         p.EventTime,
 	}
 }
 
@@ -157,14 +153,13 @@ type PayOutSeller struct {
 	BeneficiaryEmail string
 	IdempotencyKey   string
 	IsVirtualAccount bool
-	Pencatatan
 }
 
 func (PayOutSeller) TableNameHistorical() string {
 	return "payout_seller_historical"
 }
 
-func (p *PayOutSeller) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (p *PayOutSeller) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan seluruh field di struct PayOutSeller dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -235,9 +230,6 @@ func (p *PayOutSeller) ParseToInsertType() map[string]interface{} {
 		"beneficiary_email":  p.BeneficiaryEmail,
 		"idempotency_key":    p.IdempotencyKey,
 		"is_virtual_account": p.IsVirtualAccount,
-		"tahun_update":       p.TahunUpdate,
-		"bulan_update":       p.BulanUpdate,
-		"event_time":         p.EventTime,
 	}
 }
 

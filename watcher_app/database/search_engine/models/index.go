@@ -21,6 +21,10 @@ type Seller struct {
 	DeletedAt        *time.Time `json:"deleted_at,omitempty"`
 }
 
+func (s Seller) IndexName() string {
+	return "seller_se"
+}
+
 type BarangInduk struct {
 	ID               int32      `json:"id"`
 	SellerID         int32      `json:"id_seller"`
@@ -33,6 +37,10 @@ type BarangInduk struct {
 	CreatedAt        time.Time  `json:"created_at"`
 	UpdatedAt        time.Time  `json:"updated_at"`
 	DeletedAt        *time.Time `json:"deleted_at,omitempty"`
+}
+
+func (b BarangInduk) IndexName() string {
+	return "barang_induk_se"
 }
 
 type Transaksi struct {
@@ -68,6 +76,10 @@ type Transaksi struct {
 	DeletedAt           *time.Time  `json:"deleted_at,omitempty"`
 }
 
+func (t Transaksi) IndexName() string {
+	return "transaksi_se"
+}
+
 type AlamatPengguna struct {
 	ID              int64      `json:"id"` // Tetap dipertahankan sesuai nama primary key/kolom id-nya
 	IDPengguna      int64      `json:"id_pengguna"`
@@ -86,6 +98,10 @@ type AlamatPengguna struct {
 	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
 }
 
+func (t AlamatPengguna) IndexName() string {
+	return "alamat_pengguna_se"
+}
+
 type Pengguna struct {
 	ID             int64      `json:"id"`
 	Username       string     `json:"username"`
@@ -99,6 +115,10 @@ type Pengguna struct {
 	DeletedAt      *time.Time `json:"deleted_at,omitempty"`
 }
 
+func (p Pengguna) IndexName() string {
+	return "pengguna_se"
+}
+
 type AlamatEkspedisi struct {
 	ID              int64      `json:"id_alamat_ekspedisi"`
 	Kota            string     `json:"kota"`
@@ -110,4 +130,8 @@ type AlamatEkspedisi struct {
 	CreatedAt       time.Time  `json:"created_at"`
 	UpdatedAt       time.Time  `json:"updated_at"`
 	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
+}
+
+func (a AlamatEkspedisi) IndexName() string {
+	return "alamat_ekspedisi_se"
 }

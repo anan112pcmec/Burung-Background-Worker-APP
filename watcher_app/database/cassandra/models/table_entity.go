@@ -1,4 +1,4 @@
-package cass_models
+﻿package cass_models
 
 import (
 	"context"
@@ -17,14 +17,13 @@ type Pengguna struct {
 	PinHash        string
 	StatusPengguna string
 	CreatedAt      time.Time
-	Pencatatan
 }
 
 func (p Pengguna) TableNameHistorical() string {
 	return "pengguna_historical"
 }
 
-func (p *Pengguna) CreateTable(ctx context.Context, s *gocql.Session) error {
+func (p *Pengguna) CreateHistoricalTable(ctx context.Context, s *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct Pengguna dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -61,9 +60,6 @@ func (p *Pengguna) ParseToInsertType() map[string]interface{} {
 		"pin_hash":        p.PinHash,
 		"status_pengguna": p.StatusPengguna,
 		"created_at":      p.CreatedAt,
-		"tahun_update":    p.TahunUpdate,
-		"bulan_update":    p.BulanUpdate,
-		"event_time":      p.EventTime,
 	}
 }
 
@@ -92,14 +88,13 @@ type Seller struct {
 	Deskrisi         string
 	StatusSeller     string
 	CreatedAt        time.Time
-	Pencatatan
 }
 
 func (s Seller) TableNameHistorical() string {
 	return "seller_historical"
 }
 
-func (s *Seller) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (s *Seller) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct Seller dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -144,9 +139,6 @@ func (s *Seller) ParseToInsertType() map[string]interface{} {
 		"deskrisi":          s.Deskrisi,
 		"status_seller":     s.StatusSeller,
 		"created_at":        s.CreatedAt,
-		"tahun_update":      s.TahunUpdate,
-		"bulan_update":      s.BulanUpdate,
-		"event_time":        s.EventTime,
 	}
 }
 
@@ -175,14 +167,13 @@ type Kurir struct {
 	Rating        float32
 	TipeKendaraan string
 	CreatedAt     time.Time
-	Pencatatan
 }
 
 func (k Kurir) TableNameHistorical() string {
 	return "kurir_historical"
 }
 
-func (k *Kurir) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (k *Kurir) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct Kurir dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -229,9 +220,6 @@ func (k *Kurir) ParseToInsertType() map[string]interface{} {
 		"rating":         k.Rating,
 		"tipe_kendaraan": k.TipeKendaraan,
 		"created_at":     k.CreatedAt,
-		"tahun_update":   k.TahunUpdate,
-		"bulan_update":   k.BulanUpdate,
-		"event_time":     k.EventTime,
 	}
 }
 

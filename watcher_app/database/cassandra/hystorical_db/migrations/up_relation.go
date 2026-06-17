@@ -1,4 +1,4 @@
-package historical_migrations
+﻿package historical_migrations
 
 import (
 	"context"
@@ -24,7 +24,7 @@ func UpRelation(ctx context.Context, session *gocql.Session) []error {
 			defer ctxCancel()
 
 			if historicalModel, ok := m.(cass_models.Method); ok {
-				if err := historicalModel.CreateTable(ctx, session); err != nil {
+				if err := historicalModel.CreateHistoricalTable(ctx, session); err != nil {
 					mu.Lock()
 					errs = append(errs, err)
 					mu.Unlock()

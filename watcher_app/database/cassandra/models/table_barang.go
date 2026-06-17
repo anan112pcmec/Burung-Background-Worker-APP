@@ -1,4 +1,4 @@
-package cass_models
+﻿package cass_models
 
 import (
 	"context"
@@ -19,14 +19,13 @@ type BarangInduk struct {
 	OriginalKategori int64
 	HargaKategoris   int32
 	CreatedAt        time.Time
-	Pencatatan
 }
 
 func (BarangInduk) TableNameHistorical() string {
 	return "barang_induk_historical"
 }
 
-func (b *BarangInduk) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (b *BarangInduk) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct BarangInduk dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -65,9 +64,6 @@ func (b *BarangInduk) ParseToInsertType() map[string]interface{} {
 		"original_kategori": b.OriginalKategori,
 		"harga_kategoris":   b.HargaKategoris,
 		"created_at":        b.CreatedAt,
-		"tahun_update":      b.TahunUpdate,
-		"bulan_update":      b.BulanUpdate,
-		"event_time":        b.EventTime,
 	}
 }
 
@@ -101,14 +97,13 @@ type KategoriBarang struct {
 	Sku            string
 	IsOriginal     bool
 	CreatedAt      time.Time
-	Pencatatan
 }
 
 func (KategoriBarang) TableNameHistorical() string {
 	return "kategori_barang_historical"
 }
 
-func (k *KategoriBarang) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (k *KategoriBarang) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -162,9 +157,6 @@ func (k *KategoriBarang) ParseToInsertType() map[string]interface{} {
 		"sku":             k.Sku,
 		"is_original":     k.IsOriginal,
 		"created_at":      k.CreatedAt,
-		"tahun_update":    k.TahunUpdate,
-		"bulan_update":    k.BulanUpdate,
-		"event_time":      k.EventTime,
 	}
 }
 
@@ -191,14 +183,13 @@ type VarianBarang struct {
 	Status        string
 	HoldBy        int64
 	HolderEntity  string
-	Pencatatan
 }
 
 func (VarianBarang) TableNameHistorical() string {
 	return "varian_barang_historical"
 }
 
-func (v *VarianBarang) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (v *VarianBarang) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct VarianBarang dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -235,9 +226,6 @@ func (v *VarianBarang) ParseToInsertType() map[string]interface{} {
 		"status":          v.Status,
 		"hold_by":         v.HoldBy,
 		"holder_entity":   v.HolderEntity,
-		"tahun_update":    v.TahunUpdate,
-		"bulan_update":    v.BulanUpdate,
-		"event_time":      v.EventTime,
 	}
 }
 

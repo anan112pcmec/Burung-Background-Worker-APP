@@ -1,4 +1,4 @@
-package cass_models
+﻿package cass_models
 
 import (
 	"context"
@@ -29,14 +29,13 @@ type Pengiriman struct {
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 	DeletedAt         gorm.DeletedAt
-	Pencatatan
 }
 
 func (Pengiriman) TableNameHistorical() string {
 	return "pengiriman_historical"
 }
 
-func (p *Pengiriman) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (p *Pengiriman) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan seluruh field di struct Pengiriman dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -88,9 +87,6 @@ func (p *Pengiriman) ParseToInsertType() map[string]interface{} {
 		"created_at":         p.CreatedAt,
 		"updated_at":         p.UpdatedAt,
 		"deleted_at":         p.DeletedAt,
-		"tahun_update":       p.TahunUpdate,
-		"bulan_update":       p.BulanUpdate,
-		"event_time":         p.EventTime,
 	}
 }
 
@@ -117,14 +113,13 @@ type JejakPengiriman struct {
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	DeletedAt    gorm.DeletedAt
-	Pencatatan
 }
 
 func (JejakPengiriman) TableNameHistorical() string {
 	return "jejak_pengiriman_historical"
 }
 
-func (j *JejakPengiriman) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (j *JejakPengiriman) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan seluruh field di struct JejakPengiriman dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -163,9 +158,6 @@ func (j *JejakPengiriman) ParseToInsertType() map[string]interface{} {
 		"created_at":    j.CreatedAt,
 		"updated_at":    j.UpdatedAt,
 		"deleted_at":    j.DeletedAt,
-		"tahun_update":  j.TahunUpdate,
-		"bulan_update":  j.BulanUpdate,
-		"event_time":    j.EventTime,
 	}
 }
 
@@ -199,14 +191,13 @@ type PengirimanEkspedisi struct {
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 	DeletedAt         gorm.DeletedAt
-	Pencatatan
 }
 
 func (PengirimanEkspedisi) TableNameHistorical() string {
 	return "pengiriman_ekspedisi_historical"
 }
 
-func (p *PengirimanEkspedisi) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (p *PengirimanEkspedisi) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan seluruh field di struct PengirimanEkspedisi dan komponen pencatatan historis
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -258,9 +249,6 @@ func (p *PengirimanEkspedisi) ParseToInsertType(tahunUpdate int, bulanUpdate int
 		"created_at":          p.CreatedAt,
 		"updated_at":          p.UpdatedAt,
 		"deleted_at":          p.DeletedAt,
-		"tahun_update":        p.TahunUpdate, // Dilewatkan via argumen fungsi karena tidak ada embedded Pencatatan
-		"bulan_update":        p.BulanUpdate, // Dilewatkan via argumen fungsi karena tidak ada embedded Pencatatan
-		"event_time":          p.EventTime,   // Dilewatkan via argumen fungsi karena tidak ada embedded Pencatatan
 	}
 }
 
@@ -287,14 +275,13 @@ type JejakPengirimanEkspedisi struct {
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 	DeletedAt             gorm.DeletedAt
-	Pencatatan
 }
 
 func (JejakPengirimanEkspedisi) TableNameHistorical() string {
 	return "jejak_pengiriman_ekspedisi_historical"
 }
 
-func (j *JejakPengirimanEkspedisi) CreateTable(ctx context.Context, session *gocql.Session) error {
+func (j *JejakPengirimanEkspedisi) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -332,9 +319,6 @@ func (j *JejakPengirimanEkspedisi) ParseToInsertType() map[string]interface{} {
 		"created_at":              j.CreatedAt,
 		"updated_at":              j.UpdatedAt,
 		"deleted_at":              j.DeletedAt,
-		"tahun_update":            j.TahunUpdate,
-		"bulan_update":            j.BulanUpdate,
-		"event_time":              j.EventTime,
 	}
 }
 

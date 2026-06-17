@@ -1,4 +1,4 @@
-package historical_db_function
+package sot_replica_function
 
 import (
 	"context"
@@ -8,13 +8,11 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
-
-	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 )
 
 const timeout = 6
 
-func InsertData(ctx context.Context, session *gocql.Session, tablename string, append_data *[]map[string]interface{}) error {
+func InsertReplicaData(ctx context.Context, session *gocql.Session, tablename string, append_data *[]map[string]interface{}) error {
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var errs []error
@@ -30,11 +28,6 @@ func InsertData(ctx context.Context, session *gocql.Session, tablename string, a
 		go func(konteks context.Context, ctxCancel context.CancelFunc, d map[string]interface{}) {
 			defer wg.Done()
 			defer ctxCancel()
-
-			pencatatan := historical_format.Sekarang()
-			d["tahun_update"] = pencatatan.TahunUpdate
-			d["bulan_update"] = pencatatan.BulanUpdate
-			d["event_time"] = pencatatan.EventTime
 
 			total := len(d)
 
@@ -77,3 +70,7 @@ func InsertData(ctx context.Context, session *gocql.Session, tablename string, a
 
 	return nil
 }
+
+func UpdateData() {}
+
+func DeleteData() {}
