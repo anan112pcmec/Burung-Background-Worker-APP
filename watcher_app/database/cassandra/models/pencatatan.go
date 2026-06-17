@@ -1,4 +1,4 @@
-package historical_models
+package cass_models
 
 import "time"
 

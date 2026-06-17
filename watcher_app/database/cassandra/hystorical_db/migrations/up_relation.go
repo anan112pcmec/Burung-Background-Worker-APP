@@ -8,7 +8,7 @@ import (
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 
-	historical_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/hystorical_db/models"
+	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 )
 
 func UpRelation(ctx context.Context, session *gocql.Session) []error {
@@ -23,7 +23,7 @@ func UpRelation(ctx context.Context, session *gocql.Session) []error {
 			defer wg.Done()
 			defer ctxCancel()
 
-			if historicalModel, ok := m.(historical_models.Method); ok {
+			if historicalModel, ok := m.(cass_models.Method); ok {
 				if err := historicalModel.CreateTable(ctx, session); err != nil {
 					mu.Lock()
 					errs = append(errs, err)

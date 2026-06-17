@@ -1,4 +1,4 @@
-package historical_models
+package cass_models
 
 import (
 	"context"
@@ -37,7 +37,7 @@ type PayOutKurir struct {
 	Pencatatan
 }
 
-func (p PayOutKurir) TableName() string {
+func (p PayOutKurir) TableNameHistorical() string {
 	return "pay_out_kurir_historical"
 }
 
@@ -74,14 +74,14 @@ func (p *PayOutKurir) CreateTable(ctx context.Context, session *gocql.Session) e
 		bulan_update int,
 		event_time timestamp,
 		PRIMARY KEY ((id, tahun_update, bulan_update), event_time)
-	)`, p.TableName())
+	)`, p.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
 		fmt.Println("Gagal eksekusi query:", err)
 		return err
 	}
 
-	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", p.TableName())
+	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", p.TableNameHistorical())
 	return nil
 }
 
@@ -120,13 +120,13 @@ func (p *PayOutKurir) ParseToInsertType() map[string]interface{} {
 
 // DropTable disesuaikan menggunakan p.TableName() secara dinamis
 func (p *PayOutKurir) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableName())
+	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", p.TableName(), err)
+		return fmt.Errorf("gagal drop tabel %s: %w", p.TableNameHistorical(), err)
 	}
 
-	fmt.Printf("Berhasil drop tabel %s\n", p.TableName())
+	fmt.Printf("Berhasil drop tabel %s\n", p.TableNameHistorical())
 	return nil
 }
 
@@ -160,7 +160,7 @@ type PayOutSeller struct {
 	Pencatatan
 }
 
-func (PayOutSeller) TableName() string {
+func (PayOutSeller) TableNameHistorical() string {
 	return "payout_seller_historical"
 }
 
@@ -197,14 +197,14 @@ func (p *PayOutSeller) CreateTable(ctx context.Context, session *gocql.Session) 
 		bulan_update int,
 		event_time timestamp,
 		PRIMARY KEY ((id, tahun_update, bulan_update), event_time)
-	)`, p.TableName())
+	)`, p.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
 		fmt.Println("Gagal eksekusi query:", err)
 		return err
 	}
 
-	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", p.TableName())
+	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", p.TableNameHistorical())
 	return nil
 }
 
@@ -242,12 +242,12 @@ func (p *PayOutSeller) ParseToInsertType() map[string]interface{} {
 }
 
 func (p *PayOutSeller) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableName())
+	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", p.TableName(), err)
+		return fmt.Errorf("gagal drop tabel %s: %w", p.TableNameHistorical(), err)
 	}
 
-	fmt.Printf("Berhasil drop tabel %s\n", p.TableName())
+	fmt.Printf("Berhasil drop tabel %s\n", p.TableNameHistorical())
 	return nil
 }

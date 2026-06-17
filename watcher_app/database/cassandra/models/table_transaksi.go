@@ -1,4 +1,4 @@
-package historical_models
+package cass_models
 
 import (
 	"context"
@@ -25,7 +25,7 @@ type Pembayaran struct {
 	Pencatatan
 }
 
-func (Pembayaran) TableName() string {
+func (Pembayaran) TableNameHistorical() string {
 	return "pembayaran_historical"
 }
 
@@ -47,14 +47,14 @@ func (p *Pembayaran) CreateTable(ctx context.Context, session *gocql.Session) er
 		bulan_update int,
 		event_time timestamp,
 		PRIMARY KEY ((id, tahun_update, bulan_update), event_time)
-	)`, p.TableName())
+	)`, p.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
 		fmt.Println("Gagal eksekusi query:", err)
 		return err
 	}
 
-	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", p.TableName())
+	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", p.TableNameHistorical())
 	return nil
 }
 
@@ -78,13 +78,13 @@ func (p *Pembayaran) ParseToInsertType() map[string]interface{} {
 }
 
 func (p *Pembayaran) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableName())
+	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", p.TableName(), err)
+		return fmt.Errorf("gagal drop tabel %s: %w", p.TableNameHistorical(), err)
 	}
 
-	fmt.Printf("Berhasil drop tabel %s\n", p.TableName())
+	fmt.Printf("Berhasil drop tabel %s\n", p.TableNameHistorical())
 	return nil
 }
 
@@ -127,7 +127,7 @@ type Transaksi struct {
 	Pencatatan
 }
 
-func (Transaksi) TableName() string {
+func (Transaksi) TableNameHistorical() string {
 	return "transaksi_historical"
 }
 
@@ -166,14 +166,14 @@ func (t *Transaksi) CreateTable(ctx context.Context, session *gocql.Session) err
 		bulan_update int,
 		event_time timestamp,
 		PRIMARY KEY ((id, tahun_update, bulan_update), event_time)
-	)`, t.TableName())
+	)`, t.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
 		fmt.Println("Gagal eksekusi query:", err)
 		return err
 	}
 
-	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", t.TableName())
+	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", t.TableNameHistorical())
 	return nil
 }
 
@@ -214,13 +214,13 @@ func (t *Transaksi) ParseToInsertType() map[string]interface{} {
 }
 
 func (t *Transaksi) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, t.TableName())
+	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, t.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", t.TableName(), err)
+		return fmt.Errorf("gagal drop tabel %s: %w", t.TableNameHistorical(), err)
 	}
 
-	fmt.Printf("Berhasil drop tabel %s\n", t.TableName())
+	fmt.Printf("Berhasil drop tabel %s\n", t.TableNameHistorical())
 	return nil
 }
 
@@ -256,7 +256,7 @@ type TransaksiFailed struct {
 	Pencatatan
 }
 
-func (TransaksiFailed) TableName() string {
+func (TransaksiFailed) TableNameHistorical() string {
 	return "transaksi_failed_historical"
 }
 
@@ -295,14 +295,14 @@ func (t *TransaksiFailed) CreateTable(ctx context.Context, session *gocql.Sessio
 		bulan_update int,
 		event_time timestamp,
 		PRIMARY KEY ((id, tahun_update, bulan_update), event_time)
-	)`, t.TableName())
+	)`, t.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
 		fmt.Println("Gagal eksekusi query:", err)
 		return err
 	}
 
-	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", t.TableName())
+	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", t.TableNameHistorical())
 	return nil
 }
 
@@ -343,12 +343,12 @@ func (t *TransaksiFailed) ParseToInsertType() map[string]interface{} {
 }
 
 func (t *TransaksiFailed) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, t.TableName())
+	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, t.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", t.TableName(), err)
+		return fmt.Errorf("gagal drop tabel %s: %w", t.TableNameHistorical(), err)
 	}
 
-	fmt.Printf("Berhasil drop tabel %s\n", t.TableName())
+	fmt.Printf("Berhasil drop tabel %s\n", t.TableNameHistorical())
 	return nil
 }
