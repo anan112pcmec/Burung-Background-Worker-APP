@@ -9,6 +9,7 @@ import (
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
+
 )
 
 func DownRelation(ctx context.Context, session *gocql.Session) []error {

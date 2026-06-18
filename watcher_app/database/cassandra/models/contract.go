@@ -4,7 +4,6 @@ import (
 	"context"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
-
 )
 
 type TableName interface {
@@ -14,9 +13,7 @@ type TableName interface {
 
 type Method interface {
 	CreateHistoricalTable(ctx context.Context, s *gocql.Session) error
-	UpdateTable(ctx context.Context, s *gocql.Session) error
+	CreateSotReplicaTable(ctx context.Context, s *gocql.Session) error
 	ParseToCUDType() map[string]interface{}
 	DropTable(ctx context.Context, s *gocql.Session) error
 }
-
-

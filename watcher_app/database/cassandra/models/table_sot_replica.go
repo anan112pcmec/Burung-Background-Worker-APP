@@ -62,16 +62,6 @@ func (r ReviewDislike) TableNameSotReplica() string {
 	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
 }
 
-func (r Pengguna) TableNameSotReplica() string {
-	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
-}
-func (r Seller) TableNameSotReplica() string {
-	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
-}
-func (r Kurir) TableNameSotReplica() string {
-	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
-}
-
 func (r MediaPenggunaProfilFoto) TableNameSotReplica() string {
 	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
 }

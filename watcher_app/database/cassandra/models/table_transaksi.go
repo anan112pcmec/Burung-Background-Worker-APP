@@ -57,7 +57,7 @@ func (p *Pembayaran) CreateHistoricalTable(ctx context.Context, session *gocql.S
 	return nil
 }
 
-func (p *Pembayaran) ParseToInsertType() map[string]interface{} {
+func (p *Pembayaran) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                p.ID,
 		"id_pengguna":       p.IdPengguna,
@@ -172,7 +172,7 @@ func (t *Transaksi) CreateHistoricalTable(ctx context.Context, session *gocql.Se
 	return nil
 }
 
-func (t *Transaksi) ParseToInsertType() map[string]interface{} {
+func (t *Transaksi) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                   t.ID,
 		"id_pengguna":          t.IdPengguna,
@@ -297,7 +297,7 @@ func (t *TransaksiFailed) CreateHistoricalTable(ctx context.Context, session *go
 	return nil
 }
 
-func (t *TransaksiFailed) ParseToInsertType() map[string]interface{} {
+func (t *TransaksiFailed) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                   t.ID,
 		"id_pengguna":          t.IdPengguna,
@@ -338,5 +338,119 @@ func (t *TransaksiFailed) DropTable(ctx context.Context, session *gocql.Session)
 	}
 
 	fmt.Printf("Berhasil drop tabel %s\n", t.TableNameHistorical())
+	return nil
+}
+
+func (p *Pembayaran) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		kode_transaksi_pg text,
+		kode_order_sistem text,
+		provider text,
+		total int,
+		payment_type text,
+		paid_at text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, p.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", p.TableNameSotReplica())
+	return nil
+}
+
+
+
+func (t *Transaksi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		id_seller int,
+		id_barang_induk bigint,
+		id_kategori_barang bigint,
+		id_alamat_pengguna bigint,
+		id_alamat_gudang bigint,
+		id_alamat_ekspedisi bigint,
+		id_pembayaran bigint,
+		kendaraan_pengiriman text,
+		jenis_pengiriman text,
+		jarak_tempuh text,
+		berat_total_kg smallint,
+		kode_order_sistem text,
+		kode_resi_ekspedisi text,
+		status text,
+		dibatalkan_oleh text,
+		catatan text,
+		kuantitas_barang int,
+		is_ekspedisi boolean,
+		seller_paid bigint,
+		kurir_paid bigint,
+		ekspedisi_paid bigint,
+		total bigint,
+		reviewed boolean,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, t.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", t.TableNameSotReplica())
+	return nil
+}
+
+func (t *TransaksiFailed) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		id_seller int,
+		id_barang_induk int,
+		id_kategori_barang bigint,
+		id_alamat_pengguna bigint,
+		id_alamat_gudang bigint,
+		id_alamat_ekspedisi bigint,
+		id_pembayaran bigint,
+		kendaraan_pengiriman text,
+		jenis_pengiriman text,
+		jarak_tempuh text,
+		berat_total_kg smallint,
+		kode_order_sistem text,
+		kode_resi_ekspedisi text,
+		status text,
+		dibatalkan_oleh text,
+		catatan text,
+		kuantitas_barang int,
+		is_ekspedisi boolean,
+		seller_paid bigint,
+		kurir_paid bigint,
+		ekspedisi_paid bigint,
+		total bigint,
+		reviewed boolean,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, t.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", t.TableNameSotReplica())
 	return nil
 }

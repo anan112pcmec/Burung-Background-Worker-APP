@@ -84,7 +84,7 @@ func (p *PayOutKurir) CreateHistoricalTable(ctx context.Context, session *gocql.
 	return nil
 }
 
-func (p *PayOutKurir) ParseToInsertType() map[string]interface{} {
+func (p *PayOutKurir) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                 p.ID,
 		"id_kurir":           p.IdKurir,
@@ -203,7 +203,7 @@ func (p *PayOutSeller) CreateHistoricalTable(ctx context.Context, session *gocql
 	return nil
 }
 
-func (p *PayOutSeller) ParseToInsertType() map[string]interface{} {
+func (p *PayOutSeller) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                 p.ID,
 		"id_seller":          p.IdSeller,
@@ -241,5 +241,87 @@ func (p *PayOutSeller) DropTable(ctx context.Context, session *gocql.Session) er
 	}
 
 	fmt.Printf("Berhasil drop tabel %s\n", p.TableNameHistorical())
+	return nil
+}
+
+func (p *PayOutKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	// Query CREATE TABLE disesuaikan dengan seluruh field di struct PayOutKurir dan Pencatatan
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_kurir bigint,
+		id_disbursment bigint,
+		user_id int,
+		amount int,
+		status text,
+		reason text,
+		timestamp text,
+		bank_code text,
+		account_number text,
+		recipient_name text,
+		sender_bank text,
+		remark text,
+		receipt text,
+		time_served text,
+		bundle_id bigint,
+		company_id bigint,
+		recipient_city int,
+		created_from text,
+		direction text,
+		sender text,
+		fee int,
+		beneficiary_email text,
+		idempotency_key text,
+		is_virtual_account boolean,
+		PRIMARY KEY (id)
+	)`, p.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", p.TableNameSotReplica())
+	return nil
+}
+
+func (p *PayOutSeller) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	// Query CREATE TABLE disesuaikan dengan seluruh field di struct PayOutSeller dan Pencatatan
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_seller bigint,
+		id_disbursment bigint,
+		user_id int,
+		amount int,
+		status text,
+		reason text,
+		timestamp text,
+		bank_code text,
+		account_number text,
+		recipient_name text,
+		sender_bank text,
+		remark text,
+		receipt text,
+		time_served text,
+		bundle_id bigint,
+		company_id bigint,
+		recipient_city int,
+		created_from text,
+		direction text,
+		sender text,
+		fee int,
+		beneficiary_email text,
+		idempotency_key text,
+		is_virtual_account boolean,
+		PRIMARY KEY (id)
+	)`, p.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", p.TableNameSotReplica())
 	return nil
 }

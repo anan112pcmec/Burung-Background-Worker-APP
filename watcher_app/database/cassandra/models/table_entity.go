@@ -50,7 +50,34 @@ func (p *Pengguna) CreateHistoricalTable(ctx context.Context, s *gocql.Session) 
 	return nil
 }
 
-func (p *Pengguna) ParseToInsertType() map[string]interface{} {
+func (p Pengguna) TableNameSotReplica() string {
+	return "pengguna_sot_replica"
+}
+
+func (p *Pengguna) CreateSotReplicaTable(ctx context.Context, s *gocql.Session) error {
+	// Query CREATE TABLE disesuaikan dengan field di struct Pengguna dan Pencatatan
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		username text,
+		nama text,
+		email text,
+		password_hash text,
+		pin_hash text,
+		status_pengguna text,
+		created_at timestamp,
+		PRIMARY KEY (id)
+	)`, p.TableNameSotReplica())
+
+	if err := s.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Println("Berhasil Eksekusi query membuat tabel sot_replica")
+	return nil
+}
+func (p *Pengguna) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":              p.ID,
 		"username":        p.Username,
@@ -125,7 +152,39 @@ func (s *Seller) CreateHistoricalTable(ctx context.Context, session *gocql.Sessi
 	return nil
 }
 
-func (s *Seller) ParseToInsertType() map[string]interface{} {
+func (s Seller) TableNameSotReplica() string {
+	return "seller_sot_replica"
+}
+
+func (s *Seller) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	// Query CREATE TABLE disesuaikan dengan field di struct Pengguna dan Pencatatan
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		username text,
+		nama text,
+		email text,
+		jenis text,
+		seller_dedication text,
+		jam_operasional text,
+		punchline text,
+		password text,
+		deskrisi text,
+		status_seller text,
+		created_at timestamp,
+		PRIMARY KEY (id)
+	)`, s.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Println("Berhasil Eksekusi query membuat tabel sot_replica")
+	return nil
+}
+
+func (s *Seller) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                s.ID,
 		"username":          s.Username,
@@ -205,7 +264,40 @@ func (k *Kurir) CreateHistoricalTable(ctx context.Context, session *gocql.Sessio
 	return nil
 }
 
-func (k *Kurir) ParseToInsertType() map[string]interface{} {
+func (k Kurir) TableNameSotReplica() string {
+	return "kurir_sot_replica"
+}
+
+func (k *Kurir) CreateSotReplicaTable(ctx context.Context, s *gocql.Session) error {
+	// Query CREATE TABLE disesuaikan dengan field di struct Pengguna dan Pencatatan
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		nama text,
+		username text,
+		email text,
+		jenis text,
+		password_hash text,
+		deskripsi text,
+		status_kurir text,
+		status_bid text,
+		verified_kurir boolean,
+		rating float,
+		tipe_kendaraan text,
+		created_at timestamp,
+		PRIMARY KEY (id)
+	)`, k.TableNameSotReplica())
+
+	if err := s.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Println("Berhasil Eksekusi query membuat tabel sot_replica")
+	return nil
+}
+
+func (k *Kurir) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":             k.ID,
 		"nama":           k.Nama,
