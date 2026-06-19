@@ -14,20 +14,19 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/meilisearch/meilisearch-go"
 	"github.com/redis/go-redis/v9"
-	"gorm.io/gorm"
 
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/config"
 	mb_cud_consumer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/consumer"
 )
 
 type Connection struct {
-	DB            *gorm.DB
-	RDSENTITY     *redis.Client
-	RDSBARANG     *redis.Client
-	RDSENGAGEMENT *redis.Client
-	SE            meilisearch.ServiceManager
-	CUD_CONSUMER  *mb_cud_consumer.Consumer
-	HDB           *gocql.Session
+	db                       *config.InternalDBReadWriteSystem
+	redis_authentication     *redis.Client
+	redis_session            *redis.Client
+	search_engine            meilisearch.ServiceManager
+	cud_consumer             *mb_cud_consumer.Consumer
+	cass_historical_session  *gocql.Session
+	cass_sot_replica_session *gocql.Session
 }
 
 func Getenvi(key, fallback string) string {
@@ -48,37 +47,44 @@ func Run() {
 	defer cancel()
 
 	// parsing env
-	rdsentity, _ := strconv.Atoi(Getenvi("RDSENTITY", "0"))
-	rdsbarang, _ := strconv.Atoi(Getenvi("RDSBARANG", "0"))
-	rdsengagement, _ := strconv.Atoi(Getenvi("RDSENGAGEMENT", "0")) // ✅ typo fix
+	rdsauthentication, _ := strconv.Atoi(Getenvi("RDSAUTHENTICATION", "0"))
+	rdssession, _ := strconv.Atoi(Getenvi("RDSSESSION", "0"))
 
 	env := config.Environment{
-		DBHOST:             Getenvi("DBHOST", "NIL"),
-		DBUSER:             Getenvi("DBUSER", "NIL"),
-		DBPASS:             Getenvi("DBPASS", "NIL"),
-		DBNAME:             Getenvi("DBNAME", "NIL"),
-		DBPORT:             Getenvi("DBPORT", "NIL"),
-		RDSHOST:            Getenvi("RDSHOST", "NIL"),
-		RDSPORT:            Getenvi("RDSPORT", "NIL"),
-		RDSENTITYDB:        rdsentity,
-		RDSBARANGDB:        rdsbarang,
-		RDSENGAGEMENTDB:    rdsengagement,
-		MEILIHOST:          Getenvi("MEILIHOST", "NIL"),
-		MEILIPORT:          Getenvi("MEILIPORT", "NIL"),
-		MEILIKEY:           Getenvi("MEILIKEY", "NIL"),
-		RMQ_HOST:           Getenvi("RMQ_HOST", "NIL"),
-		RMQ_USER:           Getenvi("RMQ_USER", "NIL"),
-		RMQ_PASS:           Getenvi("RMQ_PASS", "NIL"),
-		RMQ_PORT:           Getenvi("RMQ_PORT", "NIL"),
-		RMQ_NOTIF_EXCHANGE: Getenvi("RMQ_NOTIF_EXCHANGE", "NIL"),
-		CASS_KEYSPACE:      Getenvi("CASS_KEYSPACE", "NIL"),
-		CASS_USER:          Getenvi("CASS_USER", "NIL"),
-		CASS_PASS:          Getenvi("CASS_PASS", "NIL"),
-		CASS_PORT:          Getenvi("CASS_PORT", "NIL"),
+		DBMASTERHOST:              Getenvi("DBMASTERHOST", "NIL"),
+		DBMASTERUSER:              Getenvi("DBMASTERUSER", "NIL"),
+		DBMASTERPORT:              Getenvi("DBMASTERPORT", "NIL"),
+		DBMASTERPASS:              Getenvi("DBMASTERPASS", "NIL"),
+		DBMASTERNAME:              Getenvi("DBMASTERNAME", "NIL"),
+		DBREPLICAHOST:             Getenvi("DBREPLICAHOST", "NIL"),
+		DBREPLICAUSER:             Getenvi("DBREPLICAUSER", "NIL"),
+		DBREPLICAPASS:             Getenvi("DBREPLICAPASS", "NIL"),
+		DBREPLICAPORT:             Getenvi("DBREPLICAPORT", "NIL"),
+		DBREPLICANAME:             Getenvi("DBREPLICANAME", "NIL"),
+		RDSHOST:                   Getenvi("RDSHOST", "NIL"),
+		RDSPORT:                   Getenvi("RDSPORT", "NIL"),
+		RDSAUTHENTICATION:         rdsauthentication,
+		RDSSESSION:                rdssession,
+		MEILIHOST:                 Getenvi("MEILIHOST", "NIL"),
+		MEILIPORT:                 Getenvi("MEILIPORT", "NIL"),
+		MEILIKEY:                  Getenvi("MEILIKEY", "NIL"),
+		RMQ_HOST:                  Getenvi("RMQ_HOST", "NIL"),
+		RMQ_USER:                  Getenvi("RMQ_USER", "NIL"),
+		RMQ_PASS:                  Getenvi("RMQ_PASS", "NIL"),
+		RMQ_PORT:                  Getenvi("RMQ_PORT", "NIL"),
+		RMQ_NOTIF_EXCHANGE:        Getenvi("RMQ_NOTIF_EXCHANGE", "NIL"),
+		CASS_HISTORICAL_KEYSPACE:  Getenvi("CASS_HISTORICAL_KEYSPACE", "NIL"),
+		CASS_HISTORICAL_USER:      Getenvi("CASS_HISTORICAL_USER", "NIL"),
+		CASS_HISTORICAL_PASS:      Getenvi("CASS_HISTORICAL_PASS", "NIL"),
+		CASS_HISTORICAL_PORT:      Getenvi("CASS_HISTORICAL_PORT", "NIL"),
+		CASS_SOT_REPLICA_KEYSPACE: Getenvi("CASS_SOT_REPLICA_KEYSPACE", "NIL"),
+		CASS_SOT_REPLICA_USER:     Getenvi("CASS_SOT_REPLICA_USER", "NIL"),
+		CASS_SOT_REPLICA_PASS:     Getenvi("CASS_SOT_REPLICA_PASS", "NIL"),
+		CASS_SOT_REPLICA_PORT:     Getenvi("CASS_SOT_REPLICA_PORT", "NIL"),
 	}
 
 	// init connection
-	conn.DB, conn.RDSENTITY, conn.RDSBARANG, conn.RDSENGAGEMENT, conn.SE, conn.CUD_CONSUMER, conn.HDB = env.RunConnectionEnvironment()
+	conn.db, conn.redis_authentication, conn.redis_session, conn.search_engine, conn.cud_consumer, conn.cass_historical_session, conn.cass_sot_replica_session = env.RunConnectionEnvironment()
 
 	var wg sync.WaitGroup
 
@@ -86,7 +92,7 @@ func Run() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		conn.CUD_CONSUMER.WatchPublish(ctx, conn.DB, *conn.RDSBARANG, *conn.RDSENGAGEMENT, conn.SE)
+		conn.cud_consumer.WatchPublish(ctx, conn.db.Write, *conn.redis_authentication, *conn.redis_session, conn.cass_historical_session, conn.cass_sot_replica_session, conn.search_engine)
 	}()
 
 	fmt.Println("Watcher berjalan... tekan CTRL+C untuk exit")

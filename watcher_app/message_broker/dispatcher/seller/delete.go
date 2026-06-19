@@ -12,9 +12,13 @@ import (
 	etalase_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/etalase_services"
 	jenis_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/jenis_services"
 	media_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/media_services"
+	gocql "github.com/apache/cassandra-gocql-driver/v2"
+	"github.com/meilisearch/meilisearch-go"
+	"github.com/redis/go-redis/v9"
+	"gorm.io/gorm"
 )
 
-func SellerDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data T) error {
+func SellerDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data *T, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se meilisearch.ServiceManager) error {
 	var d mb_cud_serializer.ParsedDataMessage
 	switch v := any(data).(type) {
 	case mb_cud_serializer.ConsumeDataJson:

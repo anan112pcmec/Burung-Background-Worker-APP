@@ -367,8 +367,6 @@ func (p *Pembayaran) CreateSotReplicaTable(ctx context.Context, session *gocql.S
 	return nil
 }
 
-
-
 func (t *Transaksi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (

@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 
+	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"github.com/meilisearch/meilisearch-go"
 	"github.com/rabbitmq/amqp091-go"
 	"github.com/redis/go-redis/v9"
@@ -20,7 +21,7 @@ type Consumer struct {
 	Mu          sync.Mutex
 }
 
-func (c *Consumer) WatchPublish(ctx context.Context, Threshold *gorm.DB, rds_barang, rds_session redis.Client, se meilisearch.ServiceManager) error {
+func (c *Consumer) WatchPublish(ctx context.Context, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se meilisearch.ServiceManager) error {
 
 	// 🔒 QoS biar gak overconsume
 	c.Mu.Lock()
@@ -71,9 +72,9 @@ func (c *Consumer) WatchPublish(ctx context.Context, Threshold *gorm.DB, rds_bar
 	}
 
 	// 🔥 jalanin handler terpisah
-	go c.HandleCreate(ctx, createConsume)
-	go c.HandleUpdate(ctx, updateConsume)
-	go c.HandleDelete(ctx, deleteConsume)
+	go c.HandleCreate(ctx, createConsume, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se)
+	go c.HandleUpdate(ctx, updateConsume, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se)
+	go c.HandleDelete(ctx, deleteConsume, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se)
 
 	// 🔥 blocking sampai context selesai
 	<-ctx.Done()
