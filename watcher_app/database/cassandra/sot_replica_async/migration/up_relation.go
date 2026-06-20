@@ -9,10 +9,9 @@ import (
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
-
 )
 
-func UpMigration(ctx context.Context, s *gocql.Session) []error {
+func UpRelation(ctx context.Context, s *gocql.Session) []error {
 	var errs []error = []error{}
 	var wg sync.WaitGroup
 	var rw sync.RWMutex

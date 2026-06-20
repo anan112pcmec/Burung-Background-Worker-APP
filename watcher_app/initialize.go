@@ -16,6 +16,10 @@ import (
 	"github.com/redis/go-redis/v9"
 
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/config"
+	historical_migrations "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/migrations"
+	sot_replica_migration "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/sot_replica_async/migration"
+	se_initialize "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/initialize"
+	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	mb_cud_consumer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/consumer"
 )
 
@@ -85,6 +89,20 @@ func Run() {
 
 	// init connection
 	conn.db, conn.redis_authentication, conn.redis_session, conn.search_engine, conn.cud_consumer, conn.cass_historical_session, conn.cass_sot_replica_session = env.RunConnectionEnvironment()
+
+	if err := historical_migrations.UpRelation(ctx, conn.cass_historical_session); len(err) > 0 {
+		for _, e := range err {
+			fmt.Println(e)
+		}
+	}
+
+	if err := sot_replica_migration.UpRelation(ctx, conn.cass_sot_replica_session); len(err) > 0 {
+		for _, e := range err {
+			fmt.Println(e)
+		}
+	}
+
+	var searchEngineIndex se_models.IndexWrapper = se_initialize.InitIndex(ctx, conn.search_engine)
 
 	var wg sync.WaitGroup
 
