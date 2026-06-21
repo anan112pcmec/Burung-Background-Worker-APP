@@ -8,18 +8,20 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
-
-	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 )
 
 const timeout = 6
 
-func InsertData(ctx context.Context, session *gocql.Session, tablename string, append_data *[]map[string]interface{}) error {
+func InsertData(ctx context.Context, session *gocql.Session, tablename string, append_data ...map[string]interface{}) error {
+	if len(append_data) == 0 {
+		return nil
+	}
+
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var errs []error
 
-	for _, data := range *append_data {
+	for _, data := range append_data {
 		if len(data) == 0 {
 			continue
 		}
@@ -31,17 +33,13 @@ func InsertData(ctx context.Context, session *gocql.Session, tablename string, a
 			defer wg.Done()
 			defer ctxCancel()
 
-			pencatatan := historical_format.Sekarang()
-			d["tahun_update"] = pencatatan.TahunUpdate
-			d["bulan_update"] = pencatatan.BulanUpdate
-			d["event_time"] = pencatatan.EventTime
+			// Alokasi memori pas dengan ukuran data input
+			totalCapacity := len(d)
+			columns := make([]string, 0, totalCapacity)
+			placeholders := make([]string, 0, totalCapacity)
+			values := make([]interface{}, 0, totalCapacity)
 
-			total := len(d)
-
-			columns := make([]string, 0, total)
-			placeholders := make([]string, 0, total)
-			values := make([]interface{}, 0, total)
-
+			// Masukkan data murni apa adanya
 			for col, val := range d {
 				columns = append(columns, col)
 				placeholders = append(placeholders, "?")
@@ -55,15 +53,13 @@ func InsertData(ctx context.Context, session *gocql.Session, tablename string, a
 				strings.Join(placeholders, ", "),
 			)
 
-			fmt.Println(queryStr)
-
 			err := session.Query(queryStr, values...).
 				Consistency(gocql.Quorum).
 				ExecContext(konteks)
 
 			if err != nil {
 				mu.Lock()
-				errs = append(errs, fmt.Errorf("failed to insert: %w", err))
+				errs = append(errs, fmt.Errorf("failed to insert to %s: %w", tablename, err))
 				mu.Unlock()
 			}
 		}(fctx, cancel, data)
@@ -78,12 +74,16 @@ func InsertData(ctx context.Context, session *gocql.Session, tablename string, a
 	return nil
 }
 
-func UpdateData(ctx context.Context, session *gocql.Session, tablename string, update_data *[]map[string]interface{}, conditions map[string]interface{}) error {
+func UpdateData(ctx context.Context, session *gocql.Session, tablename string, id int64, update_data ...map[string]interface{}) error {
+	if len(update_data) == 0 {
+		return nil
+	}
+
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var errs []error
 
-	for _, data := range *update_data {
+	for _, data := range update_data {
 		if len(data) == 0 {
 			continue
 		}
@@ -95,36 +95,24 @@ func UpdateData(ctx context.Context, session *gocql.Session, tablename string, u
 			defer wg.Done()
 			defer ctxCancel()
 
-			// Pastikan metadata waktu tetap diperbarui saat update jika diperlukan
-			pencatatan := historical_format.Sekarang()
-			d["tahun_update"] = pencatatan.TahunUpdate
-			d["bulan_update"] = pencatatan.BulanUpdate
-			d["event_time"] = pencatatan.EventTime
-
+			// Alokasi memori pas + 1 untuk menampung 'id' di klausa WHERE
 			setClauses := make([]string, 0, len(d))
-			whereClauses := make([]string, 0, len(conditions))
-			values := make([]interface{}, 0, len(d)+len(conditions))
+			values := make([]interface{}, 0, len(d)+1)
 
-			// 1. Membangun SET klausa
+			// Membangun SET klausa dari data asli murni
 			for col, val := range d {
 				setClauses = append(setClauses, fmt.Sprintf("%s = ?", col))
 				values = append(values, val)
 			}
 
-			// 2. Membangun WHERE klausa (Primary Keys)
-			for col, val := range conditions {
-				whereClauses = append(whereClauses, fmt.Sprintf("%s = ?", col))
-				values = append(values, val)
-			}
-
 			queryStr := fmt.Sprintf(
-				"UPDATE %s SET %s WHERE %s",
+				"UPDATE %s SET %s WHERE id = ?",
 				tablename,
 				strings.Join(setClauses, ", "),
-				strings.Join(whereClauses, " AND "),
 			)
 
-			fmt.Println(queryStr)
+			// id ditaruh paling akhir setelah nilai SET clauses
+			values = append(values, id)
 
 			err := session.Query(queryStr, values...).
 				Consistency(gocql.Quorum).
@@ -132,7 +120,7 @@ func UpdateData(ctx context.Context, session *gocql.Session, tablename string, u
 
 			if err != nil {
 				mu.Lock()
-				errs = append(errs, fmt.Errorf("failed to update: %w", err))
+				errs = append(errs, fmt.Errorf("failed to update id %s: %w", id, err))
 				mu.Unlock()
 			}
 		}(fctx, cancel, data)
@@ -147,50 +135,39 @@ func UpdateData(ctx context.Context, session *gocql.Session, tablename string, u
 	return nil
 }
 
-func DeleteData(ctx context.Context, session *gocql.Session, tablename string, delete_conditions *[]map[string]interface{}) error {
+func DeleteData(ctx context.Context, session *gocql.Session, tablename string, id ...int64) error {
+	if len(id) == 0 {
+		return nil
+	}
+
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var errs []error
 
-	for _, cond := range *delete_conditions {
-		if len(cond) == 0 {
-			continue
-		}
-
+	for _, i := range id {
 		wg.Add(1)
 		fctx, cancel := context.WithTimeout(ctx, time.Second*timeout)
 
-		go func(konteks context.Context, ctxCancel context.CancelFunc, c map[string]interface{}) {
+		go func(konteks context.Context, ctxCancel context.CancelFunc, idnya int64) {
 			defer wg.Done()
 			defer ctxCancel()
 
-			whereClauses := make([]string, 0, len(c))
-			values := make([]interface{}, 0, len(c))
-
-			// Membangun WHERE klausa menggunakan Primary Key
-			for col, val := range c {
-				whereClauses = append(whereClauses, fmt.Sprintf("%s = ?", col))
-				values = append(values, val)
-			}
-
+			// PERBAIKAN: Gunakan placeholder '?' demi efisiensi query plan cache di Cassandra
 			queryStr := fmt.Sprintf(
-				"DELETE FROM %s WHERE %s",
+				"DELETE FROM %s WHERE id = ?",
 				tablename,
-				strings.Join(whereClauses, " AND "),
 			)
 
-			fmt.Println(queryStr)
-
-			err := session.Query(queryStr, values...).
+			err := session.Query(queryStr, idnya).
 				Consistency(gocql.Quorum).
 				ExecContext(konteks)
 
 			if err != nil {
 				mu.Lock()
-				errs = append(errs, fmt.Errorf("failed to delete: %w", err))
+				errs = append(errs, fmt.Errorf("failed to delete id %d from %s: %w", idnya, tablename, err))
 				mu.Unlock()
 			}
-		}(fctx, cancel, cond)
+		}(fctx, cancel, i)
 	}
 
 	wg.Wait()

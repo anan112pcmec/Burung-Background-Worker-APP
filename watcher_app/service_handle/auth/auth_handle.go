@@ -9,12 +9,12 @@ import (
 )
 
 func CreateValidatePenggunaRegistration(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Pengguna sot_models.Pengguna
-	if err := helper.DecodeJSONBody(Data, &Pengguna); err != nil {
+	var Objek sot_models.Pengguna
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
 	}
 
-	fmt.Println("Berhasil mendapatkan data", Pengguna.ID)
+	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
 

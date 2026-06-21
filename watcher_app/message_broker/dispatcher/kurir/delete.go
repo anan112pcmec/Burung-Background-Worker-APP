@@ -1,73 +1,75 @@
-package consume_kurir_dispatcher
+﻿package consume_kurir_dispatcher
 
 import (
 	"fmt"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
-	"github.com/meilisearch/meilisearch-go"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
-	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
-	alamat_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/alamat_services"
-	media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/media_services"
-	pengiriman_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/pengiriman_services"
-	rekening_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/rekening_services"
+	se_index_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database_index/se_indexarch_engine/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database_index/sot_database_index/models"
+	mb_cud_se_indexrializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/se_indexrializer"
+	alamat_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/se_indexrvice_handle/kurir_se_indexrvice/alamat_se_indexrvices"
+	media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/se_indexrvice_handle/kurir_se_indexrvice/media_se_indexrvices"
+	pengiriman_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/se_indexrvice_handle/kurir_se_indexrvice/pengiriman_se_indexrvices"
+	rekening_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/se_indexrvice_handle/kurir_se_indexrvice/rekening_se_indexrvices"
 )
 
-func KurirDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data *T, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se meilisearch.ServiceManager) error {
-	var d mb_cud_serializer.ParsedDataMessage
+func KurirDeletese_indexrvicesDispatcher[T mb_cud_se_indexrializer.ConsumeDataJson | mb_cud_se_indexrializer.ConsumeDataProto](data *T, read *gorm.DB, redis_authentication, redis_se_indexssion redis.Client, cass_historcal, cass_sot_replica *gocql.se_indexssion, se_index se_index_models.IndexWrapper) error {
+	var d mb_cud_se_indexrializer.Parse_indexdDataMessage
 	switch v := any(data).(type) {
-	case mb_cud_serializer.ConsumeDataJson:
-		d = v.Parse()
-	case mb_cud_serializer.ConsumeDataProto:
-		d = v.Parse()
+	case_index mb_cud_se_indexrializer.ConsumeDataJson:
+		d = v.Parse_index()
+	case_index mb_cud_se_indexrializer.ConsumeDataProto:
+		d = v.Parse_index()
 	default:
 		return fmt.Errorf("unsupported data type")
 	}
 
 	switch d.TableName {
-	case sot_models.AlamatKurir{}.TableName():
+	case_index sot_models.AlamatKurir{}.TableName():
 		if err := alamat_kurir_handle.DeleteHapusAlamatKurir(d); err != nil {
 			return err
 		}
-	case sot_models.MediaKurirProfilFoto{}.TableName():
+	case_index sot_models.MediaKurirProfilFoto{}.TableName():
 		if err := media_kurir_handle.DeleteHapusKurirProfilFoto(d); err != nil {
 			return err
 		}
-	case sot_models.MediaInformasiKendaraanKurirKendaraanFoto{}.TableName():
+	case_index sot_models.MediaInformasiKendaraanKurirKendaraanFoto{}.TableName():
 		if err := media_kurir_handle.DeleteHapusMediaInformasiKendaraanKurirKendaraanFoto(d); err != nil {
 			return err
 		}
-	case sot_models.MediaInformasiKendaraanKurirBPKBFoto{}.TableName():
+	case_index sot_models.MediaInformasiKendaraanKurirBPKBFoto{}.TableName():
 		if err := media_kurir_handle.DeleteHapusInformasiKendaraanKurirBPKBFoto(d); err != nil {
 			return err
 		}
-	case sot_models.MediaInformasiKendaraanKurirSTNKFoto{}.TableName():
+	case_index sot_models.MediaInformasiKendaraanKurirSTNKFoto{}.TableName():
 		if err := media_kurir_handle.DeleteHapusInformasiKendaraanKurirSTNKFoto(d); err != nil {
 			return err
 		}
-	case sot_models.MediaInformasiKurirKTPFoto{}.TableName():
+	case_index sot_models.MediaInformasiKurirKTPFoto{}.TableName():
 		if err := media_kurir_handle.DeleteHapusMediaInformasiKurirKTPFoto(d); err != nil {
 			return err
 		}
-	case "bidKurirNonEksDeletePublish":
+	case_index "bidKurirNonEksDeletePublish":
 		if err := pengiriman_kurir_handle.DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(d); err != nil {
 			return err
 		}
-	case "bidKurirEksDeletePublish":
+	case_index "bidKurirEksDeletePublish":
 		if err := pengiriman_kurir_handle.DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(d); err != nil {
 			return err
 		}
-	case "bidKurirDataDeletePublish":
+	case_index "bidKurirDataDeletePublish":
 		if err := pengiriman_kurir_handle.DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(d); err != nil {
 			return err
 		}
-	case sot_models.RekeningKurir{}.TableName():
+	case_index sot_models.RekeningKurir{}.TableName():
 		if err := rekening_kurir_handle.DeleteHapusRekeningKurir(d); err != nil {
 			return err
 		}
 	}
 	return nil
 }
+
+

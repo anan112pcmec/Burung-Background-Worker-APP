@@ -102,6 +102,51 @@ func (t AlamatPengguna) IndexName() string {
 	return "alamat_pengguna_se"
 }
 
+type AlamatKurir struct {
+	ID              int64      `json:"id_alamat_kurir"`
+	IdKurir         int64      `json:"id_kurir_alamat_kurir"`
+	PanggilanAlamat string     `json:"panggilan_alamat_kurir"`
+	NomorTelephone  string     `json:"nomor_telefon_alamat_kurir"`
+	NamaAlamat      string     `json:"nama_alamat_kurir"`
+	Provinsi        string     `json:"provinsi_alamat_kurir"`
+	Kota            string     `json:"kota_alamat_kurir"`
+	KodeNegara      string     `json:"kode_negara_alamat_kurir"`
+	KodePos         string     `json:"kode_pos_alamat_kurir"`
+	Deskripsi       string     `json:"deskripsi_alamat_kurir"`
+	Longitude       float64    `json:"longitude_alamat_kurir"`
+	Latitude        float64    `json:"latitude_alamat_kurir"`
+	CreatedAt       time.Time  `json:"created_at"`
+	UpdatedAt       time.Time  `json:"updated_at"`
+	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
+}
+
+func (a AlamatKurir) IndexName() string {
+	return "alamat_kurir_se"
+}
+
+type AlamatGudang struct {
+	ID              int64      `json:"id_alamat_gudang"`
+	IDSeller        int32      `json:"id_seller_alamat_gudang"`
+	Seller          Seller     `json:"-"`
+	PanggilanAlamat string     `json:"panggilan_alamat_gudang"`
+	NomorTelephone  string     `json:"nomor_telfon_alamat_gudang"`
+	NamaAlamat      string     `json:"nama_alamat_gudang"`
+	Provinsi        string     `json:"provinsi_alamat_gudang"`
+	Kota            string     `json:"kota_alamat_gudang"`
+	KodePos         string     `json:"kode_pos_alamat_gudang"`
+	KodeNegara      string     `json:"kode_negara_alamat_gudang"`
+	Deskripsi       string     `json:"deskripsi_alamat_gudang"`
+	Longitude       float64    `json:"longitude_alamat_gudang"`
+	Latitude        float64    `json:"latitude_alamat_gudang"`
+	CreatedAt       time.Time  `json:"created_at"`
+	UpdatedAt       time.Time  `json:"updated_at"`
+	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
+}
+
+func (a AlamatGudang) IndexName() string {
+	return "alamat_gudang_se"
+}
+
 type Pengguna struct {
 	ID             int64      `json:"id"`
 	Username       string     `json:"username"`

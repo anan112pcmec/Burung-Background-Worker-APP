@@ -2544,7 +2544,6 @@ func (j InformasiKendaraanKurir) TableNameSotReplica() string {
 }
 
 func (i *InformasiKendaraanKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	// Query CREATE TABLE disesuaikan dengan field di struct InformasiKendaraanKurir dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,

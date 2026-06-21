@@ -1,15 +1,15 @@
-package mb_cud_consumer
+﻿package mb_cud_consumer
 
 import (
 	"context"
 	"fmt"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
-	"github.com/meilisearch/meilisearch-go"
 	"github.com/rabbitmq/amqp091-go"
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
+	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	consume_kurir_dispatcher "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/dispatcher/kurir"
 	consume_pengguna_dispatcher "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/dispatcher/pengguna"
@@ -18,7 +18,7 @@ import (
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 )
 
-func (c *Consumer) HandleCreate(ctx context.Context, msgs <-chan amqp091.Delivery, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se meilisearch.ServiceManager) {
+func (c *Consumer) HandleCreate(ctx context.Context, msgs <-chan amqp091.Delivery, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) {
 	for {
 		select {
 		case <-ctx.Done():
@@ -30,7 +30,7 @@ func (c *Consumer) HandleCreate(ctx context.Context, msgs <-chan amqp091.Deliver
 
 			fmt.Printf("[CREATE] %s\n", string(msg.Body))
 
-			// 🔥 logic khusus CREATE di sini
+			// ðŸ”¥ logic khusus CREATE di sini
 			var data interface{}
 			var status bool
 
@@ -62,18 +62,18 @@ func (c *Consumer) HandleCreate(ctx context.Context, msgs <-chan amqp091.Deliver
 				switch v.Role {
 				case mb_cud_seeders.Pengguna:
 
-					if err := consume_pengguna_dispatcher.PenggunaCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_pengguna_dispatcher.PenggunaCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 
 				case mb_cud_seeders.Seller:
 
-					if err := consume_seller_dispatcher.SellerCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_seller_dispatcher.SellerCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 
 				case mb_cud_seeders.Kurir:
-					if err := consume_kurir_dispatcher.KurirCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_kurir_dispatcher.KurirCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 				default:
@@ -88,18 +88,18 @@ func (c *Consumer) HandleCreate(ctx context.Context, msgs <-chan amqp091.Deliver
 				switch v.Role {
 				case mb_cud_seeders.Pengguna:
 
-					if err := consume_pengguna_dispatcher.PenggunaCreateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_pengguna_dispatcher.PenggunaCreateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 
 				case mb_cud_seeders.Seller:
 
-					if err := consume_seller_dispatcher.SellerCreateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_seller_dispatcher.SellerCreateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 
 				case mb_cud_seeders.Kurir:
-					if err := consume_kurir_dispatcher.KurirCreateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_kurir_dispatcher.KurirCreateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 				default:
@@ -120,7 +120,7 @@ func (c *Consumer) HandleCreate(ctx context.Context, msgs <-chan amqp091.Deliver
 	}
 }
 
-func (c *Consumer) HandleUpdate(ctx context.Context, msgs <-chan amqp091.Delivery, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se meilisearch.ServiceManager) {
+func (c *Consumer) HandleUpdate(ctx context.Context, msgs <-chan amqp091.Delivery, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) {
 	for {
 		select {
 		case <-ctx.Done():
@@ -132,7 +132,7 @@ func (c *Consumer) HandleUpdate(ctx context.Context, msgs <-chan amqp091.Deliver
 
 			fmt.Printf("[UPDATE] %s\n", string(msg.Body))
 
-			// 🔥 logic khusus UPDATE
+			// ðŸ”¥ logic khusus UPDATE
 			var data interface{}
 			var status bool
 
@@ -164,18 +164,18 @@ func (c *Consumer) HandleUpdate(ctx context.Context, msgs <-chan amqp091.Deliver
 				switch v.Role {
 				case mb_cud_seeders.Pengguna:
 
-					if err := consume_pengguna_dispatcher.PenggunaCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_pengguna_dispatcher.PenggunaCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 
 				case mb_cud_seeders.Seller:
 
-					if err := consume_seller_dispatcher.SellerCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_seller_dispatcher.SellerCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 
 				case mb_cud_seeders.Kurir:
-					if err := consume_kurir_dispatcher.KurirCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_kurir_dispatcher.KurirCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 				default:
@@ -190,18 +190,18 @@ func (c *Consumer) HandleUpdate(ctx context.Context, msgs <-chan amqp091.Deliver
 				switch v.Role {
 				case mb_cud_seeders.Pengguna:
 
-					if err := consume_pengguna_dispatcher.PenggunaUpdateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_pengguna_dispatcher.PenggunaUpdateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 
 				case mb_cud_seeders.Seller:
 
-					if err := consume_seller_dispatcher.SellerUpdateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_seller_dispatcher.SellerUpdateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 
 				case mb_cud_seeders.Kurir:
-					if err := consume_kurir_dispatcher.KurirUpdateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_kurir_dispatcher.KurirUpdateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 				default:
@@ -222,7 +222,7 @@ func (c *Consumer) HandleUpdate(ctx context.Context, msgs <-chan amqp091.Deliver
 	}
 }
 
-func (c *Consumer) HandleDelete(ctx context.Context, msgs <-chan amqp091.Delivery, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se meilisearch.ServiceManager) {
+func (c *Consumer) HandleDelete(ctx context.Context, msgs <-chan amqp091.Delivery, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) {
 	for {
 		select {
 		case <-ctx.Done():
@@ -263,18 +263,18 @@ func (c *Consumer) HandleDelete(ctx context.Context, msgs <-chan amqp091.Deliver
 				switch v.Role {
 				case mb_cud_seeders.Pengguna:
 
-					if err := consume_pengguna_dispatcher.PenggunaCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_pengguna_dispatcher.PenggunaCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 
 				case mb_cud_seeders.Seller:
 
-					if err := consume_seller_dispatcher.SellerCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_seller_dispatcher.SellerCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 
 				case mb_cud_seeders.Kurir:
-					if err := consume_kurir_dispatcher.KurirCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_kurir_dispatcher.KurirCreateServicesDispatcher[mb_cud_serializer.ConsumeDataJson](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 				default:
@@ -289,18 +289,18 @@ func (c *Consumer) HandleDelete(ctx context.Context, msgs <-chan amqp091.Deliver
 				switch v.Role {
 				case mb_cud_seeders.Pengguna:
 
-					if err := consume_pengguna_dispatcher.PenggunaCreateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_pengguna_dispatcher.PenggunaCreateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 
 				case mb_cud_seeders.Seller:
 
-					if err := consume_seller_dispatcher.SellerCreateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_seller_dispatcher.SellerCreateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 
 				case mb_cud_seeders.Kurir:
-					if err := consume_kurir_dispatcher.KurirCreateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se); err != nil {
+					if err := consume_kurir_dispatcher.KurirCreateServicesDispatcher[mb_cud_serializer.ConsumeDataProto](&v, read, redis_authentication, redis_session, cass_historcal, cass_sot_replica, se_index); err != nil {
 						fmt.Println(err)
 					}
 				default:
@@ -320,3 +320,4 @@ func (c *Consumer) HandleDelete(ctx context.Context, msgs <-chan amqp091.Deliver
 		}
 	}
 }
+
