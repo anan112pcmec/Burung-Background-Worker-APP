@@ -19,5 +19,6 @@ func InitIndex(ctx context.Context, c meilisearch.ServiceManager) se_models.Inde
 		AlamatPenggunaIndex:  c.Index(se_models.AlamatPengguna{}.IndexName()),
 		AlamatKurir:          c.Index(se_models.AlamatKurir{}.IndexName()),
 		AlamatGudang:         c.Index(se_models.AlamatGudang{}.IndexName()),
+		KurirIndex:           c.Index(se_models.Kurir{}.IndexName()),
 	}
 }

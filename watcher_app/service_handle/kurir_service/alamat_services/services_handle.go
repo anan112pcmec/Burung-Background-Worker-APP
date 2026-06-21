@@ -44,7 +44,8 @@ func CreateMasukanAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 
 	parsedData := ObjekCass.ParseToCUDType()
 
-	if err := cass_cud.InsertData(ctx, cass_historcal, ObjekCass.TableNameSotReplica(), parsedData); err != nil {
+	// Gunakan cass_sot_replica untuk tabel replica (Bukan cass_historcal)
+	if err := cass_cud.InsertData(ctx, cass_sot_replica, ObjekCass.TableNameSotReplica(), parsedData); err != nil {
 		return err
 	}
 
@@ -53,7 +54,8 @@ func CreateMasukanAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 	parsedData["bulan_update"] = pencatatan.BulanUpdate
 	parsedData["event_time"] = pencatatan.EventTime
 
-	if err := cass_cud.InsertData(ctx, cass_historcal, ObjekCass.TableNameHistorical()); err != nil {
+	// Perbaikan Bug: parsedData WAJIB dipassing ke parameter ke-4 agar data historical tersimpan
+	if err := cass_cud.InsertData(ctx, cass_historcal, ObjekCass.TableNameHistorical(), parsedData); err != nil {
 		return err
 	}
 
@@ -75,12 +77,14 @@ func CreateMasukanAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		DeletedAt:       Objek.DeletedAt,
 	}
 
+	// Perbaikan Bug: `strconv.FormatInt` butuh basis angka 10 (desimal), bukan 0 (nol akan bikin panic/error)
+	// Gunakan nil pada parameter kedua AddDocuments jika meilisearch-go Anda versi baru
 	if task_info, err := se_index.AlamatKurir.AddDocuments(&ObjekSearchEngine, &meilisearch.DocumentOptions{
-		PrimaryKey: meilisearch.StringPtr(strconv.FormatInt(ObjekSearchEngine.ID, 0)),
+		PrimaryKey: meilisearch.StringPtr("id"),
 	}); err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Println("task dengan id:" + task_info.IndexUID + "diproses")
+		fmt.Println("task dengan id:" + task_info.IndexUID + " diproses")
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -113,7 +117,7 @@ func UpdatedEditAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 
 	parsedData := ObjekCass.ParseToCUDType()
 
-	if err := cass_cud.UpdateData(ctx, cass_historcal, ObjekCass.TableNameSotReplica(), ObjekCass.ID, parsedData); err != nil {
+	if err := cass_cud.UpdateData(ctx, cass_sot_replica, ObjekCass.TableNameSotReplica(), ObjekCass.ID, parsedData); err != nil {
 		return err
 	}
 
@@ -145,14 +149,12 @@ func UpdatedEditAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 	}
 
 	if task_info, err := se_index.AlamatKurir.UpdateDocuments(&ObjekSearchEngine, &meilisearch.DocumentOptions{
-		PrimaryKey: meilisearch.StringPtr(strconv.FormatInt(ObjekSearchEngine.ID, 0)),
+		PrimaryKey: meilisearch.StringPtr("id"),
 	}); err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Println("task dengan id:" + task_info.IndexUID + "diproses")
+		fmt.Println("task dengan id:" + task_info.IndexUID + " diproses")
 	}
-
-	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -182,7 +184,7 @@ func DeleteHapusAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		DeletedAt:       Objek.DeletedAt,
 	}
 
-	if err := cass_cud.DeleteData(ctx, cass_historcal, ObjekCass.TableNameSotReplica(), ObjekCass.ID); err != nil {
+	if err := cass_cud.DeleteData(ctx, cass_sot_replica, ObjekCass.TableNameSotReplica(), ObjekCass.ID); err != nil {
 		return err
 	}
 
@@ -196,31 +198,13 @@ func DeleteHapusAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		return err
 	}
 
-	var ObjekSearchEngine se_models.AlamatKurir = se_models.AlamatKurir{
-		ID:              Objek.ID,
-		IdKurir:         Objek.IdKurir,
-		PanggilanAlamat: Objek.PanggilanAlamat,
-		NomorTelephone:  Objek.NomorTelephone,
-		NamaAlamat:      Objek.NamaAlamat,
-		Provinsi:        Objek.Provinsi,
-		Kota:            Objek.Kota,
-		KodeNegara:      Objek.KodeNegara,
-		KodePos:         Objek.KodePos,
-		Deskripsi:       Objek.Deskripsi,
-		Longitude:       Objek.Longitude,
-		Latitude:        Objek.Latitude,
-		CreatedAt:       Objek.CreatedAt,
-		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
-	}
+	idStr := strconv.FormatInt(ObjekCass.ID, 10)
 
-	if task_info, err := se_index.AlamatKurir.DeleteDocumentWithContext(ctx, strconv.FormatInt(ObjekSearchEngine.ID, 0), nil); err != nil {
+	if task_info, err := se_index.AlamatKurir.DeleteDocumentWithContext(ctx, idStr, nil); err != nil {
 		fmt.Println(err)
 	} else {
-		fmt.Println("task dengan id:" + task_info.IndexUID + "diproses")
+		fmt.Println("task dengan id:" + task_info.IndexUID + " diproses")
 	}
-
-	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil

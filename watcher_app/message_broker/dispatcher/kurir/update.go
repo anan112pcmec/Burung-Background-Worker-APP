@@ -7,224 +7,224 @@ import (
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
-	se_index_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database_index/se_indexarch_engine/models"
-	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database_index/sot_database_index/models"
-	mb_cud_se_indexrializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/se_indexrializer"
-	auth_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/se_indexrvice_handle/auth"
-	alamat_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/se_indexrvice_handle/kurir_se_indexrvice/alamat_se_indexrvices"
-	informasi_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/se_indexrvice_handle/kurir_se_indexrvice/informasi_se_indexrvices"
-	media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/se_indexrvice_handle/kurir_se_indexrvice/media_se_indexrvices"
-	pengiriman_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/se_indexrvice_handle/kurir_se_indexrvice/pengiriman_se_indexrvices"
-	profiling_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/se_indexrvice_handle/kurir_se_indexrvice/profiling_se_indexrvices"
-	rekening_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/se_indexrvice_handle/kurir_se_indexrvice/rekening_se_indexrvices"
-	social_media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/se_indexrvice_handle/kurir_se_indexrvice/social_media_se_indexrvices"
+	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
+	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+	auth_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/auth"
+	alamat_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/alamat_services"
+	informasi_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/informasi_services"
+	media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/media_services"
+	pengiriman_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/pengiriman_services"
+	profiling_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/profiling_services"
+	rekening_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/rekening_services"
+	social_media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/social_media_services"
 )
 
-func KurirUpdatese_indexrvicesDispatcher[T mb_cud_se_indexrializer.ConsumeDataJson | mb_cud_se_indexrializer.ConsumeDataProto](data *T, read *gorm.DB, redis_authentication, redis_se_indexssion redis.Client, cass_historcal, cass_sot_replica *gocql.se_indexssion, se_index se_index_models.IndexWrapper) error {
-	var d mb_cud_se_indexrializer.Parse_indexdDataMessage
+func KurirUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data *T, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se se_models.IndexWrapper) error {
+	var d mb_cud_serializer.ParsedDataMessage
 	switch v := any(data).(type) {
-	case_index mb_cud_se_indexrializer.ConsumeDataJson:
-		d = v.Parse_index()
-	case_index mb_cud_se_indexrializer.ConsumeDataProto:
-		d = v.Parse_index()
+	case mb_cud_serializer.ConsumeDataJson:
+		d = v.Parse()
+	case mb_cud_serializer.ConsumeDataProto:
+		d = v.Parse()
 	default:
 		return fmt.Errorf("unsupported data type")
 	}
 
 	switch d.TableName {
-	case_index "KurirLogin":
+	case "KurirLogin":
 		if err := auth_handle.UpdateKurirLogin(d); err != nil {
 			return err
 		}
-	case_index sot_models.AlamatKurir{}.TableName():
+	case sot_models.AlamatKurir{}.TableName():
 		if err := alamat_kurir_handle.UpdatedEditAlamatKurir(d); err != nil {
 			return err
 		}
-	case_index sot_models.InformasiKendaraanKurir{}.TableName():
+	case sot_models.InformasiKendaraanKurir{}.TableName():
 		if err := informasi_kurir_handle.UpdateEditInformasiKendaraan(d); err != nil {
 			return err
 		}
-	case_index sot_models.InformasiKurir{}.TableName():
+	case sot_models.InformasiKurir{}.TableName():
 		if err := informasi_kurir_handle.UpdateEditInformasiKurir(d); err != nil {
 			return err
 		}
-	case_index sot_models.MediaKurirProfilFoto{}.TableName():
+	case sot_models.MediaKurirProfilFoto{}.TableName():
 		if err := media_kurir_handle.UpdateUbahKurirProfilFoto(d); err != nil {
 			return err
 		}
-	case_index sot_models.MediaInformasiKendaraanKurirKendaraanFoto{}.TableName():
+	case sot_models.MediaInformasiKendaraanKurirKendaraanFoto{}.TableName():
 		if err := media_kurir_handle.UpdateTambahMediaInformasiKendaraanKurirKendaraanFoto(d); err != nil {
 			return err
 		}
-	case_index sot_models.MediaInformasiKendaraanKurirBPKBFoto{}.TableName():
+	case sot_models.MediaInformasiKendaraanKurirBPKBFoto{}.TableName():
 		if err := media_kurir_handle.UpdateTambahInformasiKendaraanKurirBPKBFoto(d); err != nil {
 			return err
 		}
-	case_index sot_models.MediaInformasiKendaraanKurirSTNKFoto{}.TableName():
+	case sot_models.MediaInformasiKendaraanKurirSTNKFoto{}.TableName():
 		if err := media_kurir_handle.UpdateTambahInformasiKendaraanKurirSTNKFoto(d); err != nil {
 			return err
 		}
-	case_index sot_models.MediaInformasiKurirKTPFoto{}.TableName():
+	case sot_models.MediaInformasiKurirKTPFoto{}.TableName():
 		if err := media_kurir_handle.UpdateTambahMediaInformasiKurirKTPFoto(d); err != nil {
 			return err
 		}
-	case_index "kurirUpdatedPublish":
+	case "kurirUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateAktifkanBidKurir(d); err != nil {
 			return err
 		}
-	case_index "bidKurirDataUpdatedPublish":
+	case "bidKurirDataUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateUpdatePosisiBidKurir(d); err != nil {
 			return err
 		}
-	case_index "pengirimanUpdatedPublish":
+	case "pengirimanUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateAmbilPengirimanNonEksManualRegulerIIpengirimanUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "bidKurirDataAmbilPengirimanUpdatedPublish":
+	case "bidKurirDataAmbilPengirimanUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataAmbilPengirimanUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "bidKurirDataStatusUpdatedPublish":
+	case "bidKurirDataStatusUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataStatusUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "pengirimanEksUpdatedPublish":
+	case "pengirimanEksUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateAmbilPengirimanEksManualRegulerIIpengirimanEksUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "bidKurirDataAmbilPengirimanEksUpdatedPublish":
+	case "bidKurirDataAmbilPengirimanEksUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "bidKurirDataAmbilPengirimanEksStatusUpdatedPublish":
+	case "bidKurirDataAmbilPengirimanEksStatusUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataAmbilPengirimanEksStatusUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "schedulerEksUpdatedPublish":
+	case "schedulerEksUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateLockSiapAntarBidKurirIIEksScheduler(d); err != nil {
 			return err
 		}
-	case_index "schedulerNonEksUpdatedPublish":
+	case "schedulerNonEksUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateLockSiapAntarBidKurirIINonEksScheduler(d); err != nil {
 			return err
 		}
-	case_index "bidKurirDataLockSiapAntarUpdatedPublish":
+	case "bidKurirDataLockSiapAntarUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateLockSiapAntarBidKurirIIbidKurirDataLockSiapAntarUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "kurirLockSiapAntarUpdatedPublish":
+	case "kurirLockSiapAntarUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateLockSiapAntarBidKurirIIkurirLockSiapAntarUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "schedulerPickedUpNonEksUpdatedPublish":
+	case "schedulerPickedUpNonEksUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdatePickedUpPengirimanNonEksIIschedulerPickedUpNonEksUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "pengirimanPickedUpNonEksUpdatedPublish":
+	case "pengirimanPickedUpNonEksUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdatedPickedUpPengirimanNonEksIIpengirimanPickedUpNonEksUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "transaksiPickedUpNonEksUpdatedPublish":
+	case "transaksiPickedUpNonEksUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdatedPickedUpPengirimanNonEksIItransaksiPickedUpNonEksUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "bidKurirPengirimanNonEksSchedulerUpdatedPublish":
+	case "bidKurirPengirimanNonEksSchedulerUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateKirimPengirimanNonEksIIbidKurirPengirimanNonEksSchedulerUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "pengirimanPengirimanUpdatedPublish":
+	case "pengirimanPengirimanUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateKirimPengirimanNonEksIIpengirimanPengirimanUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "jejakpengirimanPengirimanUpdatedPublish":
+	case "jejakpengirimanPengirimanUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateKirimPengirimanNonEksIIjejakpengirimanPengirimanUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "jejakPengirimanUpdatedPublish":
+	case "jejakPengirimanUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateUpdateInformasiPerjalananPengirimanNonEks(d); err != nil {
 			return err
 		}
-	case_index "pengirimanSampaiUpdatedPublish":
+	case "pengirimanSampaiUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateSampaiPengirimanNonEksIIpengirimanSampaiUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "bidKurirDataSampaiUpdatedPublish":
+	case "bidKurirDataSampaiUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateSampaiPengirimanNonEksIIbidKurirDataSampaiUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "jejakPengirimanSampaiUpdatedPublish":
+	case "jejakPengirimanSampaiUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateSampaiPengirimanNonEksIIjejakPengirimanSampaiUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "transaksiSampaiUpdatedPublish":
+	case "transaksiSampaiUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateSampaiPengirimanNonEksIItransaksiSampaiUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "schedulerEksPickedUpUpdatedPublish":
+	case "schedulerEksPickedUpUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdatePickedUpPengirimanEksIIschedulerEksPickedUpUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "pengirimanEksPickedUpUpdatedPublish":
+	case "pengirimanEksPickedUpUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdatePickedUpPengirimanEksIIpengirimanEksPickedUpUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "transaksiPickedUpUpdatedPublish":
+	case "transaksiPickedUpUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdatePickedUpPengirimanEksIItransaksiPickedUpUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "schedulerPengirimanUpdatedPublish":
+	case "schedulerPengirimanUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateKirimPengirimanEksIIschedulerPengirimanUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "pengirimanPengirimanEksUpdatedPublish":
+	case "pengirimanPengirimanEksUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateKirimPengirimanEksIIpengirimanPengirimanEksUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "jejakPengirimanPengirimanEksUpdatedPublish":
+	case "jejakPengirimanPengirimanEksUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateKirimPengirimanNonEksIIjejakpengirimanPengirimanUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "jejakPengirimanEksUpdatedPublish":
+	case "jejakPengirimanEksUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateInformasiPerjalananPengirimanEks(d); err != nil {
 			return err
 		}
-	case_index "pengirimanSampaiEksUpdatedPublish":
+	case "pengirimanSampaiEksUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateSampaiPengirimanEksIIpengirimanSampaiEksUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "bidKurirDataEksSampaiUpdatedPublish":
+	case "bidKurirDataEksSampaiUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateSampaiPengirimanEksIIbidKurirDataEksSampaiUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "jejakPengirimanEksSampaiUpdatedPublish":
+	case "jejakPengirimanEksSampaiUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateSampaiPengirimanEksIIjejakPengirimanEksSampaiUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "transaksiSampaiEksUpdatedPublish":
+	case "transaksiSampaiEksUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateSampaiPengirimanEksIItransaksiSampaiEksUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "kurirUpdatedSampaiEksPublish":
+	case "kurirUpdatedSampaiEksPublish":
 		if err := pengiriman_kurir_handle.UpdateSampaiPengirimanEksIIkurirUpdatedSampaiEksPublish(d); err != nil {
 			return err
 		}
-	case_index "kurirNonaktifkanBidUpdatedPublish":
+	case "kurirNonaktifkanBidUpdatedPublish":
 		if err := pengiriman_kurir_handle.UpdateNonaktifkanBidKurirIIkurirNonaktifkanBidUpdatedPublish(d); err != nil {
 			return err
 		}
-	case_index "kurirDataPersonalProfilingUpdatedPublish":
+	case "kurirDataPersonalProfilingUpdatedPublish":
 		if err := profiling_kurir_handle.UpdatePersonalProfilingKurir(d); err != nil {
 			return err
 		}
-	case_index "kurirDataGeneralProfilingUpdatedPublish":
+	case "kurirDataGeneralProfilingUpdatedPublish":
 		if err := profiling_kurir_handle.UpdateGeneralProfilingKurir(d); err != nil {
 			return err
 		}
-	case_index sot_models.RekeningKurir{}.TableName():
+	case sot_models.RekeningKurir{}.TableName():
 		if err := rekening_kurir_handle.UpdateEditRekeningKurir(d); err != nil {
 			return err
 		}
-	case_index sot_models.EntitySocialMedia{}.TableName():
+	case sot_models.EntitySocialMedia{}.TableName():
 		if err := social_media_kurir_handle.UpdateEngagementSocialMediaKurir(d); err != nil {
 			return err
 		}
@@ -232,5 +232,3 @@ func KurirUpdatese_indexrvicesDispatcher[T mb_cud_se_indexrializer.ConsumeDataJs
 	return nil
 
 }
-
-

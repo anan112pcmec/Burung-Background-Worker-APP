@@ -103,7 +103,7 @@ func (t AlamatPengguna) IndexName() string {
 }
 
 type AlamatKurir struct {
-	ID              int64      `json:"id_alamat_kurir"`
+	ID              int64      `json:"id"`
 	IdKurir         int64      `json:"id_kurir_alamat_kurir"`
 	PanggilanAlamat string     `json:"panggilan_alamat_kurir"`
 	NomorTelephone  string     `json:"nomor_telefon_alamat_kurir"`
@@ -125,7 +125,7 @@ func (a AlamatKurir) IndexName() string {
 }
 
 type AlamatGudang struct {
-	ID              int64      `json:"id_alamat_gudang"`
+	ID              int64      `json:"id"`
 	IDSeller        int32      `json:"id_seller_alamat_gudang"`
 	Seller          Seller     `json:"-"`
 	PanggilanAlamat string     `json:"panggilan_alamat_gudang"`
@@ -164,8 +164,30 @@ func (p Pengguna) IndexName() string {
 	return "pengguna_se"
 }
 
+type Kurir struct {
+	ID            int64      `json:"id_kurir"`
+	Nama          string     `json:"nama"`
+	Username      string     `json:"username"`
+	Email         string     `json:"email"`
+	Jenis         string     `json:"jenis"`
+	PasswordHash  string     `json:"password_hash"`
+	Deskripsi     string     `json:"deskripsi"`
+	StatusKurir   string     `json:"status"`
+	StatusBid     string     `json:"status_bid"`
+	VerifiedKurir bool       `json:"verified"`
+	Rating        float32    `json:"rating"`
+	TipeKendaraan string     `json:"tipe_kendaraan"`
+	CreatedAt     time.Time  `json:"created_at"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+	DeletedAt     *time.Time `json:"deleted_at,omitempty"`
+}
+
+func (k Kurir) IndexName() string {
+	return "kurir_se"
+}
+
 type AlamatEkspedisi struct {
-	ID              int64      `json:"id_alamat_ekspedisi"`
+	ID              int64      `json:"id"`
 	Kota            string     `json:"kota"`
 	NamaAlamat      string     `json:"nama_alamat"`
 	Lokasi          string     `json:"lokasi"`

@@ -17,3 +17,10 @@ func Sekarang() Pencatatan {
 		EventTime:   now,
 	}
 }
+
+func PencatatanCombine(dataPencatatan Pencatatan, data map[string]interface{}) {
+	data["tahun_update"] = dataPencatatan.TahunUpdate
+	data["bulan_update"] = dataPencatatan.BulanUpdate
+	data["event_time"] = dataPencatatan.EventTime
+
+}
