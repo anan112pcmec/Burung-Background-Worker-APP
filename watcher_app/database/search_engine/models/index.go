@@ -165,7 +165,7 @@ func (p Pengguna) IndexName() string {
 }
 
 type Kurir struct {
-	ID            int64      `json:"id_kurir"`
+	ID            int64      `json:"id"`
 	Nama          string     `json:"nama"`
 	Username      string     `json:"username"`
 	Email         string     `json:"email"`
