@@ -54,33 +54,114 @@ func CreateAjukanInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage, ct
 	return nil
 }
 
-func UpdateEditInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage) error {
+func UpdateEditInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historcal, cass_sot_replica *gocql.Session) error {
+	const handle_services string = "UpdateEditInformasiKendaraan"
 	var Objek sot_models.InformasiKendaraanKurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
 	}
 
-	fmt.Println("Berhasil mendapatkan data", Objek.ID)
-	return nil
-}
+	var ObjekCass cass_models.InformasiKendaraanKurir = cass_models.InformasiKendaraanKurir{
+		ID:             Objek.ID,
+		IDkurir:        Objek.IDkurir,
+		JenisKendaraan: Objek.JenisKendaraan,
+		NamaKendaraan:  Objek.NamaKendaraan,
+		RodaKendaraan:  Objek.RodaKendaraan,
+		STNK:           Objek.STNK,
+		BPKB:           Objek.BPKB,
+		NoRangka:       Objek.NoRangka,
+		NoMesin:        Objek.NoMesin,
+		Status:         Objek.Status,
+		CreatedAt:      Objek.CreatedAt,
+		UpdatedAt:      Objek.UpdatedAt,
+		DeletedAt:      Objek.DeletedAt,
+	}
 
-func CreateAjukanInformasiKurir(Data mb_cud_serializer.ParsedDataMessage) error {
-	var Objek sot_models.InformasiKurir
+	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
 
-	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
-		return fmt.Errorf("gagal mengolah data alamat")
+	if err := cass_cud.UpdateData(ctx, cass_sot_replica, ObjekCass.TableNameSotReplica(), Objek.ID, parsedData); err != nil {
+		fmt.Println("Gagal memasukan data ke dalam sot replica async dalam services" + handle_services)
+	}
+
+	historical_format.PencatatanCombine(historical_format.Sekarang(), parsedData)
+
+	if err := cass_cud.InsertData(ctx, cass_historcal, ObjekCass.TableNameHistorical(), parsedData); err != nil {
+		fmt.Println("Gagal memasukan data ke dalam historical dalam services" + handle_services)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
 
-func UpdateEditInformasiKurir(Data mb_cud_serializer.ParsedDataMessage) error {
+func CreateAjukanInformasiKurir(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historcal, cass_sot_replica *gocql.Session) error {
+	const handle_services string = "CreateAjukanInformasiKurir"
 	var Objek sot_models.InformasiKurir
 
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
 		return fmt.Errorf("gagal mengolah data alamat")
+	}
+
+	var ObjekCass cass_models.InformasiKurir = cass_models.InformasiKurir{
+		ID:           Objek.ID,
+		IDkurir:      Objek.IDkurir,
+		TanggalLahir: Objek.TanggalLahir,
+		Alasan:       Objek.Alasan,
+		Ktp:          Objek.Ktp,
+		InformasiSim: Objek.InformasiSim,
+		Status:       Objek.Status,
+		CreatedAt:    Objek.CreatedAt,
+		UpdatedAt:    Objek.UpdatedAt,
+		DeletedAt:    Objek.DeletedAt,
+	}
+
+	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
+
+	if err := cass_cud.InsertData(ctx, cass_sot_replica, ObjekCass.TableNameSotReplica(), parsedData); err != nil {
+		fmt.Println("Gagal memasukan data ke dalam sot replica async dalam services" + handle_services)
+	}
+
+	historical_format.PencatatanCombine(historical_format.Sekarang(), parsedData)
+
+	if err := cass_cud.InsertData(ctx, cass_historcal, ObjekCass.TableNameHistorical(), parsedData); err != nil {
+		fmt.Println("Gagal memasukan data ke dalam historical dalam services" + handle_services)
+	}
+
+	fmt.Println("Berhasil mendapatkan data", Objek.ID)
+	return nil
+}
+
+func UpdateEditInformasiKurir(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historcal, cass_sot_replica *gocql.Session) error {
+	const handle_services string = "UpdateEditInformasiKurir"
+	var Objek sot_models.InformasiKurir
+
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
+		return fmt.Errorf("gagal mengolah data alamat")
+	}
+
+	var ObjekCass cass_models.InformasiKurir = cass_models.InformasiKurir{
+		ID:           Objek.ID,
+		IDkurir:      Objek.IDkurir,
+		TanggalLahir: Objek.TanggalLahir,
+		Alasan:       Objek.Alasan,
+		Ktp:          Objek.Ktp,
+		InformasiSim: Objek.InformasiSim,
+		Status:       Objek.Status,
+		CreatedAt:    Objek.CreatedAt,
+		UpdatedAt:    Objek.UpdatedAt,
+		DeletedAt:    Objek.DeletedAt,
+	}
+
+	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
+
+	if err := cass_cud.UpdateData(ctx, cass_sot_replica, ObjekCass.TableNameSotReplica(), Objek.ID, parsedData); err != nil {
+		fmt.Println("Gagal memasukan data ke dalam sot replica async dalam services" + handle_services)
+	}
+
+	historical_format.PencatatanCombine(historical_format.Sekarang(), parsedData)
+
+	if err := cass_cud.InsertData(ctx, cass_historcal, ObjekCass.TableNameHistorical(), parsedData); err != nil {
+		fmt.Println("Gagal memasukan data ke dalam historical dalam services" + handle_services)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
