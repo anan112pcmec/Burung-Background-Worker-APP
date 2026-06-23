@@ -52,6 +52,10 @@ func PenggunaUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_c
 		if err := barang_pengguna_handle.UpdateEditKeranjangBarang(d); err != nil {
 			return err
 		}
+	case "UpdateBerikanReviewBarangIIUpdateTransaksi":
+		if err := barang_pengguna_handle.UpdateBerikanReviewBarangIIUpdateTransaksi(d); err != nil {
+			return err
+		}
 	case "ValidateUbahPasswordPenggunaViaOtp":
 		if err := credential_pengguna_handle.UpdateValidateUbahPasswordPenggunaViaOtp(d); err != nil {
 			return err

@@ -455,7 +455,7 @@ type AlamatPengguna struct {
 	Latitude        float64
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	DeletedAt       gorm.DeletedAt
+	DeletedAt       time.Time
 }
 
 func (AlamatPengguna) TableNameHistorical() string {
@@ -498,9 +498,6 @@ func (a *AlamatPengguna) CreateHistoricalTable(ctx context.Context, session *goc
 
 func (a *AlamatPengguna) ParseToCUDType() map[string]interface{} {
 	var deletedAtInterface interface{} = nil
-	if a.DeletedAt.Valid {
-		deletedAtInterface = a.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":               a.ID,

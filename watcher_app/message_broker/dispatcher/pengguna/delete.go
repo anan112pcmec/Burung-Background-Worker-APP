@@ -67,6 +67,10 @@ func PenggunaDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_c
 		if err := transaction_pengguna_handle.DeleteCheckoutBarangUser(d); err != nil {
 			return err
 		}
+	case sot_models.ReviewLike{}.TableName():
+		if err := barang_pengguna_handle.DeleteUnlikeReviewBarang(d); err != nil {
+			return err
+		}
 	}
 
 	return nil

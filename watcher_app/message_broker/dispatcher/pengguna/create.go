@@ -61,6 +61,10 @@ func PenggunaCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_c
 		if err := barang_pengguna_handle.CreateBerikanReviewBarang(d); err != nil {
 			return err
 		}
+	case sot_models.ReviewLike{}.TableName():
+		if err := barang_pengguna_handle.CreateLikeReviewBarang(d); err != nil {
+			return err
+		}
 	case "MembuatSecretPinPengguna":
 		if err := credential_pengguna_handle.CreateMembuatSecretPinPengguna(d); err != nil {
 			return err

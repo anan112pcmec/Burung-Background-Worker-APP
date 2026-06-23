@@ -10,7 +10,6 @@ import (
 	session_cache_db "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/session"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
-
 )
 
 func UpdateSessionData[T sot_models.Pengguna | sot_models.Seller | sot_models.Kurir](ctx context.Context, rds_session redis.Client, key_session string, data T) error {
@@ -28,25 +27,13 @@ func UpdateSessionData[T sot_models.Pengguna | sot_models.Seller | sot_models.Ku
 	switch v := any(data).(type) {
 	case sot_models.Pengguna:
 		fields = helper.StructToJSONMap(v)
-		if err, key := session_cache_db.GetSessionKey(&v); err != nil {
-			return err
-		} else {
-			keyz = key
-		}
+		keyz = session_cache_db.GetSessionKey(&v)
 	case sot_models.Seller:
 		fields = helper.StructToJSONMap(v)
-		if err, key := session_cache_db.GetSessionKey(&v); err != nil {
-			return err
-		} else {
-			keyz = key
-		}
+		keyz = session_cache_db.GetSessionKey(&v)
 	case sot_models.Kurir:
 		fields = helper.StructToJSONMap(v)
-		if err, key := session_cache_db.GetSessionKey(&v); err != nil {
-			return err
-		} else {
-			keyz = key
-		}
+		keyz = session_cache_db.GetSessionKey(&v)
 	}
 
 	if keyz == key_session {

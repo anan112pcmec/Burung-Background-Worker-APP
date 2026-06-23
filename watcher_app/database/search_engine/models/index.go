@@ -81,21 +81,21 @@ func (t Transaksi) IndexName() string {
 }
 
 type AlamatPengguna struct {
-	ID              int64      `json:"id"` // Tetap dipertahankan sesuai nama primary key/kolom id-nya
-	IDPengguna      int64      `json:"id_pengguna"`
-	PanggilanAlamat string     `json:"panggilan_alamat"`
-	NomorTelephone  string     `json:"nomor_telefon"`
-	NamaAlamat      string     `json:"nama_alamat"`
-	Provinsi        string     `json:"provinsi"`
-	Kota            string     `json:"kota"`
-	KodePos         string     `json:"kode_pos"`
-	KodeNegara      string     `json:"kode_negara"`
-	Deskripsi       string     `json:"deskripsi,omitempty"`
-	Longitude       float64    `json:"longitude"`
-	Latitude        float64    `json:"latitude"`
-	CreatedAt       time.Time  `json:"created_at"`
-	UpdatedAt       time.Time  `json:"updated_at"`
-	DeletedAt       *time.Time `json:"deleted_at,omitempty"`
+	ID              int64     `json:"id"` // Tetap dipertahankan sesuai nama primary key/kolom id-nya
+	IDPengguna      int64     `json:"id_pengguna"`
+	PanggilanAlamat string    `json:"panggilan_alamat"`
+	NomorTelephone  string    `json:"nomor_telefon"`
+	NamaAlamat      string    `json:"nama_alamat"`
+	Provinsi        string    `json:"provinsi"`
+	Kota            string    `json:"kota"`
+	KodePos         string    `json:"kode_pos"`
+	KodeNegara      string    `json:"kode_negara"`
+	Deskripsi       string    `json:"deskripsi,omitempty"`
+	Longitude       float64   `json:"longitude"`
+	Latitude        float64   `json:"latitude"`
+	CreatedAt       time.Time `json:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at"`
+	DeletedAt       time.Time `json:"deleted_at,omitempty"`
 }
 
 func (t AlamatPengguna) IndexName() string {
@@ -201,4 +201,19 @@ type AlamatEkspedisi struct {
 
 func (a AlamatEkspedisi) IndexName() string {
 	return "alamat_ekspedisi_se"
+}
+
+type Follower struct {
+	ID         int64      `json:"id"`
+	IdFollower int64      `json:"id_follower"`
+	Pengguna   Pengguna   `json:"pengguna"`
+	IdFollowed int64      `json:"id_followed"`
+	Seller     Seller     `json:"seller"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at,omitempty"`
+}
+
+func (f Follower) IndexName() string {
+	return "follower_se"
 }
