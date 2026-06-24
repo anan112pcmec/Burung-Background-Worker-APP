@@ -1282,10 +1282,11 @@ func (MediaBrandDataLogoFoto) TableNameHistorical() string {
 }
 
 type MediaBrandDataSuratKerjasamaDokumen struct {
-	ID        int64
-	BrandData BrandData
-	Key       string
-	Format    string
+	ID          int64
+	IdBrandData int64
+	BrandData   BrandData
+	Key         string
+	Format      string
 }
 
 func (MediaBrandDataSuratKerjasamaDokumen) PathName() string {
