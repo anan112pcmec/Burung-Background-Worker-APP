@@ -70,7 +70,7 @@ func UpdateUpdatePersonalSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		CreatedAt:        Objek.CreatedAt,
 	}
 
-	if task_info, err := se_index.SellerIndex.AddDocumentsWithContext(ctx, &ObjekSearchEngine, &meilisearch.DocumentOptions{
+	if task_info, err := se_index.SellerIndex.UpdateDocumentsWithContext(ctx, &ObjekSearchEngine, &meilisearch.DocumentOptions{
 		PrimaryKey: meilisearch.StringPtr("id"),
 	}); err != nil {
 		return fmt.Errorf("gagal memasukan data ke dalam search engine %s dalam %s", err, handle_services)
@@ -135,7 +135,7 @@ func UpdateUpdateInfoGeneralPublic(Data mb_cud_serializer.ParsedDataMessage, ctx
 		CreatedAt:        Objek.CreatedAt,
 	}
 
-	if task_info, err := se_index.SellerIndex.AddDocumentsWithContext(ctx, &ObjekSearchEngine, &meilisearch.DocumentOptions{
+	if task_info, err := se_index.SellerIndex.UpdateDocumentsWithContext(ctx, &ObjekSearchEngine, &meilisearch.DocumentOptions{
 		PrimaryKey: meilisearch.StringPtr("id"),
 	}); err != nil {
 		return fmt.Errorf("gagal memasukan data ke dalam search engine %s dalam %s", err, handle_services)

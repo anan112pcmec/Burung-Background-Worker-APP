@@ -231,7 +231,7 @@ func (p *PengirimanEkspedisi) CreateHistoricalTable(ctx context.Context, session
 	return nil
 }
 
-func (p *PengirimanEkspedisi) ParseToCUDType(tahunUpdate int, bulanUpdate int, eventTime time.Time) map[string]interface{} {
+func (p *PengirimanEkspedisi) ParseToCUDType() map[string]interface{} {
 
 	return map[string]interface{}{
 		"id":                  p.ID,

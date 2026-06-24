@@ -195,7 +195,7 @@ func (s *Seller) ParseToCUDType() map[string]interface{} {
 		"jam_operasional":   s.JamOperasional,
 		"punchline":         s.Punchline,
 		"password":          s.Password,
-		"deskrisi":          s.Deskrisi,
+		"deskrispi":         s.Deskripsi,
 		"status_seller":     s.StatusSeller,
 		"created_at":        s.CreatedAt,
 	}

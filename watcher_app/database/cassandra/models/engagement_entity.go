@@ -1173,17 +1173,25 @@ func (BrandData) TableNameHistorical() string {
 	return "brand_data_historical"
 }
 
+func (BrandData) TableNameSotReplica() string {
+	return "brand_data_sot_replica"
+}
+
 type Etalase struct {
 	ID           int64
-	SellerID     int64  `gorm:"column:id_seller;not null" json:"id_seller_etalase"`
-	Seller       Seller `gorm:"foreignKey:SellerID;references:ID" json:"-"`
-	Nama         string `gorm:"column:nama;type:varchar(100);not null" json:"nama_etalase"`
-	Deskripsi    string `gorm:"column:deskripsi;type:text" json:"deskripsi_etalase"`
-	JumlahBarang int32  `gorm:"column:jumlah_barang;not null;default:0" json:"jumlah_barang"`
+	SellerID     int64
+	Seller       Seller
+	Nama         string
+	Deskripsi    string
+	JumlahBarang int32
 }
 
 func (Etalase) TableNameHistorical() string {
 	return "etalase_historical"
+}
+
+func (Etalase) TableNameSotReplica() string {
+	return "etalase_sot_replica"
 }
 
 func (e *Etalase) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
@@ -1215,6 +1223,16 @@ func (e *Etalase) CreateHistoricalTable(ctx context.Context, session *gocql.Sess
 
 	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", e.TableNameHistorical())
 	return nil
+}
+
+func (e *Etalase) ParseToCUDType() map[string]interface{} {
+	return map[string]interface{}{
+		"id":            e.ID,
+		"seller_id":     e.SellerID,
+		"nama":          e.Nama,
+		"deskripsi":     e.Deskripsi,
+		"jumlah_barang": e.JumlahBarang,
+	}
 }
 
 func (b *BrandData) ParseToCUDType() map[string]interface{} {
@@ -1433,10 +1451,6 @@ func (b *BarangDiDiskon) CreateHistoricalTable(ctx context.Context, session *goc
 
 func (b *BarangDiDiskon) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if b.DeletedAt.Valid {
-		deletedAtInterface = b.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":                 b.ID,
@@ -1447,7 +1461,7 @@ func (b *BarangDiDiskon) ParseToCUDType() map[string]interface{} {
 		"status":             b.Status,
 		"created_at":         b.CreatedAt,
 		"updated_at":         b.UpdatedAt,
-		"deleted_at":         deletedAtInterface,
+		"deleted_at":         b.DeletedAt,
 	}
 }
 
@@ -2390,10 +2404,6 @@ func (d *DistributorData) CreateSotReplicaTable(ctx context.Context, session *go
 
 	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", d.TableNameSotReplica())
 	return nil
-}
-
-func (e Etalase) TableNameSotReplica() string {
-	return "etalase_sot_replica"
 }
 
 func (e *Etalase) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
