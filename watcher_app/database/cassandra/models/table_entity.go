@@ -112,7 +112,7 @@ type Seller struct {
 	JamOperasional   string
 	Punchline        string
 	Password         string
-	Deskrisi         string
+	Deskripsi        string
 	StatusSeller     string
 	CreatedAt        time.Time
 }

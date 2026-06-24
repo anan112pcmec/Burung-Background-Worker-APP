@@ -55,6 +55,14 @@ func SellerUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud
 		if err := barang_seller_handle.UpdateEditKomentarBarang(d); err != nil {
 			return err
 		}
+	case "DownStokBarangInduk":
+		if err := barang_seller_handle.UpdateDownStokBarangInduk(d); err != nil {
+			return err
+		}
+	case "DownKategoriBarang":
+		if err := barang_seller_handle.UpdateDownKategoriBarang(d); err != nil {
+			return err
+		}
 	case sot_models.KomentarChild{}.TableName(): // 5
 		if err := barang_seller_handle.UpdateEditChildKomentar(d); err != nil {
 			return err

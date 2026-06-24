@@ -1396,7 +1396,7 @@ type BarangDiDiskon struct {
 	Status           string
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
-	DeletedAt        gorm.DeletedAt
+	DeletedAt        time.Time
 }
 
 func (BarangDiDiskon) TableNameHistorical() string {
