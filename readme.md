@@ -12,10 +12,6 @@ Background worker service untuk memproses perubahan data SOT secara asinkron —
         <br/><sub><b>Go</b></sub>
       </td>
       <td align="center" width="90">
-        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" height="40" alt="postgresql logo" />
-        <br/><sub><b>PostgreSQL</b></sub>
-      </td>
-      <td align="center" width="90">
         <img src="https://cdn.simpleicons.org/redis/FF4438" height="40" alt="redis logo" />
         <br/><sub><b>Redis</b></sub>
       </td>
