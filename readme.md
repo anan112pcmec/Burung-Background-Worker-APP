@@ -6,20 +6,7 @@ Background worker service untuk memproses perubahan data SOT secara asinkron —
 
 <div align="left">
   <div align="center">
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg" height="40" alt="go logo" />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" height="40" alt="postgresql logo" />
-  <img width="12" />
-  <img src="https://cdn.simpleicons.org/redis/FF4438" height="40" alt="redis logo" />
-  <img width="12" />
-  <img src="https://cdn.simpleicons.org/rabbitmq/FF6600" height="40" alt="rabbitmq logo" />
-  <img width="12" />
-  <img src="https://cdn.simpleicons.org/apachecassandra/1287B1" height="40" alt="cassandra logo" />
-  <img width="12" />
-  <img src="https://cdn.simpleicons.org/meilisearch/FF5CAA" height="40" alt="meilisearch logo" />
-  <img width="12" />
-  <img src="https://cdn.simpleicons.org/clickhouse/FFCC01" height="40" alt="clickhouse logo" />
-</div>
+  <img src="https://go.dev/blog/go-brand/Go-Logo/PNG/Go-Logo_LightBlue.png" height="40" alt="go logo" />
   <img width="12" />
   <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" height="40" alt="postgresql logo" />
   <img width="12" />
