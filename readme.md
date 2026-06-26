@@ -38,9 +38,11 @@ Background worker service untuk memproses perubahan data SOT secara asinkron —
     </tr>
   </table>
 </div>
+
 ## Architecture
 
-<img src="https://github.com/user-attachments/assets/0f2d3565-e6a5-48b2-a37c-15f7e62a84c8" />
+<img width="2720" height="2800" alt="burung_background_worker_architecture" src="https://github.com/user-attachments/assets/10fc81cd-f620-4251-82a7-8a5a828055ff" />
+
 
 | Layer | Komponen | Peran |
 |---|---|---|
