@@ -14,7 +14,7 @@ Background worker service untuk memproses perubahan data SOT secara asinkron —
 
 ## Architecture
 
-> _(screenshot diagram di sini)_
+<img src="https://github.com/user-attachments/assets/0f2d3565-e6a5-48b2-a37c-15f7e62a84c8" />
 
 | Layer | Komponen | Peran |
 |---|---|---|
