@@ -4,23 +4,40 @@ Background worker service untuk memproses perubahan data SOT secara asinkron —
 
 ## Stack
 
-<div align="left">
-  <div align="center">
-  <img src="https://go.dev/blog/go-brand/Go-Logo/PNG/Go-Logo_LightBlue.png" height="40" alt="go logo" />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" height="40" alt="postgresql logo" />
-  <img width="12" />
-  <img src="https://cdn.simpleicons.org/redis/FF4438" height="40" alt="redis logo" />
-  <img width="12" />
-  <img src="https://cdn.simpleicons.org/rabbitmq/FF6600" height="40" alt="rabbitmq logo" />
-  <img width="12" />
-  <img src="https://cdn.simpleicons.org/apachecassandra/1287B1" height="40" alt="cassandra logo" />
-  <img width="12" />
-  <img src="https://cdn.simpleicons.org/meilisearch/FF5CAA" height="40" alt="meilisearch logo" />
-  <img width="12" />
-  <img src="https://cdn.simpleicons.org/clickhouse/FFCC01" height="40" alt="clickhouse logo" />
+<div align="center">
+  <table>
+    <tr>
+      <td align="center" width="90">
+        <img src="https://go.dev/blog/go-brand/Go-Logo/PNG/Go-Logo_LightBlue.png" height="40" alt="go logo" />
+        <br/><sub><b>Go</b></sub>
+      </td>
+      <td align="center" width="90">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" height="40" alt="postgresql logo" />
+        <br/><sub><b>PostgreSQL</b></sub>
+      </td>
+      <td align="center" width="90">
+        <img src="https://cdn.simpleicons.org/redis/FF4438" height="40" alt="redis logo" />
+        <br/><sub><b>Redis</b></sub>
+      </td>
+      <td align="center" width="90">
+        <img src="https://cdn.simpleicons.org/rabbitmq/FF6600" height="40" alt="rabbitmq logo" />
+        <br/><sub><b>RabbitMQ</b></sub>
+      </td>
+      <td align="center" width="90">
+        <img src="https://cdn.simpleicons.org/apachecassandra/1287B1" height="40" alt="cassandra logo" />
+        <br/><sub><b>Cassandra</b></sub>
+      </td>
+      <td align="center" width="90">
+        <img src="https://cdn.simpleicons.org/meilisearch/FF5CAA" height="40" alt="meilisearch logo" />
+        <br/><sub><b>Meilisearch</b></sub>
+      </td>
+      <td align="center" width="90">
+        <img src="https://cdn.simpleicons.org/clickhouse/FFCC01" height="40" alt="clickhouse logo" />
+        <br/><sub><b>ClickHouse</b></sub>
+      </td>
+    </tr>
+  </table>
 </div>
-
 ## Architecture
 
 <img src="https://github.com/user-attachments/assets/0f2d3565-e6a5-48b2-a37c-15f7e62a84c8" />
