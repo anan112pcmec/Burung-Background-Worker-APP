@@ -4,13 +4,21 @@ Background worker service untuk memproses perubahan data SOT secara asinkron —
 
 ## Stack
 
-![Go](https://img.shields.io/badge/Go-00ADD8?logo=go&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-FF4438?logo=redis&logoColor=white)
-![RabbitMQ](https://img.shields.io/badge/RabbitMQ-FF6600?logo=rabbitmq&logoColor=white)
-![Cassandra](https://img.shields.io/badge/Cassandra-1287B1?logo=apachecassandra&logoColor=white)
-![Meilisearch](https://img.shields.io/badge/Meilisearch-FF5CAA?logo=meilisearch&logoColor=white)
-![ClickHouse](https://img.shields.io/badge/ClickHouse-FFCC01?logo=clickhouse&logoColor=black)
+<div align="center">
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original.svg" height="40" alt="go logo" />
+  <img width="12" />
+  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" height="40" alt="postgresql logo" />
+  <img width="12" />
+  <img src="https://cdn.simpleicons.org/redis/FF4438" height="40" alt="redis logo" />
+  <img width="12" />
+  <img src="https://cdn.simpleicons.org/rabbitmq/FF6600" height="40" alt="rabbitmq logo" />
+  <img width="12" />
+  <img src="https://cdn.simpleicons.org/apachecassandra/1287B1" height="40" alt="cassandra logo" />
+  <img width="12" />
+  <img src="https://cdn.simpleicons.org/meilisearch/FF5CAA" height="40" alt="meilisearch logo" />
+  <img width="12" />
+  <img src="https://cdn.simpleicons.org/clickhouse/FFCC01" height="40" alt="clickhouse logo" />
+</div>
 
 ## Architecture
 
