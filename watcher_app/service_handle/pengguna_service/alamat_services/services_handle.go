@@ -40,7 +40,6 @@ func CreateAlamatPub(Data mb_cud_serializer.ParsedDataMessage, ctx context.Conte
 		Latitude:        Objek.Latitude,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -105,8 +104,6 @@ func UpdateAlamatPub(Data mb_cud_serializer.ParsedDataMessage, ctx context.Conte
 		Longitude:       Objek.Longitude,
 		Latitude:        Objek.Latitude,
 		CreatedAt:       Objek.CreatedAt,
-		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -173,7 +170,6 @@ func DeleteAlamatPub(Data mb_cud_serializer.ParsedDataMessage, ctx context.Conte
 		Latitude:        Objek.Latitude,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

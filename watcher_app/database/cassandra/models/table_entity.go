@@ -17,6 +17,8 @@ type Pengguna struct {
 	PinHash        string
 	StatusPengguna string
 	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	DeletedAt      time.Time
 }
 
 func (p Pengguna) TableNameHistorical() string {
@@ -35,6 +37,8 @@ func (p *Pengguna) CreateHistoricalTable(ctx context.Context, s *gocql.Session) 
 		pin_hash text,
 		status_pengguna text,
 		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -66,6 +70,8 @@ func (p *Pengguna) CreateSotReplicaTable(ctx context.Context, s *gocql.Session) 
 		pin_hash text,
 		status_pengguna text,
 		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, p.TableNameSotReplica())
 
@@ -87,6 +93,8 @@ func (p *Pengguna) ParseToCUDType() map[string]interface{} {
 		"pin_hash":        p.PinHash,
 		"status_pengguna": p.StatusPengguna,
 		"created_at":      p.CreatedAt,
+		"updated_at":      p.UpdatedAt,
+		"deleted_at":      p.DeletedAt,
 	}
 }
 
@@ -115,6 +123,8 @@ type Seller struct {
 	Deskripsi        string
 	StatusSeller     string
 	CreatedAt        time.Time
+	UpdatedAt        time.Time
+	DeletedAt        time.Time
 }
 
 func (s Seller) TableNameHistorical() string {
@@ -137,6 +147,8 @@ func (s *Seller) CreateHistoricalTable(ctx context.Context, session *gocql.Sessi
 		deskrisi text,
 		status_seller text,
 		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -172,6 +184,8 @@ func (s *Seller) CreateSotReplicaTable(ctx context.Context, session *gocql.Sessi
 		deskrisi text,
 		status_seller text,
 		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, s.TableNameSotReplica())
 
@@ -198,6 +212,8 @@ func (s *Seller) ParseToCUDType() map[string]interface{} {
 		"deskrispi":         s.Deskripsi,
 		"status_seller":     s.StatusSeller,
 		"created_at":        s.CreatedAt,
+		"updated_at":        s.UpdatedAt,
+		"deleted_at":        s.DeletedAt,
 	}
 }
 
@@ -226,6 +242,8 @@ type Kurir struct {
 	Rating        float32
 	TipeKendaraan string
 	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	DeletedAt     time.Time
 }
 
 func (k Kurir) TableNameHistorical() string {
@@ -249,6 +267,8 @@ func (k *Kurir) CreateHistoricalTable(ctx context.Context, session *gocql.Sessio
 		rating float,
 		tipe_kendaraan text,
 		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -285,6 +305,8 @@ func (k *Kurir) CreateSotReplicaTable(ctx context.Context, s *gocql.Session) err
 		rating float,
 		tipe_kendaraan text,
 		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, k.TableNameSotReplica())
 
@@ -312,6 +334,8 @@ func (k *Kurir) ParseToCUDType() map[string]interface{} {
 		"rating":         k.Rating,
 		"tipe_kendaraan": k.TipeKendaraan,
 		"created_at":     k.CreatedAt,
+		"updated_at":     k.UpdatedAt,
+		"deleted_at":     k.DeletedAt,
 	}
 }
 

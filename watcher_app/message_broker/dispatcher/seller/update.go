@@ -67,6 +67,10 @@ func SellerUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud
 		if err := barang_seller_handle.UpdateEditChildKomentar(d); err != nil {
 			return err
 		}
+	case "UbahHargaKategoriBarang":
+		if err := barang_seller_handle.UpdateUbahHargaKategoriBarang(d); err != nil {
+			return err
+		}
 	case "ValidateUbahPasswordSeller": // 6
 		if err := credential_seller_handle.UpdateValidateUbahPasswordSeller(d); err != nil {
 			return err

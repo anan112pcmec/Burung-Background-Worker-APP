@@ -15,6 +15,7 @@ import (
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+
 )
 
 func CreateMasukanBarangInduk(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
@@ -183,16 +184,16 @@ func CreateMasukanKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 
 	var ObjekCass cass_models.KategoriBarang = cass_models.KategoriBarang{
 		ID:             Objek.ID,
-		SellerID:       int(Objek.SellerID),
-		IdBarangInduk:  int(Objek.IdBarangInduk),
+		SellerID:       int32(Objek.SellerID),
+		IdBarangInduk:  int32(Objek.IdBarangInduk),
 		IDAlamat:       Objek.IDAlamat,
-		IdRekening:     Objek.IDRekening,
+		IDRekening:     Objek.IDRekening,
 		Nama:           Objek.Nama,
 		Deskripsi:      Objek.Deskripsi,
 		Warna:          Objek.Warna,
-		Stok:           int(Objek.Stok),
-		Harga:          int(Objek.Harga),
-		PotonganDiskon: int(Objek.PotonganDiskon),
+		Stok:           int32(Objek.Stok),
+		Harga:          int32(Objek.Harga),
+		PotonganDiskon: int32(Objek.PotonganDiskon),
 		BeratGram:      Objek.BeratGram,
 		DimensiPanjang: Objek.DimensiPanjang,
 		DimensiLebar:   Objek.DimensiLebar,
@@ -227,16 +228,60 @@ func UpdateEditKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 
 	var ObjekCass cass_models.KategoriBarang = cass_models.KategoriBarang{
 		ID:             Objek.ID,
-		SellerID:       int(Objek.SellerID),
-		IdBarangInduk:  int(Objek.IdBarangInduk),
+		SellerID:       int32(Objek.SellerID),
+		IdBarangInduk:  int32(Objek.IdBarangInduk),
 		IDAlamat:       Objek.IDAlamat,
-		IdRekening:     Objek.IDRekening,
+		IDRekening:     Objek.IDRekening,
 		Nama:           Objek.Nama,
 		Deskripsi:      Objek.Deskripsi,
 		Warna:          Objek.Warna,
-		Stok:           int(Objek.Stok),
-		Harga:          int(Objek.Harga),
-		PotonganDiskon: int(Objek.PotonganDiskon),
+		Stok:           int32(Objek.Stok),
+		Harga:          int32(Objek.Harga),
+		PotonganDiskon: int32(Objek.PotonganDiskon),
+		BeratGram:      Objek.BeratGram,
+		DimensiPanjang: Objek.DimensiPanjang,
+		DimensiLebar:   Objek.DimensiLebar,
+		Sku:            Objek.Sku,
+		IsOriginal:     Objek.IsOriginal,
+		CreatedAt:      Objek.CreatedAt,
+	}
+
+	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
+
+	if err := cass_cud.UpdateData(ctx, cass_sot_replica, ObjekCass.TableNameSotReplica(), int64(ObjekCass.ID), parsedData); err != nil {
+		return fmt.Errorf("gagal memasukan data ke dalam sot replica async %s dalam %s", err, handle_services)
+	}
+
+	historical_format.PencatatanCombine(historical_format.Sekarang(), parsedData)
+
+	if err := cass_cud.InsertData(ctx, cass_historical, ObjekCass.TableNameHistorical(), parsedData); err != nil {
+		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
+	}
+
+	return nil
+}
+
+func UpdateUbahHargaKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session) error {
+	const handle_services string = "UpdateUbahHargaKategoriBarang"
+	var Objek sot_models.KategoriBarang
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
+		return fmt.Errorf("gagal mengolah data")
+	} else {
+		fmt.Println(Objek)
+	}
+
+	var ObjekCass cass_models.KategoriBarang = cass_models.KategoriBarang{
+		ID:             Objek.ID,
+		SellerID:       int32(Objek.SellerID),
+		IdBarangInduk:  int32(Objek.IdBarangInduk),
+		IDAlamat:       Objek.IDAlamat,
+		IDRekening:     Objek.IDRekening,
+		Nama:           Objek.Nama,
+		Deskripsi:      Objek.Deskripsi,
+		Warna:          Objek.Warna,
+		Stok:           int32(Objek.Stok),
+		Harga:          int32(Objek.Harga),
+		PotonganDiskon: int32(Objek.PotonganDiskon),
 		BeratGram:      Objek.BeratGram,
 		DimensiPanjang: Objek.DimensiPanjang,
 		DimensiLebar:   Objek.DimensiLebar,
@@ -271,16 +316,16 @@ func DeleteHapusBarangKategori(Data mb_cud_serializer.ParsedDataMessage, ctx con
 
 	var ObjekCass cass_models.KategoriBarang = cass_models.KategoriBarang{
 		ID:             Objek.ID,
-		SellerID:       int(Objek.SellerID),
-		IdBarangInduk:  int(Objek.IdBarangInduk),
+		SellerID:       int32(Objek.SellerID),
+		IdBarangInduk:  int32(Objek.IdBarangInduk),
 		IDAlamat:       Objek.IDAlamat,
-		IdRekening:     Objek.IDRekening,
+		IDRekening:     Objek.IDRekening,
 		Nama:           Objek.Nama,
 		Deskripsi:      Objek.Deskripsi,
 		Warna:          Objek.Warna,
-		Stok:           int(Objek.Stok),
-		Harga:          int(Objek.Harga),
-		PotonganDiskon: int(Objek.PotonganDiskon),
+		Stok:           int32(Objek.Stok),
+		Harga:          int32(Objek.Harga),
+		PotonganDiskon: int32(Objek.PotonganDiskon),
 		BeratGram:      Objek.BeratGram,
 		DimensiPanjang: Objek.DimensiPanjang,
 		DimensiLebar:   Objek.DimensiLebar,
@@ -288,7 +333,6 @@ func DeleteHapusBarangKategori(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		IsOriginal:     Objek.IsOriginal,
 		CreatedAt:      Objek.CreatedAt,
 	}
-
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
 
 	if err := cass_cud.DeleteData(ctx, cass_sot_replica, ObjekCass.TableNameSotReplica(), int64(ObjekCass.ID)); err != nil {
@@ -315,16 +359,16 @@ func UpdateDownStokBarangInduk(Data mb_cud_serializer.ParsedDataMessage, ctx con
 
 	var ObjekCass cass_models.KategoriBarang = cass_models.KategoriBarang{
 		ID:             Objek.ID,
-		SellerID:       int(Objek.SellerID),
-		IdBarangInduk:  int(Objek.IdBarangInduk),
+		SellerID:       int32(Objek.SellerID),
+		IdBarangInduk:  int32(Objek.IdBarangInduk),
 		IDAlamat:       Objek.IDAlamat,
-		IdRekening:     Objek.IDRekening,
+		IDRekening:     Objek.IDRekening,
 		Nama:           Objek.Nama,
 		Deskripsi:      Objek.Deskripsi,
 		Warna:          Objek.Warna,
-		Stok:           int(Objek.Stok),
-		Harga:          int(Objek.Harga),
-		PotonganDiskon: int(Objek.PotonganDiskon),
+		Stok:           int32(Objek.Stok),
+		Harga:          int32(Objek.Harga),
+		PotonganDiskon: int32(Objek.PotonganDiskon),
 		BeratGram:      Objek.BeratGram,
 		DimensiPanjang: Objek.DimensiPanjang,
 		DimensiLebar:   Objek.DimensiLebar,
@@ -359,16 +403,16 @@ func UpdateDownKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 
 	var ObjekCass cass_models.KategoriBarang = cass_models.KategoriBarang{
 		ID:             Objek.ID,
-		SellerID:       int(Objek.SellerID),
-		IdBarangInduk:  int(Objek.IdBarangInduk),
+		SellerID:       int32(Objek.SellerID),
+		IdBarangInduk:  int32(Objek.IdBarangInduk),
 		IDAlamat:       Objek.IDAlamat,
-		IdRekening:     Objek.IDRekening,
+		IDRekening:     Objek.IDRekening,
 		Nama:           Objek.Nama,
 		Deskripsi:      Objek.Deskripsi,
 		Warna:          Objek.Warna,
-		Stok:           int(Objek.Stok),
-		Harga:          int(Objek.Harga),
-		PotonganDiskon: int(Objek.PotonganDiskon),
+		Stok:           int32(Objek.Stok),
+		Harga:          int32(Objek.Harga),
+		PotonganDiskon: int32(Objek.PotonganDiskon),
 		BeratGram:      Objek.BeratGram,
 		DimensiPanjang: Objek.DimensiPanjang,
 		DimensiLebar:   Objek.DimensiLebar,

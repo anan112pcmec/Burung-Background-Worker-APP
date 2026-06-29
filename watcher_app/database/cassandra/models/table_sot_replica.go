@@ -15,19 +15,6 @@ func (r VarianBarang) TableNameSotReplica() string {
 	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
 }
 
-func (r Pengiriman) TableNameSotReplica() string {
-	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
-}
-func (r JejakPengiriman) TableNameSotReplica() string {
-	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
-}
-func (r PengirimanEkspedisi) TableNameSotReplica() string {
-	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
-}
-func (r JejakPengirimanEkspedisi) TableNameSotReplica() string {
-	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
-}
-
 func (r EntitySocialMedia) TableNameSotReplica() string {
 	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
 }
@@ -158,20 +145,6 @@ func (r MediaPengirimanEkspedisiPickedUpFoto) TableNameSotReplica() string {
 	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
 }
 func (r MediaPengirimanEkspedisiSampaiAgentFoto) TableNameSotReplica() string {
-	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
-}
-
-func (r PayOutKurir) TableNameSotReplica() string {
-	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
-}
-func (r PayOutSeller) TableNameSotReplica() string {
-	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
-}
-
-func (r RekeningSeller) TableNameSotReplica() string {
-	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
-}
-func (r RekeningKurir) TableNameSotReplica() string {
 	return strings.Replace(r.TableNameHistorical(), "_historical", "_sot_replica", 1)
 }
 

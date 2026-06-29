@@ -6,7 +6,12 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
+	"gorm.io/gorm"
 )
+
+// =========================================================================
+// REKENING SELLER
+// =========================================================================
 
 type RekeningSeller struct {
 	ID              int64
@@ -18,11 +23,15 @@ type RekeningSeller struct {
 	IsDefault       bool
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	DeletedAt       *time.Time
+	DeletedAt       gorm.DeletedAt // 🔵 Diselaraskan dengan sot_models
 }
 
 func (RekeningSeller) TableNameHistorical() string {
 	return "rekening_seller_historical"
+}
+
+func (RekeningSeller) TableNameSotReplica() string {
+	return "rekening_seller"
 }
 
 func (r *RekeningSeller) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
@@ -77,6 +86,34 @@ func (r *RekeningSeller) DropTable(ctx context.Context, session *gocql.Session) 
 	return nil
 }
 
+func (r *RekeningSeller) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_seller int,
+		nama_bank text,
+		nomor_rekening text,
+		pemilik_rekening text,
+		is_default boolean,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, r.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", r.TableNameSotReplica())
+	return nil
+}
+
+// =========================================================================
+// REKENING KURIR
+// =========================================================================
+
 type RekeningKurir struct {
 	ID              int64
 	IdKurir         int64
@@ -86,11 +123,15 @@ type RekeningKurir struct {
 	PemilikRekening string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	DeletedAt       *time.Time
+	DeletedAt       gorm.DeletedAt // 🔵 Diselaraskan dengan sot_models
 }
 
 func (RekeningKurir) TableNameHistorical() string {
 	return "rekening_kurir_historical"
+}
+
+func (RekeningKurir) TableNameSotReplica() string {
+	return "rekening_kurir"
 }
 
 func (r *RekeningKurir) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
@@ -143,30 +184,6 @@ func (r *RekeningKurir) DropTable(ctx context.Context, session *gocql.Session) e
 	return nil
 }
 
-func (r *RekeningSeller) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_seller int,
-		nama_bank text,
-		nomor_rekening text,
-		pemilik_rekening text,
-		is_default boolean,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, r.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", r.TableNameSotReplica())
-	return nil
-}
-
 func (r *RekeningKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -186,6 +203,6 @@ func (r *RekeningKurir) CreateSotReplicaTable(ctx context.Context, session *gocq
 		return err
 	}
 
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", r.TableNameSotReplica())
+	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", r.TableNameSotReplica())
 	return nil
 }

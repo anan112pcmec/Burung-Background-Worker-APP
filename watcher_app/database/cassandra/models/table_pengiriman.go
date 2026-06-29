@@ -9,6 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
+// =========================================================================
+// PENGIRIMAN
+// =========================================================================
+
 type Pengiriman struct {
 	ID                int64
 	IdTransaksi       int64
@@ -35,8 +39,11 @@ func (Pengiriman) TableNameHistorical() string {
 	return "pengiriman_historical"
 }
 
+func (Pengiriman) TableNameSotReplica() string {
+	return "pengiriman"
+}
+
 func (p *Pengiriman) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
-	// Query CREATE TABLE disesuaikan dengan seluruh field di struct Pengiriman dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -70,7 +77,6 @@ func (p *Pengiriman) CreateHistoricalTable(ctx context.Context, session *gocql.S
 }
 
 func (p *Pengiriman) ParseToCUDType() map[string]interface{} {
-
 	return map[string]interface{}{
 		"id":                 p.ID,
 		"id_transaksi":       p.IdTransaksi,
@@ -90,7 +96,6 @@ func (p *Pengiriman) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-// DropTable disesuaikan menggunakan p.TableName() secara dinamis
 func (p *Pengiriman) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
 
@@ -102,6 +107,40 @@ func (p *Pengiriman) DropTable(ctx context.Context, session *gocql.Session) erro
 	return nil
 }
 
+func (p *Pengiriman) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_transaksi bigint,
+		id_seller bigint,
+		id_alamat_gudang bigint,
+		id_alamat_pengguna bigint,
+		id_kurir bigint,
+		berat_barang smallint,
+		kendaraan_required text,
+		jenis_pengiriman text,
+		jarak_tempuh text,
+		kurir_paid bigint,
+		status text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, p.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", p.TableNameSotReplica())
+	return nil
+}
+
+// =========================================================================
+// JEJAK PENGIRIMAN (Mempertahankan field typo: Longtitude)
+// =========================================================================
+
 type JejakPengiriman struct {
 	ID           int64
 	IdPengiriman int64
@@ -109,7 +148,7 @@ type JejakPengiriman struct {
 	Lokasi       string
 	Keterangan   string
 	Latitude     float64
-	Longtitude   float64
+	Longtitude   float64 // 🔵 Tetap dipertahankan sesuai struktur sot_models
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	DeletedAt    gorm.DeletedAt
@@ -119,8 +158,11 @@ func (JejakPengiriman) TableNameHistorical() string {
 	return "jejak_pengiriman_historical"
 }
 
+func (JejakPengiriman) TableNameSotReplica() string {
+	return "jejak_pengiriman"
+}
+
 func (j *JejakPengiriman) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
-	// Query CREATE TABLE disesuaikan dengan seluruh field di struct JejakPengiriman dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -172,6 +214,34 @@ func (j *JejakPengiriman) DropTable(ctx context.Context, session *gocql.Session)
 	return nil
 }
 
+func (j *JejakPengiriman) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengiriman bigint,
+		lokasi text,
+		keterangan text,
+		latitude double,
+		longtitude double,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, j.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", j.TableNameSotReplica())
+	return nil
+}
+
+// =========================================================================
+// PENGIRIMAN EKSPEDISI
+// =========================================================================
+
 type PengirimanEkspedisi struct {
 	ID                int64
 	IdTransaksi       int64
@@ -181,6 +251,7 @@ type PengirimanEkspedisi struct {
 	IdAlamatGudang    int64
 	AlamatGudang      AlamatGudang
 	IdAlamatEkspedisi int64
+	AlamatEkspedisi   AlamatEkspedisi // 🔵 Ditambahkan agar sinkron dengan sot_models
 	IdKurir           *int64
 	BeratBarang       int16
 	KendaraanRequired string
@@ -197,8 +268,11 @@ func (PengirimanEkspedisi) TableNameHistorical() string {
 	return "pengiriman_ekspedisi_historical"
 }
 
+func (PengirimanEkspedisi) TableNameSotReplica() string {
+	return "pengiriman_ekspedisi"
+}
+
 func (p *PengirimanEkspedisi) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
-	// Query CREATE TABLE disesuaikan dengan seluruh field di struct PengirimanEkspedisi dan komponen pencatatan historis
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -232,7 +306,6 @@ func (p *PengirimanEkspedisi) CreateHistoricalTable(ctx context.Context, session
 }
 
 func (p *PengirimanEkspedisi) ParseToCUDType() map[string]interface{} {
-
 	return map[string]interface{}{
 		"id":                  p.ID,
 		"id_transaksi":        p.IdTransaksi,
@@ -252,7 +325,6 @@ func (p *PengirimanEkspedisi) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-// DropTable disesuaikan menggunakan p.TableName() secara dinamis
 func (p *PengirimanEkspedisi) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
 
@@ -263,6 +335,40 @@ func (p *PengirimanEkspedisi) DropTable(ctx context.Context, session *gocql.Sess
 	fmt.Printf("Berhasil drop tabel %s\n", p.TableNameHistorical())
 	return nil
 }
+
+func (p *PengirimanEkspedisi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_transaksi bigint,
+		id_seller bigint,
+		id_alamat_gudang bigint,
+		id_alamat_ekspedisi bigint,
+		id_kurir bigint,
+		berat_barang smallint,
+		kendaraan_required text,
+		jenis_pengiriman text,
+		jarak_tempuh text,
+		kurir_paid bigint,
+		status text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, p.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", p.TableNameSotReplica())
+	return nil
+}
+
+// =========================================================================
+// JEJAK PENGIRIMAN EKSPEDISI (Menggunakan standar: Longitude)
+// =========================================================================
 
 type JejakPengirimanEkspedisi struct {
 	ID                    int64
@@ -279,6 +385,10 @@ type JejakPengirimanEkspedisi struct {
 
 func (JejakPengirimanEkspedisi) TableNameHistorical() string {
 	return "jejak_pengiriman_ekspedisi_historical"
+}
+
+func (JejakPengirimanEkspedisi) TableNameSotReplica() string {
+	return "jejak_pengiriman_ekspedisi"
 }
 
 func (j *JejakPengirimanEkspedisi) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
@@ -330,93 +440,6 @@ func (j *JejakPengirimanEkspedisi) DropTable(ctx context.Context, session *gocql
 	}
 
 	fmt.Printf("Berhasil drop tabel %s\n", j.TableNameHistorical())
-	return nil
-}
-
-func (p *Pengiriman) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	// Query CREATE TABLE disesuaikan dengan seluruh field di struct Pengiriman dan Pencatatan
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_transaksi bigint,
-		id_seller bigint,
-		id_alamat_gudang bigint,
-		id_alamat_pengguna bigint,
-		id_kurir bigint,
-		berat_barang smallint,
-		kendaraan_required text,
-		jenis_pengiriman text,
-		jarak_tempuh text,
-		kurir_paid bigint,
-		status text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, p.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", p.TableNameSotReplica())
-	return nil
-}
-
-func (j *JejakPengiriman) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	// Query CREATE TABLE disesuaikan dengan seluruh field di struct JejakPengiriman dan Pencatatan
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_pengiriman bigint,
-		lokasi text,
-		keterangan text,
-		latitude double,
-		longtitude double,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, j.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", j.TableNameSotReplica())
-	return nil
-}
-
-func (p *PengirimanEkspedisi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	// Query CREATE TABLE disesuaikan dengan seluruh field di struct PengirimanEkspedisi dan komponen pencatatan historis
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_transaksi bigint,
-		id_seller bigint,
-		id_alamat_gudang bigint,
-		id_alamat_ekspedisi bigint,
-		id_kurir bigint,
-		berat_barang smallint,
-		kendaraan_required text,
-		jenis_pengiriman text,
-		jarak_tempuh text,
-		kurir_paid bigint,
-		status text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, p.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", p.TableNameSotReplica())
 	return nil
 }
 

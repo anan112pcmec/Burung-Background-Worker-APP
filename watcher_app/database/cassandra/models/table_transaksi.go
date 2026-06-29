@@ -9,6 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
+// =========================================================================
+// PEMBAYARAN
+// =========================================================================
+
 type Pembayaran struct {
 	ID              int64
 	IdPengguna      int64
@@ -83,6 +87,36 @@ func (p *Pembayaran) DropTable(ctx context.Context, session *gocql.Session) erro
 	fmt.Printf("Berhasil drop tabel %s\n", p.TableNameHistorical())
 	return nil
 }
+
+func (p *Pembayaran) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		kode_transaksi_pg text,
+		kode_order_sistem text,
+		provider text,
+		total int,
+		payment_type text,
+		paid_at text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, p.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", p.TableNameSotReplica())
+	return nil
+}
+
+// =========================================================================
+// TRANSAKSI
+// =========================================================================
 
 type Transaksi struct {
 	ID                  int64
@@ -216,6 +250,53 @@ func (t *Transaksi) DropTable(ctx context.Context, session *gocql.Session) error
 	return nil
 }
 
+func (t *Transaksi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		id_seller int,
+		id_barang_induk bigint,
+		id_kategori_barang bigint,
+		id_alamat_pengguna bigint,
+		id_alamat_gudang bigint,
+		id_alamat_ekspedisi bigint,
+		id_pembayaran bigint,
+		kendaraan_pengiriman text,
+		jenis_pengiriman text,
+		jarak_tempuh text,
+		berat_total_kg smallint,
+		kode_order_sistem text,
+		kode_resi_ekspedisi text,
+		status text,
+		dibatalkan_oleh text,
+		catatan text,
+		kuantitas_barang int,
+		is_ekspedisi boolean,
+		seller_paid bigint,
+		kurir_paid bigint,
+		ekspedisi_paid bigint,
+		total bigint,
+		reviewed boolean,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, t.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", t.TableNameSotReplica())
+	return nil
+}
+
+// =========================================================================
+// TRANSAKSI FAILED
+// =========================================================================
+
 type TransaksiFailed struct {
 	ID                  int64
 	IdPengguna          int64
@@ -341,75 +422,6 @@ func (t *TransaksiFailed) DropTable(ctx context.Context, session *gocql.Session)
 	return nil
 }
 
-func (p *Pembayaran) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_pengguna bigint,
-		kode_transaksi_pg text,
-		kode_order_sistem text,
-		provider text,
-		total int,
-		payment_type text,
-		paid_at text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, p.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", p.TableNameSotReplica())
-	return nil
-}
-
-func (t *Transaksi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_pengguna bigint,
-		id_seller int,
-		id_barang_induk bigint,
-		id_kategori_barang bigint,
-		id_alamat_pengguna bigint,
-		id_alamat_gudang bigint,
-		id_alamat_ekspedisi bigint,
-		id_pembayaran bigint,
-		kendaraan_pengiriman text,
-		jenis_pengiriman text,
-		jarak_tempuh text,
-		berat_total_kg smallint,
-		kode_order_sistem text,
-		kode_resi_ekspedisi text,
-		status text,
-		dibatalkan_oleh text,
-		catatan text,
-		kuantitas_barang int,
-		is_ekspedisi boolean,
-		seller_paid bigint,
-		kurir_paid bigint,
-		ekspedisi_paid bigint,
-		total bigint,
-		reviewed boolean,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, t.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", t.TableNameSotReplica())
-	return nil
-}
-
 func (t *TransaksiFailed) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -449,6 +461,6 @@ func (t *TransaksiFailed) CreateSotReplicaTable(ctx context.Context, session *go
 		return err
 	}
 
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", t.TableNameSotReplica())
+	fmt.Printf("Berhasil Eksekusi query membuat tabel %s\n", t.TableNameSotReplica())
 	return nil
 }

@@ -1999,7 +1999,7 @@ func UpdateSampaiPengirimanEksIItransaksiSampaiEksUpdatedPublish(Data mb_cud_ser
 		Reviewed:            Objek.Reviewed,
 		CreatedAt:           Objek.CreatedAt,
 		UpdatedAt:           Objek.UpdatedAt,
-		DeletedAt:           &ObjekCass.AlamatPengguna.DeletedAt,
+		DeletedAt:           &ObjekCass.Pengguna.DeletedAt,
 	}
 
 	if task_info, err := se_index.TransaksiIndex.UpdateDocuments(&ObjekSearchEngine, &meilisearch.DocumentOptions{

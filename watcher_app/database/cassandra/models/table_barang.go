@@ -6,7 +6,13 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
+	"gorm.io/gorm"
 )
+
+// REVISI: tambah interface BarangContract sesuai sot_models
+type BarangContract interface {
+	Validating() string
+}
 
 type BarangInduk struct {
 	ID               int32
@@ -19,14 +25,22 @@ type BarangInduk struct {
 	OriginalKategori int64
 	HargaKategoris   int32
 	CreatedAt        time.Time
+	// REVISI: tambah UpdatedAt dan DeletedAt sesuai sot_models
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt
 }
 
 func (BarangInduk) TableNameHistorical() string {
 	return "barang_induk_historical"
 }
 
+// REVISI: tambah implementasi BarangContract interface
+func (b BarangInduk) Validating() string {
+	return b.TableNameHistorical()
+}
+
 func (b *BarangInduk) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
-	// Query CREATE TABLE disesuaikan dengan field di struct BarangInduk dan Pencatatan
+	// REVISI: tambah kolom updated_at dan deleted_at
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id int,
@@ -38,6 +52,8 @@ func (b *BarangInduk) CreateHistoricalTable(ctx context.Context, session *gocql.
 		original_kategori bigint,
 		harga_kategoris int,
 		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -54,6 +70,12 @@ func (b *BarangInduk) CreateHistoricalTable(ctx context.Context, session *gocql.
 }
 
 func (b *BarangInduk) ParseToCUDType() map[string]interface{} {
+	// REVISI: tambah updated_at dan deleted_at
+	var deletedAtInterface interface{} = nil
+	if b.DeletedAt.Valid {
+		deletedAtInterface = b.DeletedAt.Time
+	}
+
 	return map[string]interface{}{
 		"id":                b.ID,
 		"seller_id":         b.SellerID,
@@ -64,10 +86,11 @@ func (b *BarangInduk) ParseToCUDType() map[string]interface{} {
 		"original_kategori": b.OriginalKategori,
 		"harga_kategoris":   b.HargaKategoris,
 		"created_at":        b.CreatedAt,
+		"updated_at":        b.UpdatedAt,
+		"deleted_at":        deletedAtInterface,
 	}
 }
 
-// DropTable disesuaikan menggunakan b.TableName() secara dinamis
 func (b *BarangInduk) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, b.TableNameHistorical())
 
@@ -80,30 +103,45 @@ func (b *BarangInduk) DropTable(ctx context.Context, session *gocql.Session) err
 }
 
 type KategoriBarang struct {
-	ID             int64
-	SellerID       int
-	IdBarangInduk  int
-	IDAlamat       int64
-	IdRekening     int64
-	Nama           string
-	Deskripsi      string
-	Warna          string
-	Stok           int
-	Harga          int
-	PotonganDiskon int
+	ID int64
+	// REVISI: tipe SellerID dari int → int32 sesuai sot_models
+	SellerID int32
+	// REVISI: tipe IdBarangInduk dari int → int32 sesuai sot_models
+	IdBarangInduk int32
+	IDAlamat      int64
+	// REVISI: rename IdRekening → IDRekening sesuai sot_models
+	IDRekening int64
+	Nama       string
+	Deskripsi  string
+	Warna      string
+	// REVISI: tipe Stok dari int → int32 sesuai sot_models
+	Stok int32
+	// REVISI: tipe Harga dari int → int32 sesuai sot_models
+	Harga int32
+	// REVISI: tipe PotonganDiskon dari int → int32 sesuai sot_models
+	PotonganDiskon int32
 	BeratGram      int16
 	DimensiPanjang int16
 	DimensiLebar   int16
 	Sku            string
 	IsOriginal     bool
 	CreatedAt      time.Time
+	// REVISI: tambah UpdatedAt dan DeletedAt sesuai sot_models
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt
 }
 
 func (KategoriBarang) TableNameHistorical() string {
 	return "kategori_barang_historical"
 }
 
+// REVISI: tambah implementasi BarangContract interface
+func (k KategoriBarang) Validating() string {
+	return k.TableNameHistorical()
+}
+
 func (k *KategoriBarang) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+	// REVISI: tambah kolom updated_at dan deleted_at
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -123,6 +161,8 @@ func (k *KategoriBarang) CreateHistoricalTable(ctx context.Context, session *goc
 		sku text,
 		is_original boolean,
 		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -139,12 +179,18 @@ func (k *KategoriBarang) CreateHistoricalTable(ctx context.Context, session *goc
 }
 
 func (k *KategoriBarang) ParseToCUDType() map[string]interface{} {
+	// REVISI: tambah updated_at dan deleted_at; gunakan IDRekening
+	var deletedAtInterface interface{} = nil
+	if k.DeletedAt.Valid {
+		deletedAtInterface = k.DeletedAt.Time
+	}
+
 	return map[string]interface{}{
 		"id":              k.ID,
 		"seller_id":       k.SellerID,
 		"id_barang_induk": k.IdBarangInduk,
 		"id_alamat":       k.IDAlamat,
-		"id_rekening":     k.IdRekening,
+		"id_rekening":     k.IDRekening,
 		"nama":            k.Nama,
 		"deskripsi":       k.Deskripsi,
 		"warna":           k.Warna,
@@ -157,10 +203,11 @@ func (k *KategoriBarang) ParseToCUDType() map[string]interface{} {
 		"sku":             k.Sku,
 		"is_original":     k.IsOriginal,
 		"created_at":      k.CreatedAt,
+		"updated_at":      k.UpdatedAt,
+		"deleted_at":      deletedAtInterface,
 	}
 }
 
-// DropTable disesuaikan menggunakan k.TableName() secara dinamis
 func (k *KategoriBarang) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, k.TableNameHistorical())
 
@@ -189,8 +236,12 @@ func (VarianBarang) TableNameHistorical() string {
 	return "varian_barang_historical"
 }
 
+// REVISI: tambah implementasi BarangContract interface
+func (v VarianBarang) Validating() string {
+	return v.TableNameHistorical()
+}
+
 func (v *VarianBarang) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
-	// Query CREATE TABLE disesuaikan dengan field di struct VarianBarang dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -229,7 +280,6 @@ func (v *VarianBarang) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-// DropTable disesuaikan menggunakan v.TableName() secara dinamis
 func (v *VarianBarang) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, v.TableNameHistorical())
 
@@ -242,7 +292,7 @@ func (v *VarianBarang) DropTable(ctx context.Context, session *gocql.Session) er
 }
 
 func (b *BarangInduk) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	// Query CREATE TABLE disesuaikan dengan field di struct BarangInduk dan Pencatatan
+	// REVISI: tambah updated_at dan deleted_at
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id int,
@@ -254,6 +304,8 @@ func (b *BarangInduk) CreateSotReplicaTable(ctx context.Context, session *gocql.
 		original_kategori bigint,
 		harga_kategoris int,
 		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, b.TableNameSotReplica())
 
@@ -262,11 +314,12 @@ func (b *BarangInduk) CreateSotReplicaTable(ctx context.Context, session *gocql.
 		return err
 	}
 
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", b.TableNameSotReplica())
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
 	return nil
 }
 
 func (k *KategoriBarang) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	// REVISI: tambah updated_at dan deleted_at
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -286,6 +339,8 @@ func (k *KategoriBarang) CreateSotReplicaTable(ctx context.Context, session *goc
 		sku text,
 		is_original boolean,
 		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, k.TableNameSotReplica())
 
@@ -294,12 +349,11 @@ func (k *KategoriBarang) CreateSotReplicaTable(ctx context.Context, session *goc
 		return err
 	}
 
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", k.TableNameSotReplica())
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", k.TableNameSotReplica())
 	return nil
 }
 
 func (v *VarianBarang) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	// Query CREATE TABLE disesuaikan dengan field di struct VarianBarang dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -318,6 +372,6 @@ func (v *VarianBarang) CreateSotReplicaTable(ctx context.Context, session *gocql
 		return err
 	}
 
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica\n", v.TableNameSotReplica())
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", v.TableNameSotReplica())
 	return nil
 }
