@@ -148,7 +148,6 @@ func CreateTetapkanDiskonPadaBarang(Data mb_cud_serializer.ParsedDataMessage, ct
 		Status:           Objek.Status,
 		CreatedAt:        Objek.CreatedAt,
 		UpdatedAt:        Objek.UpdatedAt,
-		DeletedAt:        Objek.DeletedAt.Time, // Sudah aman bertipe time.Time
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -184,7 +183,6 @@ func DeleteHapusDiskonPadaBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		Status:           Objek.Status,
 		CreatedAt:        Objek.CreatedAt,
 		UpdatedAt:        Objek.UpdatedAt,
-		DeletedAt:        Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

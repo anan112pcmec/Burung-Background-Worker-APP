@@ -30,7 +30,6 @@ func CreateTambahFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		Format:    Objek.Format,
 		CreatedAt: Objek.CreatedAt,
 		UpdatedAt: Objek.UpdatedAt,
-		DeletedAt: Objek.DeletedAt, // Mengonversi gorm.DeletedAt ke time.Time untuk Cassandra
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -64,7 +63,6 @@ func UpdateUbahFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Format:    Objek.Format,
 		CreatedAt: Objek.CreatedAt,
 		UpdatedAt: Objek.UpdatedAt,
-		DeletedAt: Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -98,7 +96,6 @@ func DeleteHapusFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		Format:    Objek.Format,
 		CreatedAt: Objek.CreatedAt,
 		UpdatedAt: Objek.UpdatedAt,
-		DeletedAt: Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -132,7 +129,7 @@ func CreateTambahFotoBannerSeller(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		Format:    Objek.Format,
 		CreatedAt: Objek.CreatedAt,
 		UpdatedAt: Objek.UpdatedAt,
-		DeletedAt: Objek.DeletedAt, // Bertipe time.Time sesuai draf bawaanmu
+		// Bertipe time.Time sesuai draf bawaanmu
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -166,7 +163,6 @@ func UpdateUbahFotoBannerSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Format:    Objek.Format,
 		CreatedAt: Objek.CreatedAt,
 		UpdatedAt: Objek.UpdatedAt,
-		DeletedAt: Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -200,7 +196,6 @@ func DeleteHapusFotoBannerSeller(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		Format:    Objek.Format,
 		CreatedAt: Objek.CreatedAt,
 		UpdatedAt: Objek.UpdatedAt,
-		DeletedAt: Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -232,7 +227,7 @@ func CreateTambahkanFotoTokoFisikSeller(Data mb_cud_serializer.ParsedDataMessage
 		Key:       Objek.Key,
 		Format:    Objek.Format,
 		CreatedAt: Objek.CreatedAt,
-		DeletedAt: Objek.DeletedAt, // Bertipe time.Time sesuai draf bawaanmu
+		// Bertipe time.Time sesuai draf bawaanmu
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -265,7 +260,6 @@ func DeleteHapusFotoTokoFisikSeller(Data mb_cud_serializer.ParsedDataMessage, ct
 		Key:       Objek.Key,
 		Format:    Objek.Format,
 		CreatedAt: Objek.CreatedAt,
-		DeletedAt: Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -298,7 +292,7 @@ func CreateTambahFotoEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx
 		Format:    Objek.Format,
 		CreatedAt: Objek.CreatedAt,
 		UpdatedAt: Objek.UpdatedAt,
-		DeletedAt: Objek.DeletedAt, // Bertipe time.Time sesuai draf bawaanmu
+		// Bertipe time.Time sesuai draf bawaanmu
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -332,7 +326,6 @@ func UpdateUbahFotoEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		Format:    Objek.Format,
 		CreatedAt: Objek.CreatedAt,
 		UpdatedAt: Objek.UpdatedAt,
-		DeletedAt: Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -365,7 +358,7 @@ func CreateTambahkanMediaBarangIndukFoto(Data mb_cud_serializer.ParsedDataMessag
 		Key:           Objek.Key,
 		Format:        Objek.Format,
 		CreatedAt:     Objek.CreatedAt,
-		DeletedAt:     Objek.DeletedAt, // Bertipe time.Time sesuai draf bawaanmu
+		// Bertipe time.Time sesuai draf bawaanmu
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -398,7 +391,6 @@ func DeleteHapusMediaBarangIndukFoto(Data mb_cud_serializer.ParsedDataMessage, c
 		Key:           Objek.Key,
 		Format:        Objek.Format,
 		CreatedAt:     Objek.CreatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -432,7 +424,7 @@ func CreateTambahBarangIndukVideo(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		Format:        Objek.Format,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt, // Konversi gorm.DeletedAt ke time.Time untuk Cassandra
+		// Konversi gorm.DeletedAt ke time.Time untuk Cassandra
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -466,7 +458,6 @@ func UpdateUbahBarangIndukVideo(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Format:        Objek.Format,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -500,7 +491,6 @@ func DeleteHapusBarangIndukVideo(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		Format:        Objek.Format,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -534,7 +524,7 @@ func CreateTambahKategoriBarangFoto(Data mb_cud_serializer.ParsedDataMessage, ct
 		Format:           Objek.Format,
 		CreatedAt:        Objek.CreatedAt,
 		UpdatedAt:        Objek.UpdatedAt,
-		DeletedAt:        Objek.DeletedAt, // Bertipe time.Time sesuai draf bawaanmu
+		// Bertipe time.Time sesuai draf bawaanmu
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -569,7 +559,6 @@ func UpdateUbahKategoriBarangFoto(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		Format:           Objek.Format,
 		CreatedAt:        Objek.CreatedAt,
 		UpdatedAt:        Objek.UpdatedAt,
-		DeletedAt:        Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -604,7 +593,6 @@ func DeleteHapusKategoriBarangFoto(Data mb_cud_serializer.ParsedDataMessage, ctx
 		Format:           Objek.Format,
 		CreatedAt:        Objek.CreatedAt,
 		UpdatedAt:        Objek.UpdatedAt,
-		DeletedAt:        Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -638,7 +626,7 @@ func CreateTambahDistributorDataDokumen(Data mb_cud_serializer.ParsedDataMessage
 		Format:            Objek.Format,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt, // Bertipe time.Time sesuai draf bawaanmu
+		// Bertipe time.Time sesuai draf bawaanmu
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -672,7 +660,6 @@ func UpdateUbahDistributorDataDokumen(Data mb_cud_serializer.ParsedDataMessage, 
 		Format:            Objek.Format,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -706,7 +693,6 @@ func DeleteHapusMediaDistributorDataDokumen(Data mb_cud_serializer.ParsedDataMes
 		Format:            Objek.Format,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -740,7 +726,7 @@ func CreateTambahMediaDistributorDataNPWPFoto(Data mb_cud_serializer.ParsedDataM
 		Format:            Objek.Format,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt, // Bertipe time.Time sesuai draf bawaanmu
+		// Bertipe time.Time sesuai draf bawaanmu
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -774,7 +760,6 @@ func UpdateUbahMediaDistributorDataNPWPFoto(Data mb_cud_serializer.ParsedDataMes
 		Format:            Objek.Format,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -808,7 +793,6 @@ func DeleteHapusMediaDistributorDataNPWPFoto(Data mb_cud_serializer.ParsedDataMe
 		Format:            Objek.Format,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -841,7 +825,7 @@ func CreateTambahDistributorDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage
 		Format:            Objek.Format,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt, // Bertipe time.Time sesuai draf bawaanmu
+		// Bertipe time.Time sesuai draf bawaanmu
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -875,7 +859,6 @@ func UpdateUbahDistributorDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage, 
 		Format:            Objek.Format,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -909,7 +892,6 @@ func DeleteHapusDistributorDataNIBFoto(Data mb_cud_serializer.ParsedDataMessage,
 		Format:            Objek.Format,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -943,7 +925,7 @@ func CreateTambahDistributorDataSuratKerjasamaDokumen(Data mb_cud_serializer.Par
 		Format:            Objek.Format,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt, // Bertipe time.Time sesuai draf bawaanmu
+		// Bertipe time.Time sesuai draf bawaanmu
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -977,7 +959,6 @@ func UpdateUbahDistributorDataSuratKerjasamaDokumen(Data mb_cud_serializer.Parse
 		Format:            Objek.Format,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1011,7 +992,6 @@ func DeleteHapusDistributorDataSuratKerjasamaDokumen(Data mb_cud_serializer.Pars
 		Format:            Objek.Format,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

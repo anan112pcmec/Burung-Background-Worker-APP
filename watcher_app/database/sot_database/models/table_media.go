@@ -2,19 +2,16 @@ package sot_models
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type MediaPenggunaProfilFoto struct {
-	ID         int64          `gorm:"primaryKey;autoIncrement" json:"id_media_pengguna_profil_foto"`
-	IdPengguna int64          `gorm:"column:id_pengguna;not null" json:"id_pengguna"`
-	Pengguna   Pengguna       `gorm:"foreignKey:IdPengguna;references:ID" json:"-"`
-	Key        string         `gorm:"column:key;type:text;not null" json:"key"`
-	Format     string         `gorm:"column:format;type:varchar(20);not null" json:"format"`
-	CreatedAt  time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt  time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt  gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+	ID         int64     `gorm:"primaryKey;autoIncrement" json:"id_media_pengguna_profil_foto"`
+	IdPengguna int64     `gorm:"column:id_pengguna;not null" json:"id_pengguna"`
+	Pengguna   Pengguna  `gorm:"foreignKey:IdPengguna;references:ID" json:"-"`
+	Key        string    `gorm:"column:key;type:text;not null" json:"key"`
+	Format     string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt  time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt  time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaPenggunaProfilFoto) TableName() string {
@@ -26,14 +23,13 @@ func (MediaPenggunaProfilFoto) PathName() string {
 }
 
 type MediaSellerProfilFoto struct {
-	ID        int64          `gorm:"primaryKey;autoIncrement" json:"id_media_seller_profil_foto"`
-	IdSeller  int64          `gorm:"column:id_seller;not null" json:"id_seller"`
-	Seller    Seller         `gorm:"foreignKey:IdSeller;references:ID" json:"-"`
-	Key       string         `gorm:"column:key;type:text;not null" json:"key"`
-	Format    string         `gorm:"column:format;type:varchar(20);not null" json:"format"`
-	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id_media_seller_profil_foto"`
+	IdSeller  int64     `gorm:"column:id_seller;not null" json:"id_seller"`
+	Seller    Seller    `gorm:"foreignKey:IdSeller;references:ID" json:"-"`
+	Key       string    `gorm:"column:key;type:text;not null" json:"key"`
+	Format    string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaSellerProfilFoto) PathName() string {
@@ -45,14 +41,13 @@ func (MediaSellerProfilFoto) TableName() string {
 }
 
 type MediaSellerBannerFoto struct {
-	ID        int64          `gorm:"primaryKey;autoIncrement" json:"id_media_seller_banner_foto"`
-	IdSeller  int64          `gorm:"column:id_seller;not null" json:"id_seller"`
-	Seller    Seller         `gorm:"foreignKey:IdSeller;references:ID" json:"-"`
-	Key       string         `gorm:"column:key;type:text;not null" json:"key"`
-	Format    string         `gorm:"column:format;type:varchar(20);not null" json:"format"`
-	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id_media_seller_banner_foto"`
+	IdSeller  int64     `gorm:"column:id_seller;not null" json:"id_seller"`
+	Seller    Seller    `gorm:"foreignKey:IdSeller;references:ID" json:"-"`
+	Key       string    `gorm:"column:key;type:text;not null" json:"key"`
+	Format    string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaSellerBannerFoto) PathName() string {
@@ -64,13 +59,13 @@ func (MediaSellerBannerFoto) TableName() string {
 }
 
 type MediaSellerTokoFisikFoto struct {
-	ID        int64          `gorm:"primaryKey;autoIncrement" json:"id_media_seller_toko_fisik_foto"`
-	IdSeller  int32          `gorm:"column:id_seller;not null" json:"id_seller"`
-	Seller    Seller         `gorm:"foreignKey:IdSeller;references:ID" json:"-"`
-	Key       string         `gorm:"column:key;type:text;not null" json:"key"`
-	Format    string         `gorm:"column:format;type:varchar(20);not null" json:"format"`
-	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id_media_seller_toko_fisik_foto"`
+	IdSeller  int32     `gorm:"column:id_seller;not null" json:"id_seller"`
+	Seller    Seller    `gorm:"foreignKey:IdSeller;references:ID" json:"-"`
+	Key       string    `gorm:"column:key;type:text;not null" json:"key"`
+	Format    string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaSellerTokoFisikFoto) PathName() string {
@@ -82,14 +77,13 @@ func (MediaSellerTokoFisikFoto) TableName() string {
 }
 
 type MediaKurirProfilFoto struct {
-	ID        int64          `gorm:"primaryKey;autoIncrement" json:"id_media_kurir_profil_foto"`
-	IdKurir   int64          `gorm:"column:id_kurir;not null" json:"id_kurir"`
-	Kurir     Kurir          `gorm:"foreignKey:IdKurir;references:ID" json:"-"`
-	Key       string         `gorm:"column:key;type:text;not null" json:"key"`
-	Format    string         `gorm:"column:format;type:varchar(20);not null" json:"format"`
-	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id_media_kurir_profil_foto"`
+	IdKurir   int64     `gorm:"column:id_kurir;not null" json:"id_kurir"`
+	Kurir     Kurir     `gorm:"foreignKey:IdKurir;references:ID" json:"-"`
+	Key       string    `gorm:"column:key;type:text;not null" json:"key"`
+	Format    string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaKurirProfilFoto) PathName() string {
@@ -101,14 +95,13 @@ func (MediaKurirProfilFoto) TableName() string {
 }
 
 type MediaEtalaseFoto struct {
-	ID        int64          `gorm:"primaryKey;autoIncrement" json:"id_media_etalase_foto"`
-	IdEtalase int64          `gorm:"column:id_etalase;not null" json:"id_etalase"`
-	Etalase   Etalase        `gorm:"foreignKey:IdEtalase;references:ID" json:"-"`
-	Key       string         `gorm:"column:key;type:text;not null" json:"key"`
-	Format    string         `gorm:"column:format;type:varchar(20);not null" json:"format"`
-	CreatedAt time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id_media_etalase_foto"`
+	IdEtalase int64     `gorm:"column:id_etalase;not null" json:"id_etalase"`
+	Etalase   Etalase   `gorm:"foreignKey:IdEtalase;references:ID" json:"-"`
+	Key       string    `gorm:"column:key;type:text;not null" json:"key"`
+	Format    string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaEtalaseFoto) PathName() string {
@@ -120,13 +113,13 @@ func (MediaEtalaseFoto) TableName() string {
 }
 
 type MediaBarangIndukFoto struct {
-	ID            int64          `gorm:"primaryKey;autoIncrement" json:"id_media_barang_induk_foto"`
-	IdBarangInduk int64          `gorm:"column:id_barang_induk;not null" json:"id_barang_induk"`
-	BarangInduk   BarangInduk    `gorm:"foreignKey:IdBarangInduk;references:ID" json:"-"`
-	Key           string         `gorm:"column:key;type:text;not null" json:"key"`
-	Format        string         `gorm:"column:format;type:varchar(20);not null" json:"format"`
-	CreatedAt     time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	DeletedAt     gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+	ID            int64       `gorm:"primaryKey;autoIncrement" json:"id_media_barang_induk_foto"`
+	IdBarangInduk int64       `gorm:"column:id_barang_induk;not null" json:"id_barang_induk"`
+	BarangInduk   BarangInduk `gorm:"foreignKey:IdBarangInduk;references:ID" json:"-"`
+	Key           string      `gorm:"column:key;type:text;not null" json:"key"`
+	Format        string      `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt     time.Time   `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt     time.Time   `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaBarangIndukFoto) PathName() string {
@@ -138,14 +131,13 @@ func (MediaBarangIndukFoto) TableName() string {
 }
 
 type MediaBarangIndukVideo struct {
-	ID            int64          `gorm:"primaryKey;autoIncrement" json:"id_media_barang_induk_video"`
-	IdBarangInduk int64          `gorm:"column:id_barang_induk;not null" json:"id_barang_induk"`
-	BarangInduk   BarangInduk    `gorm:"foreignKey:IdBarangInduk;references:ID" json:"-"`
-	Key           string         `gorm:"column:key;type:text;not null" json:"key"`
-	Format        string         `gorm:"column:format;type:varchar(20);not null" json:"format"`
-	CreatedAt     time.Time      `gorm:"autoCreateTime" json:"created_at"`
-	UpdatedAt     time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt     gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
+	ID            int64       `gorm:"primaryKey;autoIncrement" json:"id_media_barang_induk_video"`
+	IdBarangInduk int64       `gorm:"column:id_barang_induk;not null" json:"id_barang_induk"`
+	BarangInduk   BarangInduk `gorm:"foreignKey:IdBarangInduk;references:ID" json:"-"`
+	Key           string      `gorm:"column:key;type:text;not null" json:"key"`
+	Format        string      `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt     time.Time   `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt     time.Time   `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaBarangIndukVideo) PathName() string {
@@ -166,7 +158,6 @@ type MediaKategoriBarangFoto struct {
 	Format           string         `gorm:"column:format;type:varchar(20);not null" json:"format"`
 	CreatedAt        time.Time      `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt        time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt        gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
 }
 
 func (MediaKategoriBarangFoto) PathName() string {
@@ -185,7 +176,6 @@ type MediaDistributorDataDokumen struct {
 	Format            string          `gorm:"column:format;type:varchar(20);not null" json:"format"`
 	CreatedAt         time.Time       `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt         time.Time       `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt         gorm.DeletedAt  `gorm:"index" json:"deleted_at,omitempty"`
 }
 
 func (MediaDistributorDataDokumen) PathName() string {
@@ -204,7 +194,6 @@ type MediaDistributorDataNPWPFoto struct {
 	Format            string          `gorm:"column:format;type:varchar(20);not null" json:"format"`
 	CreatedAt         time.Time       `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt         time.Time       `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt         gorm.DeletedAt  `gorm:"index" json:"deleted_at,omitempty"`
 }
 
 func (MediaDistributorDataNPWPFoto) PathName() string {
@@ -223,7 +212,6 @@ type MediaDistributorDataNIBFoto struct {
 	Format            string          `gorm:"column:format;type:varchar(20);not null" json:"format"`
 	CreatedAt         time.Time       `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt         time.Time       `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt         gorm.DeletedAt  `gorm:"index" json:"deleted_at,omitempty"`
 }
 
 func (MediaDistributorDataNIBFoto) PathName() string {
@@ -242,7 +230,6 @@ type MediaDistributorDataSuratKerjasamaDokumen struct {
 	Format            string          `gorm:"column:format;type:varchar(20);not null" json:"format"`
 	CreatedAt         time.Time       `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt         time.Time       `gorm:"autoUpdateTime" json:"updated_at"`
-	DeletedAt         gorm.DeletedAt  `gorm:"index" json:"deleted_at,omitempty"`
 }
 
 func (MediaDistributorDataSuratKerjasamaDokumen) PathName() string {
@@ -259,6 +246,8 @@ type MediaBrandDataPerwakilanDokumen struct {
 	BrandData   BrandData `gorm:"foreignKey:IdBrandData;references:ID" json:"-"`
 	Key         string    `gorm:"column:key;type:text;not null" json:"key"`
 	Format      string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaBrandDataPerwakilanDokumen) PathName() string {
@@ -275,6 +264,8 @@ type MediaBrandDataSertifikatFoto struct {
 	BrandData   BrandData `gorm:"foreignKey:IdBrandData;references:ID" json:"-"`
 	Key         string    `gorm:"column:key;type:text;not null" json:"key"`
 	Format      string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaBrandDataSertifikatFoto) PathName() string {
@@ -291,6 +282,8 @@ type MediaBrandDataNIBFoto struct {
 	BrandData   BrandData `gorm:"foreignKey:IdBrandData;references:ID" json:"-"`
 	Key         string    `gorm:"column:key;type:text;not null" json:"key"`
 	Format      string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaBrandDataNIBFoto) PathName() string {
@@ -307,6 +300,8 @@ type MediaBrandDataNPWPFoto struct {
 	BrandData   BrandData `gorm:"foreignKey:IdBrandData;references:ID" json:"-"`
 	Key         string    `gorm:"column:key;type:text;not null" json:"key"`
 	Format      string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaBrandDataNPWPFoto) PathName() string {
@@ -323,6 +318,8 @@ type MediaBrandDataLogoFoto struct {
 	BrandData   BrandData `gorm:"foreignKey:IdBrandData;references:ID" json:"-"`
 	Key         string    `gorm:"column:key;type:text;not null" json:"key"`
 	Format      string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaBrandDataLogoFoto) PathName() string {
@@ -339,6 +336,8 @@ type MediaBrandDataSuratKerjasamaDokumen struct {
 	BrandData   BrandData `gorm:"foreignKey:IdBrandData;references:ID" json:"-"`
 	Key         string    `gorm:"column:key;type:text;not null" json:"key"`
 	Format      string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaBrandDataSuratKerjasamaDokumen) PathName() string {
@@ -355,6 +354,8 @@ type MediaInformasiKendaraanKurirKendaraanFoto struct {
 	InformasiKendaraanKurir   InformasiKendaraanKurir `gorm:"foreignKey:IdInformasiKendaraanKurir;references:ID" json:"-"`
 	Key                       string                  `gorm:"column:key;type:text;not null" json:"key"`
 	Format                    string                  `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt                 time.Time               `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt                 time.Time               `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaInformasiKendaraanKurirKendaraanFoto) PathName() string {
@@ -371,6 +372,8 @@ type MediaInformasiKendaraanKurirBPKBFoto struct {
 	InformasiKendaraanKurir   InformasiKendaraanKurir `gorm:"foreignKey:IdInformasiKendaraanKurir;references:ID" json:"-"`
 	Key                       string                  `gorm:"column:key;type:text;not null" json:"key"`
 	Format                    string                  `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt                 time.Time               `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt                 time.Time               `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaInformasiKendaraanKurirBPKBFoto) PathName() string {
@@ -387,6 +390,8 @@ type MediaInformasiKendaraanKurirSTNKFoto struct {
 	InformasiKendaraanKurir   InformasiKendaraanKurir `gorm:"foreignKey:IdInformasiKendaraanKurir;references:ID" json:"-"`
 	Key                       string                  `gorm:"column:key;type:text;not null" json:"key"`
 	Format                    string                  `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt                 time.Time               `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt                 time.Time               `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaInformasiKendaraanKurirSTNKFoto) PathName() string {
@@ -403,6 +408,8 @@ type MediaInformasiKurirKTPFoto struct {
 	InformasiKurir   InformasiKurir `gorm:"foreignKey:IdInformasiKurir;references:ID" json:"-"`
 	Key              string         `gorm:"column:key;type:text;not null" json:"key"`
 	Format           string         `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt        time.Time      `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt        time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaInformasiKurirKTPFoto) PathName() string {
@@ -414,11 +421,13 @@ func (MediaInformasiKurirKTPFoto) TableName() string {
 }
 
 type MediaReviewFoto struct {
-	ID       int64  `gorm:"primaryKey;autoIncrement" json:"id_media_review_foto"`
-	IdReview int64  `gorm:"column:id_review;not null" json:"id_review"`
-	Review   Review `gorm:"foreignKey:IdReview;references:ID" json:"-"`
-	Key      string `gorm:"column:key;type:text;not null" json:"key"`
-	Format   string `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id_media_review_foto"`
+	IdReview  int64     `gorm:"column:id_review;not null" json:"id_review"`
+	Review    Review    `gorm:"foreignKey:IdReview;references:ID" json:"-"`
+	Key       string    `gorm:"column:key;type:text;not null" json:"key"`
+	Format    string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaReviewFoto) PathName() string {
@@ -430,11 +439,13 @@ func (MediaReviewFoto) TableName() string {
 }
 
 type MediaReviewVideo struct {
-	ID       int64  `gorm:"primaryKey;autoIncrement" json:"id_media_review_video"`
-	IdReview int64  `gorm:"column:id_review;not null" json:"id_review"`
-	Review   Review `gorm:"foreignKey:IdReview;references:ID" json:"-"`
-	Key      string `gorm:"column:key;type:text;not null" json:"key"`
-	Format   string `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	ID        int64     `gorm:"primaryKey;autoIncrement" json:"id_media_review_video"`
+	IdReview  int64     `gorm:"column:id_review;not null" json:"id_review"`
+	Review    Review    `gorm:"foreignKey:IdReview;references:ID" json:"-"`
+	Key       string    `gorm:"column:key;type:text;not null" json:"key"`
+	Format    string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaReviewVideo) PathName() string {
@@ -451,6 +462,8 @@ type MediaTransaksiApprovedFoto struct {
 	Transaksi   Transaksi `gorm:"foreignKey:IdTransaksi;references:ID" json:"-"`
 	Key         string    `gorm:"column:key;type:text;not null" json:"key"`
 	Format      string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaTransaksiApprovedFoto) PathName() string {
@@ -467,6 +480,8 @@ type MediaTransaksiApprovedVideo struct {
 	Transaksi   Transaksi `gorm:"foreignKey:IdTransaksi;references:ID" json:"-"`
 	Key         string    `gorm:"column:key;type:text;not null" json:"key"`
 	Format      string    `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt   time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaTransaksiApprovedVideo) PathName() string {
@@ -483,6 +498,8 @@ type MediaPengirimanPickedUpFoto struct {
 	Pengiriman   Pengiriman `gorm:"foreignKey:IdPengiriman;references:ID" json:"-"`
 	Key          string     `gorm:"column:key;type:text;not null" json:"key"`
 	Format       string     `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt    time.Time  `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt    time.Time  `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaPengirimanPickedUpFoto) PathName() string {
@@ -499,11 +516,12 @@ type MediaPengirimanSampaiFoto struct {
 	Pengiriman   Pengiriman `gorm:"foreignKey:IdPengiriman;references:ID" json:"-"`
 	Key          string     `gorm:"column:key;type:text;not null" json:"key"`
 	Format       string     `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt    time.Time  `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt    time.Time  `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaPengirimanSampaiFoto) PathName() string {
 	return "/media_pengiriman_sampai_foto/"
-
 }
 
 func (MediaPengirimanSampaiFoto) TableName() string {
@@ -516,6 +534,8 @@ type MediaPengirimanEkspedisiPickedUpFoto struct {
 	PengirimanEkspedisi   PengirimanEkspedisi `gorm:"foreignKey:IdPengirimanEkspedisi;references:ID" json:"-"`
 	Key                   string              `gorm:"column:key;type:text;not null" json:"key"`
 	Format                string              `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt             time.Time           `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt             time.Time           `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaPengirimanEkspedisiPickedUpFoto) PathName() string {
@@ -532,6 +552,8 @@ type MediaPengirimanEkspedisiSampaiAgentFoto struct {
 	PengirimanEkspedisi   PengirimanEkspedisi `gorm:"foreignKey:IdPengirimanEkspedisi;references:ID" json:"-"`
 	Key                   string              `gorm:"column:key;type:text;not null" json:"key"`
 	Format                string              `gorm:"column:format;type:varchar(20);not null" json:"format"`
+	CreatedAt             time.Time           `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt             time.Time           `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
 func (MediaPengirimanEkspedisiSampaiAgentFoto) PathName() string {

@@ -31,7 +31,6 @@ func UpdateUbahFotoProfilPengguna(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		Format:     Objek.Format,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -68,7 +67,6 @@ func DeleteHapusFotoProfilPengguna(Data mb_cud_serializer.ParsedDataMessage, ctx
 		Format:     Objek.Format,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

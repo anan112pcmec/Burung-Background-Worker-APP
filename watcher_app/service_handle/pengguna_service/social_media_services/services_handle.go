@@ -38,7 +38,6 @@ func CreateEngageTautkanSocialMediaPengguna(Data mb_cud_serializer.ParsedDataMes
 		EntityType: Objek.EntityType,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -76,7 +75,6 @@ func UpdateEngageTautkanSocialMediaPengguna(Data mb_cud_serializer.ParsedDataMes
 		EntityType: Objek.EntityType,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -114,7 +112,6 @@ func UpdateEngageHapusSocialMedia(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		EntityType: Objek.EntityType,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -147,7 +144,6 @@ func CreateFollowSeller(Data mb_cud_serializer.ParsedDataMessage, Read *gorm.DB,
 		IdFollowed: Objek.IdFollowed,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -168,7 +164,6 @@ func CreateFollowSeller(Data mb_cud_serializer.ParsedDataMessage, Read *gorm.DB,
 		IdFollowed: Objek.IdFollowed,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	if task_info, err := se_index.FollowerSeller.AddDocumentsWithContext(ctx, &ObjekSearchEngine, &meilisearch.DocumentOptions{
@@ -197,7 +192,6 @@ func DeleteUnfollowSeller(Data mb_cud_serializer.ParsedDataMessage, Read *gorm.D
 		IdFollowed: Objek.IdFollowed,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -218,7 +212,6 @@ func DeleteUnfollowSeller(Data mb_cud_serializer.ParsedDataMessage, Read *gorm.D
 		IdFollowed: Objek.IdFollowed,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	idStr := strconv.FormatInt(ObjekSearchEngine.ID, 10)

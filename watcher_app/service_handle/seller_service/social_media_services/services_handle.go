@@ -4,13 +4,14 @@ import (
 	"context"
 	"fmt"
 
+	gocql "github.com/apache/cassandra-gocql-driver/v2"
+
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
-	gocql "github.com/apache/cassandra-gocql-driver/v2"
 )
 
 func CreateEngageSocialMediaSeller(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session) error {
@@ -33,7 +34,6 @@ func CreateEngageSocialMediaSeller(Data mb_cud_serializer.ParsedDataMessage, ctx
 		EntityType: Objek.EntityType,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -71,7 +71,6 @@ func UpdateEngageSocialMediaSeller(Data mb_cud_serializer.ParsedDataMessage, ctx
 		EntityType: Objek.EntityType,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

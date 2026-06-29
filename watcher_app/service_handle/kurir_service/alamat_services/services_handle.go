@@ -39,7 +39,6 @@ func CreateMasukanAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Latitude:        Objek.Latitude,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
 	}
 
 	parsedData := ObjekCass.ParseToCUDType()
@@ -74,7 +73,6 @@ func CreateMasukanAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Latitude:        Objek.Latitude,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
 	}
 
 	// Perbaikan Bug: `strconv.FormatInt` butuh basis angka 10 (desimal), bukan 0 (nol akan bikin panic/error)
@@ -112,7 +110,6 @@ func UpdatedEditAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		Latitude:        Objek.Latitude,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
 	}
 
 	parsedData := ObjekCass.ParseToCUDType()
@@ -145,7 +142,6 @@ func UpdatedEditAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		Latitude:        Objek.Latitude,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
 	}
 
 	if task_info, err := se_index.AlamatKurir.UpdateDocuments(&ObjekSearchEngine, &meilisearch.DocumentOptions{
@@ -181,7 +177,6 @@ func DeleteHapusAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		Latitude:        Objek.Latitude,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
 	}
 
 	if err := cass_cud.DeleteData(ctx, cass_sot_replica, ObjekCass.TableNameSotReplica(), ObjekCass.ID); err != nil {

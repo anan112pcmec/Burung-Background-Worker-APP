@@ -42,6 +42,7 @@ type Transaksi struct {
 	IdAlamatEkspedisi   int64          `gorm:"column:id_alamat_ekspedisi;type:int8;not null" json:"id_alamat_ekspedisi"`
 	IdPembayaran        int64          `gorm:"column:id_pembayaran;not null" json:"id_pembayaran"`
 	Pembayaran          Pembayaran     `gorm:"foreignKey:IdPembayaran;references:ID" json:"-"`
+	IdDiskon            int64          `gorm:"column:id_diskon;type:int8" json:"id_diskon"`
 	KendaraanPengiriman string         `gorm:"column:kendaraan_pengiriman;type:jenis_kendaraan_kurir;default:'Motor';not null" json:"kendaraan_pengiriman"`
 	JenisPengiriman     string         `gorm:"column:jenis_pengiriman;type:jenis_layanan_kurir;not null" json:"jenis_pengiriman"`
 	JarakTempuh         string         `gorm:"column:jarak_tempuh;not null" json:"jarak_tempuh"`
@@ -55,6 +56,7 @@ type Transaksi struct {
 	IsEkspedisi         bool           `gorm:"column:is_ekspedisi;not null;default:false" json:"is_ekspedisi"`
 	SellerPaid          int64          `gorm:"column:seller_paid;type:int8;not null" json:"seller_paid"`
 	KurirPaid           int64          `gorm:"column:kurir_paid;type:int8;not null" json:"kurir_paid"`
+	SistemPaid          int64          `gorm:"column:sistem_paid;int8;not null" json:"sistem_paid"`
 	EkspedisiPaid       int64          `gorm:"column:ekspedisi_paid;type:int8;not null" json:"ekspedisi_paid"`
 	Total               int64          `gorm:"column:total;type:int8;not null" json:"total"`
 	Reviewed            bool           `gorm:"column:reviewed;type:bool;not null;default:false" json:"reviewed"`

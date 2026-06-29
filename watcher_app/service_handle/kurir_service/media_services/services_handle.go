@@ -12,6 +12,7 @@ import (
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+
 )
 
 func UpdateUbahKurirProfilFoto(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historcal, cass_sot_replica *gocql.Session) error {
@@ -29,7 +30,6 @@ func UpdateUbahKurirProfilFoto(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		Format:    Objek.Format,
 		CreatedAt: Objek.CreatedAt,
 		UpdatedAt: Objek.UpdatedAt,
-		DeletedAt: Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -65,7 +65,6 @@ func DeleteHapusKurirProfilFoto(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Format:    Objek.Format,
 		CreatedAt: Objek.CreatedAt,
 		UpdatedAt: Objek.UpdatedAt,
-		DeletedAt: Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

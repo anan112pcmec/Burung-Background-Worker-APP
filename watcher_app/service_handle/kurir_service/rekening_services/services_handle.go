@@ -30,7 +30,6 @@ func CreateMasukanRekeningKurir(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		PemilikRekening: Objek.PemilikRekening,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -64,7 +63,6 @@ func UpdateEditRekeningKurir(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 		PemilikRekening: Objek.PemilikRekening,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -99,7 +97,6 @@ func DeleteHapusRekeningKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		PemilikRekening: Objek.PemilikRekening,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

@@ -102,7 +102,6 @@ func CreateTambahRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		IsDefault:       Objek.IsDefault,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -138,7 +137,6 @@ func UpdateEditRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		IsDefault:       Objek.IsDefault,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -175,7 +173,6 @@ func UpdateSetDefaultRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ct
 		IsDefault:       Objek.IsDefault, // Flag ini yang menjadi poin utama update
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -211,7 +208,6 @@ func DeleteHapusRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		IsDefault:       Objek.IsDefault,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

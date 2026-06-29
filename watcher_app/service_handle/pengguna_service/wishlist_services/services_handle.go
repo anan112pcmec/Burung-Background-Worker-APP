@@ -13,7 +13,6 @@ import (
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
-
 )
 
 func CreateTambahBarangKeWishlist(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, Read *gorm.DB, cass_historical, cass_sot_replica *gocql.Session) error {
@@ -31,7 +30,6 @@ func CreateTambahBarangKeWishlist(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		IdBarangInduk: Objek.IdBarangInduk,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -64,7 +62,6 @@ func DeleteHapusBarangDariWishlist(Data mb_cud_serializer.ParsedDataMessage, ctx
 		IdBarangInduk: Objek.IdBarangInduk,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

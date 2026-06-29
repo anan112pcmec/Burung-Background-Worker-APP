@@ -35,7 +35,6 @@ func CreateAjukanInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage, ct
 		Status:         Objek.Status,
 		CreatedAt:      Objek.CreatedAt,
 		UpdatedAt:      Objek.UpdatedAt,
-		DeletedAt:      Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -75,7 +74,6 @@ func UpdateEditInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		Status:         Objek.Status,
 		CreatedAt:      Objek.CreatedAt,
 		UpdatedAt:      Objek.UpdatedAt,
-		DeletedAt:      Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -112,7 +110,6 @@ func CreateAjukanInformasiKurir(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Status:       Objek.Status,
 		CreatedAt:    Objek.CreatedAt,
 		UpdatedAt:    Objek.UpdatedAt,
-		DeletedAt:    Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -149,7 +146,6 @@ func UpdateEditInformasiKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Status:       Objek.Status,
 		CreatedAt:    Objek.CreatedAt,
 		UpdatedAt:    Objek.UpdatedAt,
-		DeletedAt:    Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

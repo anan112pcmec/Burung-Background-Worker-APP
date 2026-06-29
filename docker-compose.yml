@@ -1,0 +1,81 @@
+version: '3.8'
+
+services:
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: meilisearch_burung_search_engine
+    environment:
+      MEILI_MASTER_KEY: "SuperSecureKey123456"
+    ports:
+      - "7700:7700"
+    restart: unless-stopped
+    networks:
+      - watcher_net
+
+  # =========================================================================
+  # CLICKHOUSE: Database Analitik & Log Terpusat
+  # =========================================================================
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    container_name: clickhouse_burung_analytics
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    environment:
+      CLICKHOUSE_USER: burung_watcher
+      CLICKHOUSE_PASSWORD: watcher_secure_pass
+      CLICKHOUSE_DB: burung_analytics
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+    restart: unless-stopped
+    networks:
+      - watcher_net
+
+  # =========================================================================
+  # CLUSTER CASSANDRA 1: burung_historical (Volume Added)
+  # =========================================================================
+  historical-node1:
+    image: cassandra:4.1
+    container_name: cassandra_historical_n1
+    environment:
+      - CASSANDRA_CLUSTER_NAME=burung_historical
+      - CASSANDRA_NUM_TOKENS=1
+      - CASSANDRA_ENDPOINT_SNITCH=SimpleSnitch
+    ports:
+      - "9042:9042"
+    volumes:
+      - cassandra_historical_data:/var/lib/cassandra
+    restart: unless-stopped
+    networks:
+      - watcher_net
+
+  # =========================================================================
+  # CLUSTER CASSANDRA 2: burung_sot_replica (Volume Added)
+  # =========================================================================
+  sot-node1:
+    image: cassandra:4.1
+    container_name: cassandra_sot_n1
+    environment:
+      - CASSANDRA_CLUSTER_NAME=burung_sot_replica
+      - CASSANDRA_NUM_TOKENS=1
+      - CASSANDRA_ENDPOINT_SNITCH=SimpleSnitch
+    ports:
+      - "9043:9042"
+    volumes:
+      - cassandra_sot_data:/var/lib/cassandra
+    restart: unless-stopped
+    networks:
+      - watcher_net
+
+volumes:
+  clickhouse_data:
+  cassandra_historical_data: # Volume untuk cluster historical
+  cassandra_sot_data:        # Volume untuk cluster sot_replica
+
+networks:
+  watcher_net:
+    driver: bridge

@@ -31,7 +31,6 @@ func CreateLikesBarang(Data mb_cud_serializer.ParsedDataMessage, ctx context.Con
 		IdBarangInduk: Objek.IdBarangInduk,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -65,7 +64,6 @@ func DeleteUnlikesBarang(Data mb_cud_serializer.ParsedDataMessage, ctx context.C
 		IdBarangInduk: Objek.IdBarangInduk,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedDataLikesBarang map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -103,7 +101,6 @@ func CreateMasukanKomentarBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		Dibalas:       Objek.Dibalas,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -176,7 +173,6 @@ func DeleteHapusKomentarBarang(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		Dibalas:       Objek.Dibalas,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -212,7 +208,6 @@ func CreateMasukanChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Mention:     Objek.Mention,
 		CreatedAt:   Objek.CreatedAt,
 		UpdatedAt:   Objek.UpdatedAt,
-		DeletedAt:   Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -249,7 +244,6 @@ func CreateMentionChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Mention:     Objek.Mention,
 		CreatedAt:   Objek.CreatedAt,
 		UpdatedAt:   Objek.UpdatedAt,
-		DeletedAt:   Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -285,7 +279,6 @@ func UpdateEditChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 		Mention:     Objek.Mention,
 		CreatedAt:   Objek.CreatedAt,
 		UpdatedAt:   Objek.UpdatedAt,
-		DeletedAt:   Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -321,7 +314,6 @@ func DeleteHapusChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Mention:     Objek.Mention,
 		CreatedAt:   Objek.CreatedAt,
 		UpdatedAt:   Objek.UpdatedAt,
-		DeletedAt:   Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -357,7 +349,6 @@ func CreateTambahKeranjangBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		Status:        Objek.Status,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -393,7 +384,6 @@ func UpdateEditKeranjangBarang(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		Status:        Objek.Status,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -428,7 +418,6 @@ func DeleteHapusKeranjangBarang(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Status:        Objek.Status,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -461,7 +450,6 @@ func CreateBerikanReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		Ulasan:        Objek.Ulasan,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -586,7 +574,6 @@ func CreateLikeReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		IdReview:   Objek.IdReview,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -618,7 +605,6 @@ func DeleteUnlikeReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		IdReview:   Objek.IdReview,
 		CreatedAt:  Objek.CreatedAt,
 		UpdatedAt:  Objek.UpdatedAt,
-		DeletedAt:  Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

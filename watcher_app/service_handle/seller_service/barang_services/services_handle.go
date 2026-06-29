@@ -411,7 +411,6 @@ func CreateMasukanKomentarBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		Dibalas:       Objek.Dibalas,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -448,7 +447,6 @@ func UpdateEditKomentarBarang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Dibalas:       Objek.Dibalas,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -485,7 +483,6 @@ func DeleteHapusKomentarBarang(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		Dibalas:       Objek.Dibalas,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -521,7 +518,6 @@ func CreateMasukanChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Mention:     Objek.Mention,
 		CreatedAt:   Objek.CreatedAt,
 		UpdatedAt:   Objek.UpdatedAt,
-		DeletedAt:   Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -558,7 +554,6 @@ func UpdateEditChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 		Mention:     Objek.Mention,
 		CreatedAt:   Objek.CreatedAt,
 		UpdatedAt:   Objek.UpdatedAt,
-		DeletedAt:   Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -595,7 +590,6 @@ func DeleteHapusChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Mention:     Objek.Mention,
 		CreatedAt:   Objek.CreatedAt,
 		UpdatedAt:   Objek.UpdatedAt,
-		DeletedAt:   Objek.DeletedAt,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
