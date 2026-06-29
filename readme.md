@@ -27,20 +27,13 @@ Background worker service untuk memproses perubahan data SOT secara asinkron —
         <img src="https://cdn.simpleicons.org/meilisearch/FF5CAA" height="40" alt="meilisearch logo" />
         <br/><sub><b>Meilisearch</b></sub>
       </td>
-      <td align="center" width="90">
-        <img src="https://cdn.simpleicons.org/clickhouse/FFCC01" height="40" alt="clickhouse logo" />
-        <br/><sub><b>ClickHouse</b></sub>
-      </td>
     </tr>
   </table>
 </div>
 
 ## Architecture
 
-
-<img width="2720" height="2480" alt="burung_background_worker_v2" src="https://github.com/user-attachments/assets/311e0bf0-e48f-411b-9c6f-65d2565fbd94" />
-
-
+<img width="600" height="680" alt="diagram-background-worker" src="https://github.com/user-attachments/assets/9ea6cf95-b716-4f60-8c54-55c4af61a7a2" />
 
 | Layer | Komponen | Peran |
 |---|---|---|
@@ -49,7 +42,6 @@ Background worker service untuk memproses perubahan data SOT secara asinkron —
 | Historical DB | Cassandra `historical_db` | Audit trail & riwayat perubahan |
 | Async Replica | Cassandra `sot_replica_async` | Async replica dari SOT |
 | Search engine | Meilisearch | Full-text index untuk query |
-| Analytical DB | ClickHouse | OLAP & reporting |
 | Session cache | Redis | Sinkronisasi cache session pengguna |
 | Notification | Burung-Internal-Notificationing-App | Forward perubahan via HTTP |
 
@@ -68,7 +60,6 @@ burung-background-worker-app
         │                                      │
         ├── Meilisearch (search index)         │
         │                                      │
-        ├── ClickHouse (analytical DB)         │
         │                                      │
         └── Redis (user session cache sync) ───┘
                         │
