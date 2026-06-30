@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"gorm.io/gorm"
+
 )
 
 type AlamatEkspedisi struct {
@@ -69,7 +70,7 @@ type PayOutSistem struct {
 	DeletedAt        gorm.DeletedAt `gorm:"index" json:"deleted_at,omitempty"`
 }
 
-func (p *PayOutSistem) TableName() string {
+func (PayOutSistem) TableName() string {
 	return "payout_sistem"
 }
 
