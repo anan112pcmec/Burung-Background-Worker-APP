@@ -1,10 +1,10 @@
-package notificationing_contract
+package notification_contract
 
 import (
 	"encoding/json"
 	"fmt"
 
-	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notificationing_distribution/internal_app/notification/models"
+	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
 )
 
 type ContractNotification[T notification_models.NotificationPengguna | notification_models.NotificationSeller | notification_models.NotificationKurir] interface {

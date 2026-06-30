@@ -2,18 +2,25 @@ package barang_pengguna_handle
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"github.com/meilisearch/meilisearch-go"
+	"gorm.io/gorm"
 
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
+	notification_request "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/request"
+	notification_seeders "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/seeders"
 )
 
 func CreateLikesBarang(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session) error {
@@ -82,7 +89,7 @@ func DeleteUnlikesBarang(Data mb_cud_serializer.ParsedDataMessage, ctx context.C
 	return nil
 }
 
-func CreateMasukanKomentarBarang(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session) error {
+func CreateMasukanKomentarBarang(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, read *gorm.DB, cass_historical, cass_sot_replica *gocql.Session) error {
 	const handle_services string = "CreateMasukanKomentarBarang"
 	var Objek sot_models.Komentar
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -113,6 +120,73 @@ func CreateMasukanKomentarBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 
 	if err := cass_cud.InsertData(ctx, cass_historical, ObjekCass.TableNameHistorical(), parsedData); err != nil {
 		return fmt.Errorf("gagal memasukan data ke historical db %s dalam %s", err, handle_services)
+	}
+
+	var idSeller int32 = 0
+	if err := read.WithContext(ctx).Model(&sot_models.BarangInduk{}).Select("id_seller").Where(&sot_models.BarangInduk{
+		ID: Objek.IdBarangInduk,
+	}).Limit(1).Take(&idSeller).Error; err != nil {
+		fmt.Println("Gagal mendapatkan data id seller")
+	}
+
+	if idSeller == 0 {
+		return errors.New("gagal mendapatkan id seller")
+	}
+
+	// 1. Inisialisasi variabel untuk kebutuhan dinamis
+	var targetUserID int64
+	var targetPath string
+	var judulNotif, pesanNotif string
+
+	// Potong komentar biar gak kepanjangan kalau tampil di banner notifikasi
+	cuplikanKomentar := Objek.Komentar
+	if len(cuplikanKomentar) > 60 {
+		cuplikanKomentar = cuplikanKomentar[:57] + "..."
+	}
+
+	// 2. Tentukan arah notifikasi berdasarkan siapa yang berkomentar
+	if Objek.IsSeller {
+		// Kasus: Seller menjawab pertanyaan pembeli
+		targetUserID = Objek.IdEntity                        // Notif dikirim ke pembeli asli
+		targetPath = environment.PenggunaPathNotifikasiMasuk // Path khusus pengguna/pembeli
+		judulNotif = "💬 Pertanyaanmu Dijawab Seller!"
+		pesanNotif = fmt.Sprintf("Toko baru saja membalas diskusimu: \"%s\". Cek jawabannya sekarang!", cuplikanKomentar)
+	} else {
+		// Kasus: Pembeli bertanya di produk seller
+		targetUserID = int64(idSeller)                     // Notif dikirim ke seller
+		targetPath = environment.SellerPathNotifikasiMasuk // Path khusus seller sesuai request lu
+		judulNotif = "🛒 Ada Pertanyaan Baru Produk!"
+		pesanNotif = fmt.Sprintf("Calon pembeli nanyain produk lu nih: \"%s\". Yuk bales biar makin laris!", cuplikanKomentar)
+	}
+
+	// 3. Susun struct notifikasi dengan metadata komplit buat FE deep-linking
+	var NotificationKomentar notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: targetUserID,
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      judulNotif,
+		Pesan:      pesanNotif,
+		Pop:        1,
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 0, 14).Format(time.RFC3339), // Notif diskusi produk keep 2 minggu aja cukup
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"barang_induk_id": Objek.IdBarangInduk,
+				"komentar_id":     Objek.ID,
+				"action_type":     "new_diskusi_produk",
+				"is_seller_reply": Objek.IsSeller,
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_DISKUSI_PRODUK_PAGE", // FE langsung buka halaman diskusi produk terkait
+			},
+		},
+	}
+
+	// 4. Tembak ke API Notifikasi dengan path yang sudah dinamis
+	if err := notification_request.PostToNotification(ctx, NotificationKomentar, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, targetPath); err != nil {
+		return fmt.Errorf("gagal mengirim notifikasi komentar: %w", err)
 	}
 
 	return nil
@@ -222,6 +296,79 @@ func CreateMasukanChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		return fmt.Errorf("gagal memasukan data ke historical db %s dalam %s", err, handle_services)
 	}
 
+	// 1. Inisialisasi variabel target notifikasi
+	var targetUserID int64
+	var targetPath string
+	var judulNotif, pesanNotif string
+
+	// Potong isi komentar anak biar pas di push notification banner
+	cuplikanChild := Objek.IsiKomentar
+	if len(cuplikanChild) > 60 {
+		cuplikanChild = cuplikanChild[:57] + "..."
+	}
+
+	// 2. Logika penentuan target berdasarkan fitur Mention atau IsSeller
+	if Objek.Mention != "" {
+		// Skenario A: Ada user/seller yang di-mention/tag khusus
+		// NOTE: Di sini asumsinya Objek.IdEntity target mention bisa didapat atau diarahkan ke entitas pembeli/penjual.
+		// Sementara kita pakai logika deteksi: jika yang mention adalah seller, target kemungkinan besar pengguna, dst.
+		if Objek.IsSeller {
+			targetUserID = Objek.IdEntity // Mengarah ke pembeli terkait thread
+			targetPath = environment.PenggunaPathNotifikasiMasuk
+		} else {
+			targetUserID = Objek.IdEntity // Mengarah ke user lain / seller
+			targetPath = environment.PenggunaPathNotifikasiMasuk
+		}
+		judulNotif = "🔔 Kamu Disebut dalam Diskusi!"
+		pesanNotif = fmt.Sprintf("@%s menyebutmu di komentar: \"%s\". Yuk join obrolannya!", Objek.Mention, cuplikanChild)
+
+	} else if Objek.IsSeller {
+		// Skenario B: Seller yang balas komentar biasa tanpa mention khusus
+		targetUserID = Objek.IdEntity // Mengirim ke pembeli utama pemilik thread
+		targetPath = environment.PenggunaPathNotifikasiMasuk
+		judulNotif = "💬 Pertanyaanmu Dibalas Seller!"
+		pesanNotif = fmt.Sprintf("Seller baru saja menanggapi diskusi: \"%s\"", cuplikanChild)
+
+	} else {
+		// Skenario C: Pembeli/User lain yang membalas thread di toko seller
+		// Karena di model ini tidak bawa idSeller langsung dari database (seperti induknya),
+		// idealnya lu ambil dulu idSeller via DB, tapi kalau mau cepat/sementara pakai target idEntity pembeli/seller lain:
+		targetUserID = Objek.IdEntity
+		targetPath = environment.SellerPathNotifikasiMasuk // Masuk ke dashboard/notif seller
+		judulNotif = "💬 Ada Balasan Baru di Diskusi Produk!"
+		pesanNotif = fmt.Sprintf("Ada tanggapan baru di lapak lu nih: \"%s\"", cuplikanChild)
+	}
+
+	// 3. Bangun struct Notifikasi
+	var NotificationChild notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: targetUserID,
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      judulNotif,
+		Pesan:      pesanNotif,
+		Pop:        1,
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Notif child comment simpan 7 hari aja biar gak numpuk
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"komentar_induk_id": Objek.IdKomentar,
+				"child_id":          Objek.ID,
+				"action_type":       "new_child_comment",
+				"has_mention":       Objek.Mention != "",
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_THREAD_DISKUSI_PAGE", // FE langsung fokus ke sub-comment/thread terkait
+			},
+		},
+	}
+
+	// 4. Kirim Notifikasi secara dinamis
+	if err := notification_request.PostToNotification(ctx, NotificationChild, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, targetPath); err != nil {
+		return fmt.Errorf("gagal mengirim notifikasi child komentar: %w", err)
+	}
+
 	return nil
 }
 
@@ -256,6 +403,56 @@ func CreateMentionChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 
 	if err := cass_cud.InsertData(ctx, cass_historical, ObjekCass.TableNameHistorical(), parsedData); err != nil {
 		return fmt.Errorf("gagal memasukan data ke historical db %s dalam %s", err, handle_services)
+	}
+
+	// 1. Potong isi komentar biar rapi di banner notifikasi
+	cuplikanMention := Objek.IsiKomentar
+	if len(cuplikanMention) > 60 {
+		cuplikanMention = cuplikanMention[:57] + "..."
+	}
+
+	// 2. Tentukan jalur notifikasi (Default ke pengguna, kalau seller ngetag ya masuk ke path pengguna juga)
+	var targetPath string = environment.PenggunaPathNotifikasiMasuk
+	if Objek.IsSeller {
+		// Kalau seller yang nge-mention, berarti yang dituju pasti pembeli/pengguna biasa
+		targetPath = environment.PenggunaPathNotifikasiMasuk
+	} else {
+		// Kalau sesama pembeli atau pembeli nyenggol seller, bisa disesuaikan.
+		// Di sini kita default-kan ke pengguna dulu, aman.
+		targetPath = environment.PenggunaPathNotifikasiMasuk
+	}
+
+	// 3. Setup kalimat yang bikin user penasaran & langsung nge-klik
+	judulNotif := "🔔 Seseorang Menyebutmu!"
+	pesanNotif := fmt.Sprintf("@%s nge-tag lu di diskusi produk: \"%s\". Cek obrolannya gih!", Objek.Mention, cuplikanMention)
+
+	var NotificationMention notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: Objek.IdEntity, // ID target yang di-mention
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      judulNotif,
+		Pesan:      pesanNotif,
+		Pop:        1,
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Simpan seminggu aja
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"komentar_induk_id": Objek.IdKomentar,
+				"child_id":          Objek.ID,
+				"action_type":       "mention_child_comment",
+				"mentioned_user":    Objek.Mention,
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_MENTION_THREAD_PAGE", // FE langsung scroll ke komentar yang ada tag-nya
+			},
+		},
+	}
+
+	// 4. Kirim langsung ke service notifikasi, kelar!
+	if err := notification_request.PostToNotification(ctx, NotificationMention, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, targetPath); err != nil {
+		return fmt.Errorf("gagal mengirim notifikasi mention child: %w", err)
 	}
 	return nil
 }
@@ -362,6 +559,37 @@ func CreateTambahKeranjangBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 	if err := cass_cud.InsertData(ctx, cass_historical, ObjekCass.TableNameHistorical(), parsedData); err != nil {
 		return fmt.Errorf("gagal memasukan data ke historical db %s dalam %s", err, handle_services)
 	}
+
+	judulTambahKeranjang := "🛒 Berhasil Masuk Keranjang!"
+	pesanTambahKeranjang := fmt.Sprintf("Mantap! Produk pilihan lu (ID Barang: %d) sebanyak %d pcs udah aman di keranjang. Yuk langsung checkout sebelum kehabisan!", Objek.IdBarangInduk, Objek.Jumlah)
+
+	var NotificationCart notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: Objek.IdPengguna, // Dikirim balik ke pengguna sesuai request lu
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      judulTambahKeranjang,
+		Pesan:      pesanTambahKeranjang,
+		Pop:        1.2,
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Simpan seminggu aja
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"keranjang_id":    Objek.ID,
+				"barang_induk_id": Objek.IdBarangInduk,
+				"action_type":     "add_to_cart_user",
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_MY_CART_PAGE", // FE langsung arahin user ke halaman keranjang belanja mereka
+			},
+		},
+	}
+
+	// Kirim menggunakan PenggunaPathNotifikasiMasuk
+	if err := notification_request.PostToNotification(ctx, NotificationCart, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+		return fmt.Errorf("gagal mengirim notifikasi tambah keranjang ke pengguna: %w", err)
+	}
 	return nil
 }
 
@@ -434,7 +662,7 @@ func DeleteHapusKeranjangBarang(Data mb_cud_serializer.ParsedDataMessage, ctx co
 	return nil
 }
 
-func CreateBerikanReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
+func CreateBerikanReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, read *gorm.DB, cass_historical, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
 	const handle_services string = "CreateBerikanReviewBarang"
 	var Objek sot_models.Review
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -462,6 +690,97 @@ func CreateBerikanReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx con
 
 	if err := cass_cud.InsertData(ctx, cass_historical, ObjekCass.TableNameHistorical(), parsedData); err != nil {
 		return fmt.Errorf("gagal memasukan data ke historical db %s dalam %s", err, handle_services)
+	}
+
+	var idSeller int32 = 0
+	if err := read.WithContext(ctx).Model(&sot_models.BarangInduk{}).Select("id_seller").Where(&sot_models.BarangInduk{
+		ID: Objek.IdBarangInduk,
+	}).Limit(1).Take(&idSeller).Error; err != nil {
+		fmt.Println("Gagal mendapatkan data id seller")
+	}
+
+	if idSeller == 0 {
+		return errors.New("gagal mendapatkan id seller")
+	}
+
+	// Potong ulasan biar pas di banner notifikasi
+	cuplikanUlasan := Objek.Ulasan
+	if len(cuplikanUlasan) > 50 {
+		cuplikanUlasan = cuplikanUlasan[:47] + "..."
+	}
+
+	// Bikin representasi bintang (emoji) berdasarkan rating biar visualnya keren
+	var emojiRating string
+	for i := 0; i < int(Objek.Rating); i++ {
+		emojiRating += "⭐"
+	}
+	if emojiRating == "" {
+		emojiRating = "⭐"
+	}
+
+	// ==========================================
+	// NOTIFIKASI 1: UNTUK PENGGUNA (PEMBELI)
+	// ==========================================
+	pesanPengguna := fmt.Sprintf("Makasih banyak udah kasih ulasan %s buat produk ini! Kontribusi lu berharga banget buat pembeli lain. 🙏", emojiRating)
+
+	var NotificationToUser notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: Objek.IdPengguna,
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      "🎉 Ulasan Lu Berhasil Dikirim!",
+		Pesan:      pesanPengguna,
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 1, 0).Format(time.RFC3339),
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"review_id":       Objek.ID,
+				"barang_induk_id": Objek.IdBarangInduk,
+				"action_type":     "user_give_review",
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_PRODUCT_REVIEW_PAGE", // FE arahin ke list review produk itu
+			},
+		},
+	}
+
+	if err := notification_request.PostToNotification(ctx, NotificationToUser, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+		fmt.Printf("Gagal mengirim notifikasi review ke pengguna: %v\n", err)
+		// Tetap lanjut, jangan di-return err biar transaksi utama gak rollback cuma gara-gara notif gagal
+	}
+
+	// ==========================================
+	// NOTIFIKASI 2: UNTUK SELLER
+	// ==========================================
+	pesanSeller := fmt.Sprintf("Asyik! Toko lu dapet ulasan %s baru: \"%s\". Yuk cek kata pembeli dan bales ulasannya!", emojiRating, cuplikanUlasan)
+
+	var NotificationToSeller notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: int64(idSeller),
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      "📈 Ada Ulasan Produk Baru!",
+		Pesan:      pesanSeller,
+		Pop:        4.3,
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 1, 0).Format(time.RFC3339),
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"review_id":       Objek.ID,
+				"barang_induk_id": Objek.IdBarangInduk,
+				"action_type":     "seller_received_review",
+				"rating":          Objek.Rating,
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_SELLER_REVIEW_DASHBOARD", // FE bawa seller ke dashboard ulasan toko
+			},
+		},
+	}
+
+	if err := notification_request.PostToNotification(ctx, NotificationToSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk); err != nil {
+		fmt.Printf("Gagal mengirim notifikasi review ke seller: %v\n", err)
 	}
 	return nil
 }
@@ -553,13 +872,13 @@ func UpdateBerikanReviewBarangIIUpdateTransaksi(Data mb_cud_serializer.ParsedDat
 	}); err != nil {
 		return fmt.Errorf("gagal memasukan data ke dalam search engine %s dalam %s", err, handle_services)
 	} else {
-		fmt.Println("Berhasil memasukan data ke dalam search engine dengan antrean UID %s", task_info.IndexUID)
+		fmt.Printf("Berhasil memasukan data ke dalam search engine dengan antrean UID %s", task_info.IndexUID)
 	}
 
 	return nil
 }
 
-func CreateLikeReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
+func CreateLikeReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, read *gorm.DB, cass_historical, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
 	const handle_services string = "UpdateLikeReviewBarang"
 	var Objek sot_models.ReviewLike
 	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
@@ -587,6 +906,50 @@ func CreateLikeReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 	if err := cass_cud.InsertData(ctx, cass_historical, ObjekCass.TableNameHistorical(), parsedData); err != nil {
 		return fmt.Errorf("gagal memasukan data ke historical db %s dalam %s", err, handle_services)
 	}
+
+	var idPenggunaPenulisUlasan int64 = 0
+	if err := read.WithContext(ctx).Model(&sot_models.Review{}).Select("id_pengguna").Where(&sot_models.Review{
+		ID: Objek.IdReview,
+	}).Limit(1).Take(&idPenggunaPenulisUlasan).Error; err != nil {
+		return err
+	}
+
+	if idPenggunaPenulisUlasan == 0 {
+		return errors.New("gagal mendapatkan id pengguna penulis ulasan untuk notifikasi")
+	}
+
+	// 1. Setup kalimat notifikasi penambah dopamin user wkwk
+	judulLike := "❤️ Ulasanmu Bermanfaat!"
+	pesanLike := "Seseorang baru saja menyukai ulasan produk yang kamu tulis. Terima kasih ya sudah membantu pembeli lain!"
+
+	var NotificationLikeReview notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: idPenggunaPenulisUlasan, // Dikirim ke orang yang nulis ulasan asli!
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      judulLike,
+		Pesan:      pesanLike,
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Simpan seminggu aja di tab notif
+		Pop:        2.3,                                              // 3.5 detik, pas buat baca pesan apresiasi ringan
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"like_id":     Objek.ID,
+				"review_id":   Objek.IdReview,
+				"action_type": "review_get_liked",
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_MY_REVIEW_DETAIL", // FE bisa arahin user ke ulasan milik mereka sendiri
+			},
+		},
+	}
+
+	// 2. Kirim ke path pengguna umum
+	if err := notification_request.PostToNotification(ctx, NotificationLikeReview, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+		fmt.Printf("Gagal mengirim notifikasi apresiasi like review: %v\n", err)
+	}
+
 	return nil
 }
 

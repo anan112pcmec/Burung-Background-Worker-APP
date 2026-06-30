@@ -3,6 +3,7 @@ package transaction_pengguna_handle
 import (
 	"context"
 	"fmt"
+	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"github.com/meilisearch/meilisearch-go"
@@ -13,8 +14,12 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
+	notification_request "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/request"
+	notification_seeders "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/seeders"
 )
 
 func DeleteCheckoutBarangUser(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, Read *gorm.DB, cass_historical, cass_sot_replica *gocql.Session) error {
@@ -143,6 +148,76 @@ func CreateLockTransaksiVa(Data mb_cud_serializer.ParsedDataMessage, ctx context
 		fmt.Printf("Berhasil memasukan data ke dalam search engine dengan antrean UID %s", task_info.IndexUID)
 	}
 
+	// Setup teks cuplikan buat notifikasi
+	judulVA := "💳 Tagihan Baru Menanti Pembayaran"
+	pesanVA := fmt.Sprintf("Pesananmu dengan kode order %s telah dikunci. Yuk, segera lakukan pembayaran lewat Virtual Account sebelum batas waktunya habis biar pesanan lu langsung diproses!", Objek.KodeOrderSistem)
+
+	// ==========================================
+	// NOTIFIKASI 1: UNTUK PENGGUNA (PEMBELI) - PAKE POP-UP
+	// ==========================================
+	var NotificationLockVA notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: Objek.IdPengguna,
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      judulVA,
+		Pesan:      pesanVA,
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
+		Pop:        4.5, // Muncul di layar pembeli 4.5 detik
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"transaksi_id":      Objek.ID,
+				"kode_order_sistem": Objek.KodeOrderSistem,
+				"action_type":       "transaction_lock_va",
+				"total_tagihan":     Objek.Total,
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_PAYMENT_INSTRUCTION_PAGE",
+			},
+		},
+	}
+
+	if err := notification_request.PostToNotification(ctx, NotificationLockVA, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+		fmt.Printf("Gagal mengirim notifikasi lock VA ke pengguna %d: %v\n", Objek.IdPengguna, err)
+	}
+
+	// ==========================================
+	// NOTIFIKASI 2: UNTUK SELLER - SILENT INBOX ONLY (POP: 0)
+	// ==========================================
+	judulSeller := "📦 Calon Pesanan Baru!"
+	pesanSeller := fmt.Sprintf("Pembeli telah mengunci pesanan %s. Kami akan kabari lagi jika pembayaran Virtual Account mereka sudah lunas ya!", Objek.KodeOrderSistem)
+
+	var NotificationSellerVA notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: int64(Objek.IdSeller), // Kirim ke seller terkait
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      judulSeller,
+		Pesan:      pesanSeller,
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 0, 3).Format(time.RFC3339), // Log info keep 3 hari aja cukup
+		Pop:        0.0,                                              // 🔥 Request lu: Pop 0 biar FE tau ini silent, masuk inbox doang!
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"transaksi_id":      Objek.ID,
+				"kode_order_sistem": Objek.KodeOrderSistem,
+				"action_type":       "seller_incoming_lock_va",
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_SELLER_ORDER_DASHBOARD", // FE buka dashboard list order seller
+			},
+		},
+	}
+
+	if err := notification_request.PostToNotification(ctx, NotificationSellerVA, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk); err != nil {
+		fmt.Printf("Gagal mengirim silent notification lock VA ke seller %d: %v\n", Objek.IdSeller, err)
+	}
+
+	fmt.Printf("Berhasil memproses dual-notifikasi (Pop & Silent) Lock Transaksi VA untuk ID %d\n", Objek.ID)
+
 	return nil
 }
 
@@ -237,6 +312,62 @@ func CreateLockTransaksiWallet(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		fmt.Printf("Berhasil memasukan data ke dalam search engine dengan antrean UID %s", task_info.IndexUID)
 	}
 
+	// Notif Pembeli (Pop-up aktif)
+	var NotificationWalletUser notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: Objek.IdPengguna,
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      "👛 Konfirmasi Pembayaran Dompet",
+		Pesan:      fmt.Sprintf("Pesanan %s menunggu konfirmasi saldo digitalmu. Yuk selesaikan pembayaran sekarang agar pesanan langsung diproses!", Objek.KodeOrderSistem),
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
+		Pop:        3.0, // 3 detik cukup buat trigger bayar instan
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"transaksi_id":      Objek.ID,
+				"kode_order_sistem": Objek.KodeOrderSistem,
+				"action_type":       "transaction_lock_wallet",
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_WALLET_PAYMENT_PAGE", // FE arahin ke pin wallet auth
+			},
+		},
+	}
+	if err := notification_request.PostToNotification(ctx, NotificationWalletUser, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+		fmt.Printf("Gagal mengirim notifikasi wallet ke pengguna %d: %v\n", Objek.IdPengguna, err)
+	}
+
+	// Notif Seller (Silent - Masuk Inbox)
+	var NotificationWalletSeller notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: int64(Objek.IdSeller),
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      "📦 Calon Pesanan Baru (Wallet)",
+		Pesan:      fmt.Sprintf("Pembeli sedang menyelesaikan pembayaran transaksi %s menggunakan dompet digital.", Objek.KodeOrderSistem),
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 0, 3).Format(time.RFC3339),
+		Pop:        0.0, // Silent inbox
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"transaksi_id":      Objek.ID,
+				"kode_order_sistem": Objek.KodeOrderSistem,
+				"action_type":       "seller_incoming_lock_wallet",
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_SELLER_ORDER_DASHBOARD",
+			},
+		},
+	}
+	if err := notification_request.PostToNotification(ctx, NotificationWalletSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk); err != nil {
+		fmt.Printf("Gagal mengirim silent notification wallet ke seller %d: %v\n", Objek.IdSeller, err)
+	}
+
+	fmt.Printf("Berhasil memproses dual-notifikasi Transaksi Wallet untuk ID %d\n", Objek.ID)
+
 	return nil
 }
 
@@ -330,6 +461,61 @@ func CreateLockTransaksiGerai(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 	} else {
 		fmt.Printf("Berhasil memasukan data ke dalam search engine dengan antrean UID %s", task_info.IndexUID)
 	}
+
+	var NotificationGeraiUser notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: Objek.IdPengguna,
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      "🏪 Kode Bayar Gerai Ritel Keluar",
+		Pesan:      fmt.Sprintf("Transaksi %s berhasil dibuat. Tunjukkan kode pembayaran di gerai ritel terdekat pilihanmu sebelum batas waktu habis ya!", Objek.KodeOrderSistem),
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
+		Pop:        5.0, // 5 detik, biar user sadar kode bayarnya udah siap
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"transaksi_id":      Objek.ID,
+				"kode_order_sistem": Objek.KodeOrderSistem,
+				"action_type":       "transaction_lock_gerai",
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_GERAI_PAYMENT_CODE_PAGE", // FE tampilin barcode/kode bayar
+			},
+		},
+	}
+	if err := notification_request.PostToNotification(ctx, NotificationGeraiUser, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+		fmt.Printf("Gagal mengirim notifikasi gerai ke pengguna %d: %v\n", Objek.IdPengguna, err)
+	}
+
+	// Notif Seller (Silent - Masuk Inbox)
+	var NotificationGeraiSeller notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: int64(Objek.IdSeller),
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      "📦 Calon Pesanan Baru (Gerai)",
+		Pesan:      fmt.Sprintf("Pembeli telah mengambil kode bayar gerai untuk pesanan %s. Menunggu pembayaran lunas.", Objek.KodeOrderSistem),
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 0, 3).Format(time.RFC3339),
+		Pop:        0.0, // Silent inbox
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"transaksi_id":      Objek.ID,
+				"kode_order_sistem": Objek.KodeOrderSistem,
+				"action_type":       "seller_incoming_lock_gerai",
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_SELLER_ORDER_DASHBOARD",
+			},
+		},
+	}
+	if err := notification_request.PostToNotification(ctx, NotificationGeraiSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk); err != nil {
+		fmt.Printf("Gagal mengirim silent notification gerai ke seller %d: %v\n", Objek.IdSeller, err)
+	}
+
+	fmt.Printf("Berhasil memproses dual-notifikasi Transaksi Gerai untuk ID %d\n", Objek.ID)
 
 	return nil
 }

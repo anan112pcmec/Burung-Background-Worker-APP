@@ -3,6 +3,7 @@ package wishlist_pengguna_handle
 import (
 	"context"
 	"fmt"
+	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"gorm.io/gorm"
@@ -11,8 +12,12 @@ import (
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
+	notification_request "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/request"
+	notification_seeders "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/seeders"
 )
 
 func CreateTambahBarangKeWishlist(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, Read *gorm.DB, cass_historical, cass_sot_replica *gocql.Session) error {
@@ -44,6 +49,35 @@ func CreateTambahBarangKeWishlist(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		return fmt.Errorf("gagal memasukan data ke dalam historica db %s dalam %s", err, handle_services)
 	}
 
+	// Setup notifikasi sukses tambah ke wishlist
+	var NotificationAddWishlist notification_models.NotificationPengguna = notification_models.NotificationPengguna{
+		IDPengguna: Objek.IdPengguna, // Kirim balik ke pembeli sebagai konfirmasi
+		Pengirim:   notification_seeders.Sistem,
+		Judul:      "❤️ Berhasil Disimpan ke Wishlist",
+		Pesan:      "Produk incaranmu sukses masuk daftar favorit. Kami akan kabari kalau ada diskon atau promo menarik untuk produk ini ya!",
+		CreatedAt:  time.Now().Format(time.RFC3339),
+		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Keep seminggu di tab notif
+		Pop:        2.0,                                              // Cukup 2 detik, biar gak ganggu user yang lagi asyik nyari barang lain
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"wishlist_id":     Objek.ID,
+				"barang_induk_id": Objek.IdBarangInduk,
+				"action_type":     "add_to_wishlist",
+			},
+			Special: map[string]interface{}{
+				"click_action": "OPEN_MY_WISHLIST_PAGE", // FE arahin ke halaman wishlist si pembeli
+			},
+		},
+	}
+
+	if err := notification_request.PostToNotification(ctx, NotificationAddWishlist, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+		fmt.Printf("Gagal mengirim notifikasi tambah wishlist ke pengguna %d: %v\n", Objek.IdPengguna, err)
+	}
+
+	fmt.Printf("Berhasil memproses notifikasi tambah wishlist untuk ID %d\n", Objek.ID)
 	return nil
 }
 
