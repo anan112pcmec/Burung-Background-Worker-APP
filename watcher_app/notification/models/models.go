@@ -6,6 +6,9 @@ type NotificationPengguna struct {
 	Judul      string  `json:"judul"`
 	Pesan      string  `json:"pesan"`
 	Pop        float32 `json:"pop"`
+	Archive    bool    `json:"archive"`
+	Inbox      bool    `json:"inbox"`
+	Activity   bool    `json:"activity"`
 	CreatedAt  string  `json:"created_at"` // Format ISO 8601 (e.g., "2026-06-26T13:00:00Z")
 	ExpiredAt  string  `json:"expired_at"` // Opsional: batas waktu event realtime ini valid
 	Data       struct {
@@ -21,6 +24,9 @@ type NotificationSeller struct {
 	Judul     string  `json:"judul"`
 	Pesan     string  `json:"pesan"`
 	Pop       float32 `json:"pop"`
+	Archive   bool    `json:"archive"`
+	Inbox     bool    `json:"inbox"`
+	Activity  bool    `json:"activity"`
 	CreatedAt string  `json:"created_at"`
 	ExpiredAt string  `json:"expired_at"`
 	Data      struct {
@@ -36,6 +42,9 @@ type NotificationKurir struct {
 	Judul     string  `json:"judul"`
 	Pesan     string  `json:"pesan"`
 	Pop       float32 `json:"pop"`
+	Archive   bool    `json:"archive"`
+	Inbox     bool    `json:"inbox"`
+	Activity  bool    `json:"activity"`
 	CreatedAt string  `json:"created_at"`
 	ExpiredAt string  `json:"expired_at"`
 	Data      struct {

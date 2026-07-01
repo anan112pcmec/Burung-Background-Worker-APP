@@ -3,6 +3,7 @@ package credential_kurir_handle
 import (
 	"context"
 	"fmt"
+	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"github.com/meilisearch/meilisearch-go"
@@ -16,9 +17,12 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
-
+	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
+	notification_request "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/request"
+	notification_seeders "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/seeders"
 )
 
 func UpdateValidateUbahPasswordKurir(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, Read *gorm.DB, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper, rds_session *redis.Client) error {
@@ -55,10 +59,7 @@ func UpdateValidateUbahPasswordKurir(Data mb_cud_serializer.ParsedDataMessage, c
 		return err
 	}
 
-	pencatatan := historical_format.Sekarang()
-	parsedData["tahun_update"] = pencatatan.TahunUpdate
-	parsedData["bulan_update"] = pencatatan.BulanUpdate
-	parsedData["event_time"] = pencatatan.EventTime
+	historical_format.PencatatanCombine(historical_format.Sekarang(), parsedData)
 
 	// Perbaikan Bug: parsedData WAJIB dipassing ke parameter ke-4 agar data historical tersimpan
 	if err := cass_cud.InsertData(ctx, cass_historcal, ObjekCass.TableNameHistorical(), parsedData); err != nil {
@@ -89,6 +90,36 @@ func UpdateValidateUbahPasswordKurir(Data mb_cud_serializer.ParsedDataMessage, c
 		fmt.Println(err)
 	} else {
 		fmt.Println("task dengan id:" + task_info.IndexUID + " diproses")
+	}
+
+	// 🔔 LOGIK NOTIFIKASI KEAMANAN (UBAH PASSWORD)
+	pesanKeamanan := fmt.Sprintf("🔐 Pengingat Keamanan: Halo %s, password akun kurir lu baru saja berhasil diubah. Kalau ini bukan lu, cepetan hubungi tim support!", Objek.Nama)
+
+	var Notifikasi notification_models.NotificationKurir = notification_models.NotificationKurir{
+		IDKurir:   Objek.ID, // Karena Objek adalah Kurir, maka ID-nya adalah ID Kurir itu sendiri
+		Pengirim:  notification_seeders.Sistem,
+		Judul:     "⚠️ Password Akun Lu Berhasil Diubah!",
+		Pesan:     pesanKeamanan,
+		Pop:       5.0, // Munculin pop-up/toast selama 5 detik biar kurir langsung ngeh demi keamanan
+		CreatedAt: time.Now().Format(time.RFC3339),
+		ExpiredAt: time.Now().AddDate(0, 1, 0).Format(time.RFC3339), // Log keamanan disimpan selama 1 bulan di inbox
+		Data: struct {
+			Metadata map[string]interface{} `json:"metadata"`
+			Special  interface{}            `json:"special"`
+		}{
+			Metadata: map[string]interface{}{
+				"kurir_id":    Objek.ID,
+				"action_type": "change_password",
+				"platform":    "kurir_mobile_app",
+			},
+			Special: map[string]interface{}{
+				"click_action": "FORCE_LOGOUT_OTHER_DEVICES", // Contoh instruksi ke FE buat bersihin sisa session device lain
+			},
+		},
+	}
+
+	if err := notification_request.PostToNotification(ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+		return fmt.Errorf("gagal mengirim notifikasi ubah password kurir: %w", err)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
