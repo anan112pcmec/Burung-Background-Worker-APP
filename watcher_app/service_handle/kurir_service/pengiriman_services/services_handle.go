@@ -2097,6 +2097,7 @@ func UpdateSampaiPengirimanNonEksIIjejakPengirimanSampaiUpdatedPublish(Data mb_c
 	return nil
 }
 
+// INFOO: INI CONTOH YANG ADA NOTIFIKASI
 func UpdateSampaiPengirimanNonEksIItransaksiSampaiUpdatedPublish(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
 	const handle_services string = "UpdateSampaiPengirimanNonEksIItransaksiSampaiUpdatedPublish"
 	var Objek sot_models.Transaksi

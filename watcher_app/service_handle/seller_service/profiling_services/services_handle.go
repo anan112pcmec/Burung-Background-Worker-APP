@@ -3,6 +3,7 @@ package profiling_seller_handle
 import (
 	"context"
 	"fmt"
+	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"github.com/meilisearch/meilisearch-go"
@@ -15,8 +16,12 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
+	notification_request "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/request"
+	notification_seeders "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/seeders"
 )
 
 func UpdateUpdatePersonalSeller(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper, rds_session *redis.Client) error {
@@ -81,6 +86,31 @@ func UpdateUpdatePersonalSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 	if err := cache_db_function.UpdateSessionData[sot_models.Seller](ctx, *rds_session, cache_db_session.GetSessionKey[*sot_models.Seller](&Objek), Objek); err != nil {
 		return fmt.Errorf("gagal mengupdate session data %s dalam %s", err, handle_services)
 	}
+
+	// 🔔 SISTEM NOTIFIKASI
+	if Objek.ID != 0 {
+		var Notifikasi = notification_models.NotificationSeller{
+			IDSeller:  int64(Objek.ID),
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "🔒 Data Personal Diperbarui",
+			Pesan:     "Informasi kredensial dan data personal akun toko Anda telah berhasil diperbarui.",
+			Pop:       1,
+			Archive:   false,
+			Inbox:     true,
+			Activity:  true,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"seller_id": Objek.ID, "username": Objek.Username},
+				Special:  map[string]interface{}{"click_action": "SELLER_PERSONAL_DATA_UPDATED"},
+			},
+		}
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	}
+
 	return nil
 }
 
@@ -146,5 +176,30 @@ func UpdateUpdateInfoGeneralPublic(Data mb_cud_serializer.ParsedDataMessage, ctx
 	if err := cache_db_function.UpdateSessionData[sot_models.Seller](ctx, *rds_session, cache_db_session.GetSessionKey[*sot_models.Seller](&Objek), Objek); err != nil {
 		return fmt.Errorf("gagal mengupdate session data %s dalam %s", err, handle_services)
 	}
+
+	// 🔔 SISTEM NOTIFIKASI
+	if Objek.ID != 0 {
+		var Notifikasi = notification_models.NotificationSeller{
+			IDSeller:  int64(Objek.ID),
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "🏪 Profil Toko Diperbarui",
+			Pesan:     fmt.Sprintf("Informasi umum toko Anda yang terlihat oleh publik resmi diubah."),
+			Pop:       1,
+			Archive:   false,
+			Inbox:     true,
+			Activity:  true,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"seller_id": Objek.ID, "nama_toko": Objek.Nama},
+				Special:  map[string]interface{}{"click_action": "SELLER_PUBLIC_INFO_UPDATED"},
+			},
+		}
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	}
+
 	return nil
 }

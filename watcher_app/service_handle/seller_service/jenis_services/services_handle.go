@@ -3,6 +3,7 @@ package jenis_seller_handle
 import (
 	"context"
 	"fmt"
+	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 
@@ -10,8 +11,12 @@ import (
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
+	notification_request "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/request"
+	notification_seeders "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/seeders"
 )
 
 func CreateMasukanDataDistributor(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session) error {
@@ -44,6 +49,30 @@ func CreateMasukanDataDistributor(Data mb_cud_serializer.ParsedDataMessage, ctx 
 
 	if err := cass_cud.InsertData(ctx, cass_historical, ObjekCass.TableNameHistorical(), parsedData); err != nil {
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
+	}
+
+	// 🔔 SISTEM NOTIFIKASI
+	if Objek.SellerId != 0 {
+		var Notifikasi = notification_models.NotificationSeller{
+			IDSeller:  int64(Objek.SellerId),
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "📄 Data Distributor Diajukan",
+			Pesan:     fmt.Sprintf("Dokumen formalitas untuk perusahaan %s berhasil dikirim. Menunggu proses verifikasi.", Objek.NamaPerusahaan),
+			Pop:       1,
+			Archive:   false,
+			Inbox:     true,
+			Activity:  true,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"seller_id": Objek.SellerId, "distributor_id": Objek.ID},
+				Special:  map[string]interface{}{"click_action": "DISTRIBUTOR_DATA_SUBMITTED"},
+			},
+		}
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -81,6 +110,30 @@ func UpdateEditDataDistributor(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
+	// 🔔 SISTEM NOTIFIKASI
+	if Objek.SellerId != 0 {
+		var Notifikasi = notification_models.NotificationSeller{
+			IDSeller:  int64(Objek.SellerId),
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "✏️ Data Distributor Diperbarui",
+			Pesan:     fmt.Sprintf("Perubahan data formalitas untuk perusahaan %s telah disimpan dan akan diperiksa kembali.", Objek.NamaPerusahaan),
+			Pop:       1,
+			Archive:   false,
+			Inbox:     true,
+			Activity:  true,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"seller_id": Objek.SellerId, "distributor_id": Objek.ID},
+				Special:  map[string]interface{}{"click_action": "DISTRIBUTOR_DATA_UPDATED"},
+			},
+		}
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	}
+
 	return nil
 }
 
@@ -114,6 +167,30 @@ func DeleteHapusDataDistributor(Data mb_cud_serializer.ParsedDataMessage, ctx co
 
 	if err := cass_cud.InsertData(ctx, cass_historical, ObjekCass.TableNameHistorical(), parsedData); err != nil {
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
+	}
+
+	// 🔔 SISTEM NOTIFIKASI
+	if Objek.SellerId != 0 {
+		var Notifikasi = notification_models.NotificationSeller{
+			IDSeller:  int64(Objek.SellerId),
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "🗑️ Data Distributor Dihapus",
+			Pesan:     fmt.Sprintf("Data pengajuan formalitas distributor untuk %s telah dihapus.", Objek.NamaPerusahaan),
+			Pop:       1,
+			Archive:   false,
+			Inbox:     true,
+			Activity:  true,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"seller_id": Objek.SellerId, "distributor_id": Objek.ID},
+				Special:  map[string]interface{}{"click_action": "DISTRIBUTOR_DATA_REMOVED"},
+			},
+		}
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -155,6 +232,30 @@ func CreateMasukanDataBrand(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
+	// 🔔 SISTEM NOTIFIKASI
+	if Objek.SellerId != 0 {
+		var Notifikasi = notification_models.NotificationSeller{
+			IDSeller:  int64(Objek.SellerId),
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "📜 Data Merek/Brand Diajukan",
+			Pesan:     fmt.Sprintf("Dokumen kepemilikan hak merek untuk %s berhasil dikirim. Menunggu proses verifikasi.", Objek.NamaPerusahaan),
+			Pop:       1,
+			Archive:   false,
+			Inbox:     true,
+			Activity:  true,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"seller_id": Objek.SellerId, "brand_id": Objek.ID},
+				Special:  map[string]interface{}{"click_action": "BRAND_DATA_SUBMITTED"},
+			},
+		}
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	}
+
 	return nil
 }
 
@@ -194,6 +295,30 @@ func UpdateEditDataBrand(Data mb_cud_serializer.ParsedDataMessage, ctx context.C
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
+	// 🔔 SISTEM NOTIFIKASI
+	if Objek.SellerId != 0 {
+		var Notifikasi = notification_models.NotificationSeller{
+			IDSeller:  int64(Objek.SellerId),
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "✏️ Data Merek/Brand Diperbarui",
+			Pesan:     fmt.Sprintf("Perubahan berkas merek/brand untuk %s telah disimpan dan masuk antrean pengecekan.", Objek.NamaPerusahaan),
+			Pop:       1,
+			Archive:   false,
+			Inbox:     true,
+			Activity:  true,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"seller_id": Objek.SellerId, "brand_id": Objek.ID},
+				Special:  map[string]interface{}{"click_action": "BRAND_DATA_UPDATED"},
+			},
+		}
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	}
+
 	return nil
 }
 
@@ -231,6 +356,30 @@ func DeleteHapusDataBrand(Data mb_cud_serializer.ParsedDataMessage, ctx context.
 
 	if err := cass_cud.InsertData(ctx, cass_historical, ObjekCass.TableNameHistorical(), parsedData); err != nil {
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
+	}
+
+	// 🔔 SISTEM NOTIFIKASI
+	if Objek.SellerId != 0 {
+		var Notifikasi = notification_models.NotificationSeller{
+			IDSeller:  int64(Objek.SellerId),
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "🗑️ Data Merek/Brand Dihapus",
+			Pesan:     fmt.Sprintf("Data pengajuan registrasi merek untuk %s telah dihapus.", Objek.NamaPerusahaan),
+			Pop:       1,
+			Archive:   false,
+			Inbox:     true,
+			Activity:  true,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"seller_id": Objek.SellerId, "brand_id": Objek.ID},
+				Special:  map[string]interface{}{"click_action": "BRAND_DATA_REMOVED"},
+			},
+		}
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
 	}
 
 	return nil

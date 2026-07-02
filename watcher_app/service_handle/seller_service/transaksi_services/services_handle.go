@@ -3,6 +3,7 @@ package transaksi_seller_handle
 import (
 	"context"
 	"fmt"
+	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"github.com/meilisearch/meilisearch-go"
@@ -12,8 +13,12 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
+	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
+	notification_request "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/request"
+	notification_seeders "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/seeders"
 )
 
 func UpdateApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
@@ -58,7 +63,6 @@ func UpdateApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage, ctx c
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
 
-	// Meluruskan logika menggunakan UpdateData ke SOT Replica, ID tidak dicasting karena sudah int64
 	if err := cass_cud.UpdateData(ctx, cass_sot_replica, ObjekCass.TableNameSotReplica(), ObjekCass.ID, parsedData); err != nil {
 		return fmt.Errorf("gagal mengupdate data ke sot replica async %s dalam %s", err, handle_services)
 	}
@@ -107,6 +111,31 @@ func UpdateApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage, ctx c
 	} else {
 		fmt.Printf("Berhasil memasukan data ke dalam search engine dengan antrean UID %s\n", task_info.IndexUID)
 	}
+
+	// 🔔 SISTEM NOTIFIKASI
+	if Objek.IdSeller != 0 {
+		var Notifikasi = notification_models.NotificationSeller{
+			IDSeller:  int64(Objek.IdSeller),
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "✅ Pesanan Disetujui",
+			Pesan:     fmt.Sprintf("Pesanan dengan invoice %s telah disetujui. Silakan persiapkan barang untuk pengiriman.", Objek.KodeOrderSistem),
+			Pop:       1,
+			Archive:   false,
+			Inbox:     true,
+			Activity:  true,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"seller_id": Objek.IdSeller, "transaksi_id": Objek.ID, "kode_order": Objek.KodeOrderSistem},
+				Special:  map[string]interface{}{"click_action": "TRANSACTION_APPROVED"},
+			},
+		}
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	}
+
 	return nil
 }
 
@@ -149,6 +178,30 @@ func CreateKirimOrderTransaksiEkspedisi(Data mb_cud_serializer.ParsedDataMessage
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
+	// 🔔 SISTEM NOTIFIKASI
+	if Objek.IdSeller != 0 {
+		var Notifikasi = notification_models.NotificationSeller{
+			IDSeller:  int64(Objek.IdSeller),
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "🚚 Pengiriman Ekspedisi Dibuat",
+			Pesan:     fmt.Sprintf("Order pengiriman via ekspedisi untuk Transaksi ID %d telah berhasil diproses oleh kurir.", Objek.IdTransaksi),
+			Pop:       1,
+			Archive:   false,
+			Inbox:     true,
+			Activity:  true,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"seller_id": Objek.IdSeller, "transaksi_id": Objek.IdTransaksi, "pengiriman_id": Objek.ID},
+				Special:  map[string]interface{}{"click_action": "EXPRESS_DELIVERY_CREATED"},
+			},
+		}
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	}
+
 	return nil
 }
 
@@ -189,6 +242,30 @@ func CreateKirimOrderTransaksiBiasa(Data mb_cud_serializer.ParsedDataMessage, ct
 
 	if err := cass_cud.InsertData(ctx, cass_historical, ObjekCass.TableNameHistorical(), parsedData); err != nil {
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
+	}
+
+	// 🔔 SISTEM NOTIFIKASI
+	if Objek.IdSeller != 0 {
+		var Notifikasi = notification_models.NotificationSeller{
+			IDSeller:  int64(Objek.IdSeller),
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "📦 Pengiriman Reguler Dibuat",
+			Pesan:     fmt.Sprintf("Order pengiriman reguler/internal untuk Transaksi ID %d telah dibuat dan dijadwalkan.", Objek.IdTransaksi),
+			Pop:       1,
+			Archive:   false,
+			Inbox:     true,
+			Activity:  true,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"seller_id": Objek.IdSeller, "transaksi_id": Objek.IdTransaksi, "pengiriman_id": Objek.ID},
+				Special:  map[string]interface{}{"click_action": "REGULAR_DELIVERY_CREATED"},
+			},
+		}
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -284,5 +361,30 @@ func UpdateUnApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage, ctx
 	} else {
 		fmt.Printf("Berhasil memasukan data ke dalam search engine dengan antrean UID %s\n", task_info.IndexUID)
 	}
+
+	// 🔔 SISTEM NOTIFIKASI
+	if Objek.IdSeller != 0 {
+		var Notifikasi = notification_models.NotificationSeller{
+			IDSeller:  int64(Objek.IdSeller),
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "⚠️ Persetujuan Pesanan Dibatalkan",
+			Pesan:     fmt.Sprintf("Persetujuan awal untuk pesanan %s telah dibatalkan/ditangguhkan oleh sistem.", Objek.KodeOrderSistem),
+			Pop:       1,
+			Archive:   false,
+			Inbox:     true,
+			Activity:  true,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"seller_id": Objek.IdSeller, "transaksi_id": Objek.ID, "kode_order": Objek.KodeOrderSistem},
+				Special:  map[string]interface{}{"click_action": "TRANSACTION_UNAPPROVED"},
+			},
+		}
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	}
+
 	return nil
 }
