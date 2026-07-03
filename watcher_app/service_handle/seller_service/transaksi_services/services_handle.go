@@ -1,4 +1,4 @@
-package transaksi_seller_handle
+﻿package transaksi_seller_handle
 
 import (
 	"context"
@@ -8,12 +8,12 @@ import (
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"github.com/meilisearch/meilisearch-go"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -112,12 +112,12 @@ func UpdateApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		fmt.Printf("Berhasil memasukan data ke dalam search engine dengan antrean UID %s\n", task_info.IndexUID)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.IdSeller != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IdSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "✅ Pesanan Disetujui",
+			Judul:     "âœ… Pesanan Disetujui",
 			Pesan:     fmt.Sprintf("Pesanan dengan invoice %s telah disetujui. Silakan persiapkan barang untuk pengiriman.", Objek.KodeOrderSistem),
 			Pop:       1,
 			Archive:   false,
@@ -133,7 +133,7 @@ func UpdateApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage, ctx c
 				Special:  map[string]interface{}{"click_action": "TRANSACTION_APPROVED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -178,12 +178,12 @@ func CreateKirimOrderTransaksiEkspedisi(Data mb_cud_serializer.ParsedDataMessage
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.IdSeller != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IdSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🚚 Pengiriman Ekspedisi Dibuat",
+			Judul:     "ðŸšš Pengiriman Ekspedisi Dibuat",
 			Pesan:     fmt.Sprintf("Order pengiriman via ekspedisi untuk Transaksi ID %d telah berhasil diproses oleh kurir.", Objek.IdTransaksi),
 			Pop:       1,
 			Archive:   false,
@@ -199,7 +199,7 @@ func CreateKirimOrderTransaksiEkspedisi(Data mb_cud_serializer.ParsedDataMessage
 				Special:  map[string]interface{}{"click_action": "EXPRESS_DELIVERY_CREATED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -244,12 +244,12 @@ func CreateKirimOrderTransaksiBiasa(Data mb_cud_serializer.ParsedDataMessage, ct
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.IdSeller != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IdSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "📦 Pengiriman Reguler Dibuat",
+			Judul:     "ðŸ“¦ Pengiriman Reguler Dibuat",
 			Pesan:     fmt.Sprintf("Order pengiriman reguler/internal untuk Transaksi ID %d telah dibuat dan dijadwalkan.", Objek.IdTransaksi),
 			Pop:       1,
 			Archive:   false,
@@ -265,7 +265,7 @@ func CreateKirimOrderTransaksiBiasa(Data mb_cud_serializer.ParsedDataMessage, ct
 				Special:  map[string]interface{}{"click_action": "REGULAR_DELIVERY_CREATED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -362,12 +362,12 @@ func UpdateUnApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage, ctx
 		fmt.Printf("Berhasil memasukan data ke dalam search engine dengan antrean UID %s\n", task_info.IndexUID)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.IdSeller != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IdSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "⚠️ Persetujuan Pesanan Dibatalkan",
+			Judul:     "âš ï¸ Persetujuan Pesanan Dibatalkan",
 			Pesan:     fmt.Sprintf("Persetujuan awal untuk pesanan %s telah dibatalkan/ditangguhkan oleh sistem.", Objek.KodeOrderSistem),
 			Pop:       1,
 			Archive:   false,
@@ -383,7 +383,7 @@ func UpdateUnApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage, ctx
 				Special:  map[string]interface{}{"click_action": "TRANSACTION_UNAPPROVED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil

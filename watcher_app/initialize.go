@@ -15,16 +15,16 @@ import (
 	"github.com/meilisearch/meilisearch-go"
 	"github.com/redis/go-redis/v9"
 
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/config"
 	historical_migrations "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/migrations"
 	sot_replica_migration "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/sot_replica_async/migration"
 	se_initialize "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/initialize"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	mb_cud_consumer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/consumer"
 )
 
 type Connection struct {
-	db                       *config.InternalDBReadWriteSystem
+	db                       *environment.InternalDBReadWriteSystem
 	redis_authentication     *redis.Client
 	redis_session            *redis.Client
 	search_engine            meilisearch.ServiceManager
@@ -54,7 +54,7 @@ func Run() {
 	rdsauthentication, _ := strconv.Atoi(Getenvi("RDSAUTHENTICATION", "0"))
 	rdssession, _ := strconv.Atoi(Getenvi("RDSSESSION", "0"))
 
-	env := config.Environment{
+	env := environment.Environment{
 		DBMASTERHOST:              Getenvi("DBMASTERHOST", "NIL"),
 		DBMASTERUSER:              Getenvi("DBMASTERUSER", "NIL"),
 		DBMASTERPORT:              Getenvi("DBMASTERPORT", "NIL"),

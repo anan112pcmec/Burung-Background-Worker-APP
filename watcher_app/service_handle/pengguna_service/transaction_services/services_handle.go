@@ -1,4 +1,4 @@
-package transaction_pengguna_handle
+﻿package transaction_pengguna_handle
 
 import (
 	"context"
@@ -14,7 +14,7 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -149,7 +149,7 @@ func CreateLockTransaksiVa(Data mb_cud_serializer.ParsedDataMessage, ctx context
 	}
 
 	// Setup teks cuplikan buat notifikasi
-	judulVA := "💳 Tagihan Baru Menanti Pembayaran"
+	judulVA := "ðŸ’³ Tagihan Baru Menanti Pembayaran"
 	pesanVA := fmt.Sprintf("Pesananmu dengan kode order %s telah dikunci. Yuk, segera lakukan pembayaran lewat Virtual Account sebelum batas waktunya habis biar pesanan lu langsung diproses!", Objek.KodeOrderSistem)
 
 	// ==========================================
@@ -179,14 +179,14 @@ func CreateLockTransaksiVa(Data mb_cud_serializer.ParsedDataMessage, ctx context
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotificationLockVA, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationLockVA, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
 		fmt.Printf("Gagal mengirim notifikasi lock VA ke pengguna %d: %v\n", Objek.IdPengguna, err)
 	}
 
 	// ==========================================
 	// NOTIFIKASI 2: UNTUK SELLER - SILENT INBOX ONLY (POP: 0)
 	// ==========================================
-	judulSeller := "📦 Calon Pesanan Baru!"
+	judulSeller := "ðŸ“¦ Calon Pesanan Baru!"
 	pesanSeller := fmt.Sprintf("Pembeli telah mengunci pesanan %s. Kami akan kabari lagi jika pembayaran Virtual Account mereka sudah lunas ya!", Objek.KodeOrderSistem)
 
 	var NotificationSellerVA notification_models.NotificationPengguna = notification_models.NotificationPengguna{
@@ -196,7 +196,7 @@ func CreateLockTransaksiVa(Data mb_cud_serializer.ParsedDataMessage, ctx context
 		Pesan:      pesanSeller,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 3).Format(time.RFC3339), // Log info keep 3 hari aja cukup
-		Pop:        0.0,                                              // 🔥 Request lu: Pop 0 biar FE tau ini silent, masuk inbox doang!
+		Pop:        0.0,                                              // ðŸ”¥ Request lu: Pop 0 biar FE tau ini silent, masuk inbox doang!
 		Data: struct {
 			Metadata map[string]interface{} `json:"metadata"`
 			Special  interface{}            `json:"special"`
@@ -212,7 +212,7 @@ func CreateLockTransaksiVa(Data mb_cud_serializer.ParsedDataMessage, ctx context
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotificationSellerVA, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationSellerVA, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk); err != nil {
 		fmt.Printf("Gagal mengirim silent notification lock VA ke seller %d: %v\n", Objek.IdSeller, err)
 	}
 
@@ -316,7 +316,7 @@ func CreateLockTransaksiWallet(Data mb_cud_serializer.ParsedDataMessage, ctx con
 	var NotificationWalletUser notification_models.NotificationPengguna = notification_models.NotificationPengguna{
 		IDPengguna: Objek.IdPengguna,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "👛 Konfirmasi Pembayaran Dompet",
+		Judul:      "ðŸ‘› Konfirmasi Pembayaran Dompet",
 		Pesan:      fmt.Sprintf("Pesanan %s menunggu konfirmasi saldo digitalmu. Yuk selesaikan pembayaran sekarang agar pesanan langsung diproses!", Objek.KodeOrderSistem),
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
@@ -335,7 +335,7 @@ func CreateLockTransaksiWallet(Data mb_cud_serializer.ParsedDataMessage, ctx con
 			},
 		},
 	}
-	if err := notification_request.PostToNotification(ctx, NotificationWalletUser, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationWalletUser, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
 		fmt.Printf("Gagal mengirim notifikasi wallet ke pengguna %d: %v\n", Objek.IdPengguna, err)
 	}
 
@@ -343,7 +343,7 @@ func CreateLockTransaksiWallet(Data mb_cud_serializer.ParsedDataMessage, ctx con
 	var NotificationWalletSeller notification_models.NotificationPengguna = notification_models.NotificationPengguna{
 		IDPengguna: int64(Objek.IdSeller),
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "📦 Calon Pesanan Baru (Wallet)",
+		Judul:      "ðŸ“¦ Calon Pesanan Baru (Wallet)",
 		Pesan:      fmt.Sprintf("Pembeli sedang menyelesaikan pembayaran transaksi %s menggunakan dompet digital.", Objek.KodeOrderSistem),
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 3).Format(time.RFC3339),
@@ -362,7 +362,7 @@ func CreateLockTransaksiWallet(Data mb_cud_serializer.ParsedDataMessage, ctx con
 			},
 		},
 	}
-	if err := notification_request.PostToNotification(ctx, NotificationWalletSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationWalletSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk); err != nil {
 		fmt.Printf("Gagal mengirim silent notification wallet ke seller %d: %v\n", Objek.IdSeller, err)
 	}
 
@@ -465,7 +465,7 @@ func CreateLockTransaksiGerai(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 	var NotificationGeraiUser notification_models.NotificationPengguna = notification_models.NotificationPengguna{
 		IDPengguna: Objek.IdPengguna,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "🏪 Kode Bayar Gerai Ritel Keluar",
+		Judul:      "ðŸª Kode Bayar Gerai Ritel Keluar",
 		Pesan:      fmt.Sprintf("Transaksi %s berhasil dibuat. Tunjukkan kode pembayaran di gerai ritel terdekat pilihanmu sebelum batas waktu habis ya!", Objek.KodeOrderSistem),
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
@@ -484,7 +484,7 @@ func CreateLockTransaksiGerai(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 			},
 		},
 	}
-	if err := notification_request.PostToNotification(ctx, NotificationGeraiUser, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationGeraiUser, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
 		fmt.Printf("Gagal mengirim notifikasi gerai ke pengguna %d: %v\n", Objek.IdPengguna, err)
 	}
 
@@ -492,7 +492,7 @@ func CreateLockTransaksiGerai(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 	var NotificationGeraiSeller notification_models.NotificationPengguna = notification_models.NotificationPengguna{
 		IDPengguna: int64(Objek.IdSeller),
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "📦 Calon Pesanan Baru (Gerai)",
+		Judul:      "ðŸ“¦ Calon Pesanan Baru (Gerai)",
 		Pesan:      fmt.Sprintf("Pembeli telah mengambil kode bayar gerai untuk pesanan %s. Menunggu pembayaran lunas.", Objek.KodeOrderSistem),
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 3).Format(time.RFC3339),
@@ -511,7 +511,7 @@ func CreateLockTransaksiGerai(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 			},
 		},
 	}
-	if err := notification_request.PostToNotification(ctx, NotificationGeraiSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationGeraiSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk); err != nil {
 		fmt.Printf("Gagal mengirim silent notification gerai ke seller %d: %v\n", Objek.IdSeller, err)
 	}
 
@@ -519,3 +519,4 @@ func CreateLockTransaksiGerai(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 
 	return nil
 }
+

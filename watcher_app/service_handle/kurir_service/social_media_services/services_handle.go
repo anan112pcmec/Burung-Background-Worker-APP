@@ -1,4 +1,4 @@
-package social_media_kurir_handle
+﻿package social_media_kurir_handle
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -52,12 +52,12 @@ func CreateEngagementSocialMediaKurir(Data mb_cud_serializer.ParsedDataMessage, 
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Kurir: Sinkronisasi awal pembuatan link media sosial kurir
+	// ðŸ”” Silent Update Kurir: Sinkronisasi awal pembuatan link media sosial kurir
 	if Objek.EntityId != 0 && Objek.EntityType == "kurir" {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.EntityId,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Media Sosial Ditautkan",
+			Judul:     "ðŸ”„ Media Sosial Ditautkan",
 			Pesan:     "Akun media sosial Anda berhasil diintegrasikan ke dalam sistem.",
 			Pop:       0, // Silent sync background
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -70,7 +70,7 @@ func CreateEngagementSocialMediaKurir(Data mb_cud_serializer.ParsedDataMessage, 
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_SOCIAL_LINKS"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -110,12 +110,12 @@ func UpdateEngagementSocialMediaKurir(Data mb_cud_serializer.ParsedDataMessage, 
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Kurir: Sinkronisasi perubahan link media sosial kurir
+	// ðŸ”” Silent Update Kurir: Sinkronisasi perubahan link media sosial kurir
 	if Objek.EntityId != 0 && Objek.EntityType == "kurir" {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.EntityId,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Kontak Media Sosial Diperbarui",
+			Judul:     "ðŸ”„ Kontak Media Sosial Diperbarui",
 			Pesan:     "Perubahan data akun media sosial Anda berhasil disinkronisasi.",
 			Pop:       0, // Silent sync background
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -128,9 +128,10 @@ func UpdateEngagementSocialMediaKurir(Data mb_cud_serializer.ParsedDataMessage, 
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_SOCIAL_LINKS"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
+

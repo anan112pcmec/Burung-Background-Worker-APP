@@ -1,4 +1,4 @@
-package diskon_seller_handle
+﻿package diskon_seller_handle
 
 import (
 	"context"
@@ -7,11 +7,11 @@ import (
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -54,12 +54,12 @@ func CreateTambahDiskonProduk(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.SellerId != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerId),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🏷️ Diskon Baru Dibuat",
+			Judul:     "ðŸ·ï¸ Diskon Baru Dibuat",
 			Pesan:     fmt.Sprintf("Promo diskon '%s' sebesar %d%% berhasil dibuat.", Objek.Nama, Objek.DiskonPersen),
 			Pop:       1,
 			Archive:   false,
@@ -75,7 +75,7 @@ func CreateTambahDiskonProduk(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 				Special:  map[string]interface{}{"click_action": "PROMO_DISCOUNT_CREATED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -117,12 +117,12 @@ func UpdateEditDiskonProduk(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.SellerId != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerId),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "✏️ Promo Diskon Diubah",
+			Judul:     "âœï¸ Promo Diskon Diubah",
 			Pesan:     fmt.Sprintf("Informasi promo diskon '%s' telah berhasil diperbarui.", Objek.Nama),
 			Pop:       1,
 			Archive:   false,
@@ -138,7 +138,7 @@ func UpdateEditDiskonProduk(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 				Special:  map[string]interface{}{"click_action": "PROMO_DISCOUNT_EDITED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -180,12 +180,12 @@ func DeleteHapusDiskonProduk(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.SellerId != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerId),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🗑️ Promo Diskon Dihapus",
+			Judul:     "ðŸ—‘ï¸ Promo Diskon Dihapus",
 			Pesan:     fmt.Sprintf("Promo diskon '%s' telah berhasil dihapus.", Objek.Nama),
 			Pop:       1,
 			Archive:   false,
@@ -201,7 +201,7 @@ func DeleteHapusDiskonProduk(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 				Special:  map[string]interface{}{"click_action": "PROMO_DISCOUNT_REMOVED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -239,12 +239,12 @@ func CreateTetapkanDiskonPadaBarang(Data mb_cud_serializer.ParsedDataMessage, ct
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.SellerId != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerId),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Promo Diterapkan pada Produk",
+			Judul:     "ðŸ”„ Promo Diterapkan pada Produk",
 			Pesan:     "Diskon baru telah sukses diterapkan ke item produk pilihan.",
 			Pop:       0,
 			Archive:   true,
@@ -260,7 +260,7 @@ func CreateTetapkanDiskonPadaBarang(Data mb_cud_serializer.ParsedDataMessage, ct
 				Special:  map[string]interface{}{"click_action": "SILENT_APPLY_PROMO_PRODUCT"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -299,12 +299,12 @@ func DeleteHapusDiskonPadaBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.SellerId != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerId),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Promo Dilepas dari Produk",
+			Judul:     "ðŸ”„ Promo Dilepas dari Produk",
 			Pesan:     "Kaitan diskon pada item produk pilihan telah berhasil dilepas.",
 			Pop:       0,
 			Archive:   true,
@@ -320,7 +320,7 @@ func DeleteHapusDiskonPadaBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 				Special:  map[string]interface{}{"click_action": "SILENT_REMOVE_PROMO_PRODUCT"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil

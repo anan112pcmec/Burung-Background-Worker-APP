@@ -1,4 +1,4 @@
-package alamat_seller_handle
+﻿package alamat_seller_handle
 
 import (
 	"context"
@@ -9,12 +9,12 @@ import (
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"github.com/meilisearch/meilisearch-go"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -87,11 +87,11 @@ func CreateTambahAlamatGudang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		fmt.Printf("berhasil memasukan data ke dalam search engine dengan uid: %s", task_info.IndexUID)
 	}
 
-	// 🔔 Alert Notifikasi: Pop tinggi untuk alert keamanan alamat baru
+	// ðŸ”” Alert Notifikasi: Pop tinggi untuk alert keamanan alamat baru
 	var Notifikasi notification_models.NotificationSeller = notification_models.NotificationSeller{
 		IDSeller:  int64(Objek.IDSeller),
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🏠 Penambahan Alamat Gudang Baru",
+		Judul:     "ðŸ  Penambahan Alamat Gudang Baru",
 		Pesan:     "Halo, kami mendeteksi penambahan alamat gudang baru di akun Anda.",
 		Pop:       0.9,
 		Archive:   true,
@@ -108,7 +108,7 @@ func CreateTambahAlamatGudang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		},
 	}
 
-	if err := notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk); err != nil {
 		return err
 	}
 
@@ -180,12 +180,12 @@ func UpdateEditAlamatGudang(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		fmt.Printf("berhasil memasukan data ke dalam search engine dengan uid: %s", task_info.IndexUID)
 	}
 
-	// 🔔 Silent Update Seller: Sinkronisasi data perubahan alamat di background app
+	// ðŸ”” Silent Update Seller: Sinkronisasi data perubahan alamat di background app
 	if Objek.IDSeller != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IDSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Alamat Gudang Diperbarui",
+			Judul:     "ðŸ”„ Alamat Gudang Diperbarui",
 			Pesan:     "Perubahan data alamat gudang Anda telah berhasil disinkronisasi.",
 			Pop:       0, // Background sync, gausah di-pop
 			Archive:   true,
@@ -201,7 +201,7 @@ func UpdateEditAlamatGudang(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_ALAMAT_GUDANG"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -256,12 +256,12 @@ func DeleteHapusAlamatGudang(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 		fmt.Printf("berhasil memasukan data ke dalam search engine dengan uid: %s", task_info.IndexUID)
 	}
 
-	// 🔔 Silent Update Seller: Hapus data alamat dari list UI lokal perangkat seller
+	// ðŸ”” Silent Update Seller: Hapus data alamat dari list UI lokal perangkat seller
 	if Objek.IDSeller != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IDSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🗑️ Alamat Gudang Dihapus",
+			Judul:     "ðŸ—‘ï¸ Alamat Gudang Dihapus",
 			Pesan:     "Alamat gudang Anda telah berhasil dihapus dari sistem.",
 			Pop:       0, // Silent sync background, gausah di-pop
 			Archive:   true,
@@ -277,7 +277,7 @@ func DeleteHapusAlamatGudang(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 				Special:  map[string]interface{}{"click_action": "SILENT_REMOVE_ALAMAT_GUDANG"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil

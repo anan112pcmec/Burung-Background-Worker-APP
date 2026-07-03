@@ -1,4 +1,4 @@
-package informasi_kurir_handle
+﻿package informasi_kurir_handle
 
 import (
 	"context"
@@ -9,11 +9,11 @@ import (
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"gorm.io/gorm"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -92,7 +92,7 @@ func CreateAjukanInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage, ct
 		},
 	}
 
-	if err := notification_request.PostToNotification[notification_models.NotificationKurir](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification[notification_models.NotificationKurir](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		return err
 	}
 
@@ -148,15 +148,15 @@ func UpdateEditInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage, ctx 
 
 	// Copywriting dinamis berdasarkan status approval dari Admin
 	var pesanUpdate string
-	var judulUpdate string = "🔄 Update Informasi Kendaraan"
+	var judulUpdate string = "ðŸ”„ Update Informasi Kendaraan"
 	statusDokumen := strings.ToUpper(Objek.Status)
 
 	switch statusDokumen {
 	case "APPROVED":
-		judulUpdate = "✅ Kendaraan Lu Berhasil Diverifikasi!"
+		judulUpdate = "âœ… Kendaraan Lu Berhasil Diverifikasi!"
 		pesanUpdate = fmt.Sprintf("Mantap %s! Pengajuan kendaraan %s lu udah disetujui tim internal. Siap-siap dapet orderan gacor ya!", NamaKurir, Objek.NamaKendaraan)
 	case "REJECTED":
-		judulUpdate = "❌ Dokumen Kendaraan Ditolak"
+		judulUpdate = "âŒ Dokumen Kendaraan Ditolak"
 		pesanUpdate = fmt.Sprintf("Waduh %s, dokumen info kendaraan %s lu ditolak nih. Coba cek lagi kesesuaian nomor STNK/BPKB lu ya.", NamaKurir, Objek.NamaKendaraan)
 	default: // PENDING / Perubahan data manual dari Kurir sendiri
 		pesanUpdate = fmt.Sprintf("Halo %s, perubahan data untuk kendaraan %s telah disimpan dan sedang ditinjau ulang oleh tim kami.", NamaKurir, Objek.NamaKendaraan)
@@ -185,7 +185,7 @@ func UpdateEditInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		return err
 	}
 
@@ -239,7 +239,7 @@ func CreateAjukanInformasiKurir(Data mb_cud_serializer.ParsedDataMessage, ctx co
 	var Notifikasi notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   Objek.IDkurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🪪 Pengajuan Data Profil Kurir",
+		Judul:     "ðŸªª Pengajuan Data Profil Kurir",
 		Pesan:     fmt.Sprintf("Halo %s, data KTP dan SIM lu berhasil kami terima. Tim legal kami bakal nge-validasi data lu secepatnya ya!", NamaKurir),
 		Pop:       3.0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -259,7 +259,7 @@ func CreateAjukanInformasiKurir(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		return err
 	}
 
@@ -312,15 +312,15 @@ func UpdateEditInformasiKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 
 	// Copywriting dinamis berdasarkan status verifikasi profil diri kurir
 	var pesanDiri string
-	var judulDiri string = "🆔 Perubahan Profil Kurir"
+	var judulDiri string = "ðŸ†” Perubahan Profil Kurir"
 	statusVerifikasi := strings.ToUpper(Objek.Status)
 
 	switch statusVerifikasi {
 	case "APPROVED":
-		judulDiri = "🎉 Akun Kurir Lu Resmi Aktif!"
+		judulDiri = "ðŸŽ‰ Akun Kurir Lu Resmi Aktif!"
 		pesanDiri = fmt.Sprintf("Selamat %s, dokumen identitas (KTP/SIM) lu udah lolos verifikasi sistem. Sekarang status lu resmi jadi kurir aktif. Yuk, gas pol cari orderan!", NamaKurir)
 	case "REJECTED":
-		judulDiri = "⚠️ Verifikasi Akun Tertunda"
+		judulDiri = "âš ï¸ Verifikasi Akun Tertunda"
 		pesanDiri = fmt.Sprintf("Mohon maaf %s, data identitas yang lu kirim belum cocok dengan standar kami. Tolong upload ulang foto KTP/SIM dengan pencahayaan yang jelas ya.", NamaKurir)
 	default:
 		pesanDiri = fmt.Sprintf("Halo %s, pembaruan dokumen KTP/SIM berhasil disimpan dan masuk ke dalam antrean review admin.", NamaKurir)
@@ -349,7 +349,7 @@ func UpdateEditInformasiKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		return err
 	}
 

@@ -1,4 +1,4 @@
-package profiling_kurir_handle
+﻿package profiling_kurir_handle
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"github.com/meilisearch/meilisearch-go"
 	"github.com/redis/go-redis/v9"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cache_db_function "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/function"
 	cache_db_session "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/session"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
@@ -16,7 +17,6 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -90,12 +90,12 @@ func UpdatePersonalProfilingKurir(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		return fmt.Errorf("gagal mengupdate session data %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Kurir: Sinkronisasi data personal profiling ke perangkat lokal
+	// ðŸ”” Silent Update Kurir: Sinkronisasi data personal profiling ke perangkat lokal
 	if Objek.ID != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.ID,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Profil Personal Diperbarui",
+			Judul:     "ðŸ”„ Profil Personal Diperbarui",
 			Pesan:     "Data personal profil kurir Anda berhasil diperbarui di sistem.",
 			Pop:       0, // Background sync tanpa mengganggu kurir
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -108,7 +108,7 @@ func UpdatePersonalProfilingKurir(Data mb_cud_serializer.ParsedDataMessage, ctx 
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_PROFILE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -181,12 +181,12 @@ func UpdateGeneralProfilingKurir(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		return fmt.Errorf("gagal mengupdate session data %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Kurir: Sinkronisasi data general profiling ke perangkat lokal
+	// ðŸ”” Silent Update Kurir: Sinkronisasi data general profiling ke perangkat lokal
 	if Objek.ID != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.ID,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Profil Umum Diperbarui",
+			Judul:     "ðŸ”„ Profil Umum Diperbarui",
 			Pesan:     "Data umum profil kurir Anda berhasil diperbarui di sistem.",
 			Pop:       0, // Background sync tanpa mengganggu kurir
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -199,7 +199,7 @@ func UpdateGeneralProfilingKurir(Data mb_cud_serializer.ParsedDataMessage, ctx c
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_PROFILE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)

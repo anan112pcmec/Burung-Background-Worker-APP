@@ -1,4 +1,4 @@
-package social_media_seller_handle
+﻿package social_media_seller_handle
 
 import (
 	"context"
@@ -7,11 +7,11 @@ import (
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -55,12 +55,12 @@ func CreateEngageSocialMediaSeller(Data mb_cud_serializer.ParsedDataMessage, ctx
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.EntityId != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.EntityId),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🌐 Media Sosial Ditautkan",
+			Judul:     "ðŸŒ Media Sosial Ditautkan",
 			Pesan:     "Akun media sosial baru berhasil dihubungkan ke profil toko Anda.",
 			Pop:       1,
 			Archive:   false,
@@ -76,7 +76,7 @@ func CreateEngageSocialMediaSeller(Data mb_cud_serializer.ParsedDataMessage, ctx
 				Special:  map[string]interface{}{"click_action": "SOCIAL_MEDIA_CONNECTED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -116,12 +116,12 @@ func UpdateEngageSocialMediaSeller(Data mb_cud_serializer.ParsedDataMessage, ctx
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.EntityId != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.EntityId),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "✏️ Media Sosial Diperbarui",
+			Judul:     "âœï¸ Media Sosial Diperbarui",
 			Pesan:     "Perubahan tautan atau informasi saluran media sosial toko telah berhasil disimpan.",
 			Pop:       1,
 			Archive:   false,
@@ -137,7 +137,7 @@ func UpdateEngageSocialMediaSeller(Data mb_cud_serializer.ParsedDataMessage, ctx
 				Special:  map[string]interface{}{"click_action": "SOCIAL_MEDIA_UPDATED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil

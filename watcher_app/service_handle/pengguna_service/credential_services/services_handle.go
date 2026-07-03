@@ -1,4 +1,4 @@
-package credential_pengguna_handle
+﻿package credential_pengguna_handle
 
 import (
 	"context"
@@ -17,7 +17,7 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -81,7 +81,7 @@ func UpdateValidateUbahPasswordPenggunaViaOtp(Data mb_cud_serializer.ParsedDataM
 	}
 
 	// Setup notifikasi security alert (Tegas, formal, & informatif)
-	judulSecurity := "⚠️ Keamanan Akun: Sandi Berhasil Diubah"
+	judulSecurity := "âš ï¸ Keamanan Akun: Sandi Berhasil Diubah"
 	pesanSecurity := "Kata sandi akun Anda telah berhasil diperbarui melalui verifikasi OTP. Jika Anda tidak merasa melakukan perubahan ini, segera hubungi Pusat Bantuan."
 
 	var NotificationSecurity notification_models.NotificationPengguna = notification_models.NotificationPengguna{
@@ -108,7 +108,7 @@ func UpdateValidateUbahPasswordPenggunaViaOtp(Data mb_cud_serializer.ParsedDataM
 	}
 
 	// Kirim ke path pengguna umum
-	if err := notification_request.PostToNotification(ctx, NotificationSecurity, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationSecurity, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
 		// Log aja kalau gagal kirim notif, jangan gagalin proses ganti password-nya
 		fmt.Printf("Gagal mengirim notifikasi keamanan password untuk user %d: %v\n", Objek.ID, err)
 	}
@@ -175,7 +175,7 @@ func UpdateValidateUbahPasswordPenggunaViaPin(Data mb_cud_serializer.ParsedDataM
 	var NotificationPasswordViaPin notification_models.NotificationPengguna = notification_models.NotificationPengguna{
 		IDPengguna: Objek.ID,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "⚠️ Keamanan Akun: Sandi Berhasil Diubah",
+		Judul:      "âš ï¸ Keamanan Akun: Sandi Berhasil Diubah",
 		Pesan:      "Kata sandi akun Anda telah berhasil diperbarui melalui verifikasi PIN keamanan. Jika Anda tidak merasa melakukan perubahan ini, segera amankan akun Anda.",
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 30).Format(time.RFC3339), // Log keamanan disimpan 30 hari
@@ -195,7 +195,7 @@ func UpdateValidateUbahPasswordPenggunaViaPin(Data mb_cud_serializer.ParsedDataM
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotificationPasswordViaPin, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationPasswordViaPin, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
 		fmt.Printf("Gagal mengirim notifikasi keamanan password via PIN untuk user %d: %v\n", Objek.ID, err)
 	}
 
@@ -263,7 +263,7 @@ func CreateMembuatSecretPinPengguna(Data mb_cud_serializer.ParsedDataMessage, ct
 	var NotificationCreatePin notification_models.NotificationPengguna = notification_models.NotificationPengguna{
 		IDPengguna: Objek.ID,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "🔒 PIN Keamanan Berhasil Dibuat",
+		Judul:      "ðŸ”’ PIN Keamanan Berhasil Dibuat",
 		Pesan:      "PIN keamanan akun Anda telah berhasil didaftarkan. Gunakan PIN ini untuk menjaga keamanan transaksi dan perubahan data penting Anda.",
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 14).Format(time.RFC3339), // Simpan log 14 hari
@@ -282,7 +282,7 @@ func CreateMembuatSecretPinPengguna(Data mb_cud_serializer.ParsedDataMessage, ct
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotificationCreatePin, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationCreatePin, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
 		fmt.Printf("Gagal mengirim notifikasi pembuatan PIN untuk user %d: %v\n", Objek.ID, err)
 	}
 
@@ -348,3 +348,4 @@ func UpdateSecretPinPengguna(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 
 	return nil
 }
+

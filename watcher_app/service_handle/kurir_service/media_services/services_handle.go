@@ -1,4 +1,4 @@
-package media_kurir_handle
+﻿package media_kurir_handle
 
 import (
 	"context"
@@ -8,11 +8,11 @@ import (
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"gorm.io/gorm"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -133,11 +133,11 @@ func CreateTambahMediaInformasiKendaraanKurirKendaraanFoto(Data mb_cud_serialize
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 NOTIFIKASI CREATE FOTO (Muncul Pop-Up)
+	// ðŸ”” NOTIFIKASI CREATE FOTO (Muncul Pop-Up)
 	var Notifikasi notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "📸 Foto Kendaraan Berhasil Diunggah",
+		Judul:     "ðŸ“¸ Foto Kendaraan Berhasil Diunggah",
 		Pesan:     fmt.Sprintf("Halo %s, foto kendaraan lu sukses di-upload. Berkas fisik ini bakal segera ditinjau oleh tim verifikator kami.", NamaKurir),
 		Pop:       2.5, // Pop-up muncul 2.5 detik
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -158,7 +158,7 @@ func CreateTambahMediaInformasiKendaraanKurirKendaraanFoto(Data mb_cud_serialize
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		fmt.Println("Gagal mengirim notifikasi create foto kendaraan:", err)
 	}
 
@@ -210,11 +210,11 @@ func UpdateTambahMediaInformasiKendaraanKurirKendaraanFoto(Data mb_cud_serialize
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 NOTIFIKASI UPDATE FOTO (Silent Update, Langsung Masuk Inbox)
+	// ðŸ”” NOTIFIKASI UPDATE FOTO (Silent Update, Langsung Masuk Inbox)
 	var NotifikasiUpdate notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🔄 Foto Berkas Kendaraan Diperbarui",
+		Judul:     "ðŸ”„ Foto Berkas Kendaraan Diperbarui",
 		Pesan:     fmt.Sprintf("Halo %s, perubahan foto kendaraan lu berhasil disimpan ke database internal.", NamaKurir),
 		Pop:       0, // Sesuai request: 0 biar ga usah muncul pop-up, langsung masuk inbox
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -235,7 +235,7 @@ func UpdateTambahMediaInformasiKendaraanKurirKendaraanFoto(Data mb_cud_serialize
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		fmt.Println("Gagal mengirim notifikasi update foto kendaraan:", err)
 	}
 
@@ -301,7 +301,7 @@ func CreateTambahInformasiKendaraanKurirBPKBFoto(Data mb_cud_serializer.ParsedDa
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Ambil IdKurir dari tabel InformasiKendaraanKurir
+	// ðŸ•µï¸â€â™‚ï¸ Ambil IdKurir dari tabel InformasiKendaraanKurir
 	var IdKurir int64 = 0
 	if err := read.WithContext(ctx).Model(&sot_models.InformasiKendaraanKurir{}).Select("id_kurir").Where(&sot_models.InformasiKendaraanKurir{
 		ID: Objek.IdInformasiKendaraanKurir,
@@ -320,11 +320,11 @@ func CreateTambahInformasiKendaraanKurirBPKBFoto(Data mb_cud_serializer.ParsedDa
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 NOTIFIKASI CREATE BPKB FOTO (Muncul Pop-Up)
+	// ðŸ”” NOTIFIKASI CREATE BPKB FOTO (Muncul Pop-Up)
 	var Notifikasi notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "📑 Dokumen BPKB Sukses Diunggah",
+		Judul:     "ðŸ“‘ Dokumen BPKB Sukses Diunggah",
 		Pesan:     fmt.Sprintf("Halo %s, berkas foto BPKB kendaraan lu udah masuk ke sistem internal. Dokumen aman dan siap direview oleh tim verifikasi data.", NamaKurir),
 		Pop:       3.0, // Alert dokumen penting kasih 3 detik
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -345,7 +345,7 @@ func CreateTambahInformasiKendaraanKurirBPKBFoto(Data mb_cud_serializer.ParsedDa
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		fmt.Println("Gagal mengirim notifikasi create foto BPKB:", err)
 	}
 
@@ -380,7 +380,7 @@ func UpdateTambahInformasiKendaraanKurirBPKBFoto(Data mb_cud_serializer.ParsedDa
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Ambil IdKurir dari tabel InformasiKendaraanKurir
+	// ðŸ•µï¸â€â™‚ï¸ Ambil IdKurir dari tabel InformasiKendaraanKurir
 	var IdKurir int64 = 0
 	if err := read.WithContext(ctx).Model(&sot_models.InformasiKendaraanKurir{}).Select("id_kurir").Where(&sot_models.InformasiKendaraanKurir{
 		ID: Objek.IdInformasiKendaraanKurir,
@@ -399,11 +399,11 @@ func UpdateTambahInformasiKendaraanKurirBPKBFoto(Data mb_cud_serializer.ParsedDa
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 NOTIFIKASI UPDATE BPKB FOTO (Silent Update, Langsung Masuk Inbox)
+	// ðŸ”” NOTIFIKASI UPDATE BPKB FOTO (Silent Update, Langsung Masuk Inbox)
 	var NotifikasiUpdate notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🔄 Berkas BPKB Diperbarui",
+		Judul:     "ðŸ”„ Berkas BPKB Diperbarui",
 		Pesan:     fmt.Sprintf("Halo %s, lu baru saja memperbarui file foto BPKB kendaraan. Sistem akan memperbarui berkas antrean verifikasi lu.", NamaKurir),
 		Pop:       0, // Langsung masuk inbox tanpa memunculkan pop-up di layar
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -424,7 +424,7 @@ func UpdateTambahInformasiKendaraanKurirBPKBFoto(Data mb_cud_serializer.ParsedDa
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		fmt.Println("Gagal mengirim notifikasi update foto BPKB:", err)
 	}
 
@@ -489,7 +489,7 @@ func CreateTambahInformasiKendaraanKurirSTNKFoto(Data mb_cud_serializer.ParsedDa
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Tarik IdKurir dari tabel InformasiKendaraanKurir
+	// ðŸ•µï¸â€â™‚ï¸ Tarik IdKurir dari tabel InformasiKendaraanKurir
 	var IdKurir int64 = 0
 	if err := read.WithContext(ctx).Model(&sot_models.InformasiKendaraanKurir{}).Select("id_kurir").Where(&sot_models.InformasiKendaraanKurir{
 		ID: Objek.IdInformasiKendaraanKurir,
@@ -508,11 +508,11 @@ func CreateTambahInformasiKendaraanKurirSTNKFoto(Data mb_cud_serializer.ParsedDa
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 NOTIFIKASI CREATE STNK FOTO (Muncul Pop-Up)
+	// ðŸ”” NOTIFIKASI CREATE STNK FOTO (Muncul Pop-Up)
 	var Notifikasi notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "📄 Berkas STNK Berhasil Diunggah",
+		Judul:     "ðŸ“„ Berkas STNK Berhasil Diunggah",
 		Pesan:     fmt.Sprintf("Halo %s, berkas foto STNK kendaraan lu udah aman masuk ke sistem. Tim verifikator bakal segera mengecek validitasnya ya!", NamaKurir),
 		Pop:       3.0, // Pop-up muncul 3 detik
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -533,7 +533,7 @@ func CreateTambahInformasiKendaraanKurirSTNKFoto(Data mb_cud_serializer.ParsedDa
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		fmt.Println("Gagal mengirim notifikasi create foto STNK:", err)
 	}
 
@@ -568,7 +568,7 @@ func UpdateTambahInformasiKendaraanKurirSTNKFoto(Data mb_cud_serializer.ParsedDa
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Tarik IdKurir dari tabel InformasiKendaraanKurir
+	// ðŸ•µï¸â€â™‚ï¸ Tarik IdKurir dari tabel InformasiKendaraanKurir
 	var IdKurir int64 = 0
 	if err := read.WithContext(ctx).Model(&sot_models.InformasiKendaraanKurir{}).Select("id_kurir").Where(&sot_models.InformasiKendaraanKurir{
 		ID: Objek.IdInformasiKendaraanKurir,
@@ -587,11 +587,11 @@ func UpdateTambahInformasiKendaraanKurirSTNKFoto(Data mb_cud_serializer.ParsedDa
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 NOTIFIKASI UPDATE STNK FOTO (Silent Update, Langsung Masuk Inbox)
+	// ðŸ”” NOTIFIKASI UPDATE STNK FOTO (Silent Update, Langsung Masuk Inbox)
 	var NotifikasiUpdate notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🔄 Foto STNK Diperbarui",
+		Judul:     "ðŸ”„ Foto STNK Diperbarui",
 		Pesan:     fmt.Sprintf("Halo %s, file foto STNK kendaraan lu berhasil diperbarui ke sistem internal.", NamaKurir),
 		Pop:       0, // Sesuai request: 0 biar silent, gak ganggu layar, langsung ngendap di inbox
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -612,7 +612,7 @@ func UpdateTambahInformasiKendaraanKurirSTNKFoto(Data mb_cud_serializer.ParsedDa
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		fmt.Println("Gagal mengirim notifikasi update foto STNK:", err)
 	}
 
@@ -678,7 +678,7 @@ func CreateTambahMediaInformasiKurirKTPFoto(Data mb_cud_serializer.ParsedDataMes
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Tarik IdKurir dari tabel InformasiKurir
+	// ðŸ•µï¸â€â™‚ï¸ Tarik IdKurir dari tabel InformasiKurir
 	var IdKurir int64 = 0
 	if err := read.WithContext(ctx).Model(&sot_models.InformasiKurir{}).Select("id_kurir").Where(&sot_models.InformasiKurir{
 		ID: Objek.IdInformasiKurir,
@@ -697,11 +697,11 @@ func CreateTambahMediaInformasiKurirKTPFoto(Data mb_cud_serializer.ParsedDataMes
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 NOTIFIKASI CREATE FOTO KTP (Muncul Pop-Up)
+	// ðŸ”” NOTIFIKASI CREATE FOTO KTP (Muncul Pop-Up)
 	var Notifikasi notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🪪 Foto KTP Sukses Terunggah",
+		Judul:     "ðŸªª Foto KTP Sukses Terunggah",
 		Pesan:     fmt.Sprintf("Halo %s, foto KTP lu udah aman tersimpan di sistem. Berkas ini akan langsung diproses untuk kebutuhan verifikasi akun lu.", NamaKurir),
 		Pop:       3.0, // Pop-up muncul selama 3 detik
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -722,7 +722,7 @@ func CreateTambahMediaInformasiKurirKTPFoto(Data mb_cud_serializer.ParsedDataMes
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		fmt.Println("Gagal mengirim notifikasi create foto KTP:", err)
 	}
 
@@ -757,7 +757,7 @@ func UpdateTambahMediaInformasiKurirKTPFoto(Data mb_cud_serializer.ParsedDataMes
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Tarik IdKurir dari tabel InformasiKurir
+	// ðŸ•µï¸â€â™‚ï¸ Tarik IdKurir dari tabel InformasiKurir
 	var IdKurir int64 = 0
 	if err := read.WithContext(ctx).Model(&sot_models.InformasiKurir{}).Select("id_kurir").Where(&sot_models.InformasiKurir{
 		ID: Objek.IdInformasiKurir,
@@ -776,11 +776,11 @@ func UpdateTambahMediaInformasiKurirKTPFoto(Data mb_cud_serializer.ParsedDataMes
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 NOTIFIKASI UPDATE FOTO KTP (Silent Update, Langsung Masuk Inbox)
+	// ðŸ”” NOTIFIKASI UPDATE FOTO KTP (Silent Update, Langsung Masuk Inbox)
 	var NotifikasiUpdate notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🔄 Foto KTP Diperbarui",
+		Judul:     "ðŸ”„ Foto KTP Diperbarui",
 		Pesan:     fmt.Sprintf("Halo %s, perubahan berkas foto KTP lu berhasil disimpan ke dalam sistem.", NamaKurir),
 		Pop:       0, // Silent update, langsung masuk inbox tanpa ganggu screen kurir
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -801,7 +801,7 @@ func UpdateTambahMediaInformasiKurirKTPFoto(Data mb_cud_serializer.ParsedDataMes
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		fmt.Println("Gagal mengirim notifikasi update foto KTP:", err)
 	}
 
@@ -883,11 +883,11 @@ func CreateTambahMediaPengirimanPickedUpFoto(Data mb_cud_serializer.ParsedDataMe
 		return err
 	}
 
-	// 🔔 NOTIFIKASI PENGGUNA (PICKED UP)
+	// ðŸ”” NOTIFIKASI PENGGUNA (PICKED UP)
 	var NotifPengguna = notification_models.NotificationPengguna{
 		IDPengguna: IdPengguna,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "📦 Paketmu Mulai Jalan!",
+		Judul:      "ðŸ“¦ Paketmu Mulai Jalan!",
 		Pesan:      "Hore! Paketmu sudah di-pickup oleh kurir dari toko seller dan sedang dalam perjalanan menuju lokasimu.",
 		Pop:        3.0,
 		CreatedAt:  time.Now().Format(time.RFC3339),
@@ -900,13 +900,13 @@ func CreateTambahMediaPengirimanPickedUpFoto(Data mb_cud_serializer.ParsedDataMe
 			Special:  map[string]interface{}{"click_action": "TRACK_DELIVERY"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 
-	// 🔔 NOTIFIKASI SELLER (PICKED UP)
+	// ðŸ”” NOTIFIKASI SELLER (PICKED UP)
 	var NotifSeller = notification_models.NotificationSeller{
 		IDSeller:  IdSeller,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🚚 Paket Berhasil Diserahkan",
+		Judul:     "ðŸšš Paket Berhasil Diserahkan",
 		Pesan:     "Mantap! Kurir sudah melakukan pickup berkas paket pesanan pembeli dari tokomu.",
 		Pop:       3.0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -919,7 +919,7 @@ func CreateTambahMediaPengirimanPickedUpFoto(Data mb_cud_serializer.ParsedDataMe
 			Special:  map[string]interface{}{"click_action": "MANAGE_ORDER"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -973,11 +973,11 @@ func CreateTambahMediaPengirimanSampaiFoto(Data mb_cud_serializer.ParsedDataMess
 		return err
 	}
 
-	// 🔔 NOTIFIKASI PENGGUNA (ARRIVED)
+	// ðŸ”” NOTIFIKASI PENGGUNA (ARRIVED)
 	var NotifPengguna = notification_models.NotificationPengguna{
 		IDPengguna: IdPengguna,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "🎉 Paketmu Sudah Sampai!",
+		Judul:      "ðŸŽ‰ Paketmu Sudah Sampai!",
 		Pesan:      "Kurir telah menyerahkan paket di lokasi tujuan. Silakan cek bukti foto penyerahan dan pastikan kondisi barang aman ya!",
 		Pop:        3.0,
 		CreatedAt:  time.Now().Format(time.RFC3339),
@@ -990,13 +990,13 @@ func CreateTambahMediaPengirimanSampaiFoto(Data mb_cud_serializer.ParsedDataMess
 			Special:  map[string]interface{}{"click_action": "VIEW_PROOF_OF_DELIVERY"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 
-	// 🔔 NOTIFIKASI SELLER (ARRIVED)
+	// ðŸ”” NOTIFIKASI SELLER (ARRIVED)
 	var NotifSeller = notification_models.NotificationSeller{
 		IDSeller:  IdSeller,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🏁 Pesanan Selesai Diantar",
+		Judul:     "ðŸ Pesanan Selesai Diantar",
 		Pesan:     "Paket kirimanmu telah sukses diserahkan ke tangan pembeli oleh pihak kurir.",
 		Pop:       3.0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -1009,7 +1009,7 @@ func CreateTambahMediaPengirimanSampaiFoto(Data mb_cud_serializer.ParsedDataMess
 			Special:  map[string]interface{}{"click_action": "MANAGE_ORDER"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -1065,11 +1065,11 @@ func CreateTambahMediaPengirimanEkspedisiPickedUpFoto(Data mb_cud_serializer.Par
 		return err
 	}
 
-	// 🔔 NOTIFIKASI PENGGUNA (EKSPEDISI PICKED UP)
+	// ðŸ”” NOTIFIKASI PENGGUNA (EKSPEDISI PICKED UP)
 	var NotifPengguna = notification_models.NotificationPengguna{
 		IDPengguna: IdPengguna,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "📦 Paket Diserahkan ke Ekspedisi",
+		Judul:      "ðŸ“¦ Paket Diserahkan ke Ekspedisi",
 		Pesan:      "Paket pesananmu kini sudah di-pickup oleh armada logistik ekspedisi rekanan dan segera bergerak menuju kota tujuan.",
 		Pop:        3.0,
 		CreatedAt:  time.Now().Format(time.RFC3339),
@@ -1082,13 +1082,13 @@ func CreateTambahMediaPengirimanEkspedisiPickedUpFoto(Data mb_cud_serializer.Par
 			Special:  map[string]interface{}{"click_action": "TRACK_EXPEDITION"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 
-	// 🔔 NOTIFIKASI SELLER (EKSPEDISI PICKED UP)
+	// ðŸ”” NOTIFIKASI SELLER (EKSPEDISI PICKED UP)
 	var NotifSeller = notification_models.NotificationSeller{
 		IDSeller:  IdSeller,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🚚 Serah Terima Ekspedisi Berhasil",
+		Judul:     "ðŸšš Serah Terima Ekspedisi Berhasil",
 		Pesan:     "Bukti serah terima unit paket pesanan pembeli ke kurir ekspedisi sudah terdata valid di sistem.",
 		Pop:       3.0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -1101,7 +1101,7 @@ func CreateTambahMediaPengirimanEkspedisiPickedUpFoto(Data mb_cud_serializer.Par
 			Special:  map[string]interface{}{"click_action": "MANAGE_ORDER"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -1157,11 +1157,11 @@ func CreateTambahMediaPengirimanEkspedisiSampaiAgentFoto(Data mb_cud_serializer.
 		return err
 	}
 
-	// 🔔 NOTIFIKASI PENGGUNA (ARRIVED AT AGENT)
+	// ðŸ”” NOTIFIKASI PENGGUNA (ARRIVED AT AGENT)
 	var NotifPengguna = notification_models.NotificationPengguna{
 		IDPengguna: IdPengguna,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "🏢 Paket Tiba di Agen Transit",
+		Judul:      "ðŸ¢ Paket Tiba di Agen Transit",
 		Pesan:      "Paket kirimanmu sudah mendarat di gudang/agen ekspedisi terdekat dari lokasimu dan segera dijadwalkan untuk pengantaran kurir lokal.",
 		Pop:        3.0,
 		CreatedAt:  time.Now().Format(time.RFC3339),
@@ -1174,13 +1174,13 @@ func CreateTambahMediaPengirimanEkspedisiSampaiAgentFoto(Data mb_cud_serializer.
 			Special:  map[string]interface{}{"click_action": "TRACK_EXPEDITION"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 
-	// 🔔 NOTIFIKASI SELLER (ARRIVED AT AGENT)
+	// ðŸ”” NOTIFIKASI SELLER (ARRIVED AT AGENT)
 	var NotifSeller = notification_models.NotificationSeller{
 		IDSeller:  IdSeller,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "📍 Paket Memasuki Hub Tujuan",
+		Judul:     "ðŸ“ Paket Memasuki Hub Tujuan",
 		Pesan:     "Paket pesanan pembeli yang kamu kirim via ekspedisi terpantau sudah sampai di gudang agen transit kota tujuan.",
 		Pop:       3.0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -1193,7 +1193,7 @@ func CreateTambahMediaPengirimanEkspedisiSampaiAgentFoto(Data mb_cud_serializer.
 			Special:  map[string]interface{}{"click_action": "MANAGE_ORDER"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil

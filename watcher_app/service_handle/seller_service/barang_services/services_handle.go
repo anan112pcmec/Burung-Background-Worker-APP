@@ -1,4 +1,4 @@
-package barang_seller_handle
+﻿package barang_seller_handle
 
 import (
 	"context"
@@ -12,13 +12,13 @@ import (
 	"github.com/meilisearch/meilisearch-go"
 	"gorm.io/gorm"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
 	sot_threshold "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/threshold"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -105,7 +105,7 @@ func CreateMasukanBarangInduk(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 	if len(IdsPengguna) == 0 || IdsPengguna[0] == 0 {
 		return errors.New("tak ada data id pengguna yang didapatkan jadi broadcast notif tak jadi")
 	} else {
-		// 🔔 Notifikasi Pengguna: Broadcast ke semua followers kalau ada produk baru
+		// ðŸ”” Notifikasi Pengguna: Broadcast ke semua followers kalau ada produk baru
 		for _, id := range IdsPengguna {
 			konteks, cancel := context.WithTimeout(context.Background(), time.Second*4)
 			wg.Add(1)
@@ -115,7 +115,7 @@ func CreateMasukanBarangInduk(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 				var NotifikasiPengguna = notification_models.NotificationPengguna{
 					IDPengguna: idUser, // Mengirimkan array ID followers sekaligus (Bulk/Broadcast)
 					Pengirim:   notification_seeders.Sistem,
-					Judul:      "✨ Toko Favoritmu Punya Produk Baru!",
+					Judul:      "âœ¨ Toko Favoritmu Punya Produk Baru!",
 					Pesan:      fmt.Sprintf("Jangan sampai kehabisan! Toko %s baru saja merilis '%s'. Yuk, cek sekarang!", NamaSeller, Objek.NamaBarang),
 					Pop:        0.8, // Nilai priority sedikit lebih tinggi agar menarik perhatian
 					Archive:    true,
@@ -140,20 +140,20 @@ func CreateMasukanBarangInduk(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 				_ = notification_request.PostToNotification[notification_models.NotificationPengguna](
 					ctx,
 					NotifikasiPengguna,
-					environment.HostRunningAPIInNotifikasi,
-					environment.PortRunningAPIInNotifikasi,
-					environment.PenggunaPathNotifikasiMasuk, // Pastikan path ini mengarah ke endpoint pengguna/customer
+					cache.HostRunningAPIInNotifikasi,
+					cache.PortRunningAPIInNotifikasi,
+					cache.PenggunaPathNotifikasiMasuk, // Pastikan path ini mengarah ke endpoint pengguna/customer
 				)
 			}(id, konteks, cancel)
 		}
 	}
 
-	// 🔔 Notifikasi Seller: Konfirmasi produk baru berhasil didaftarkan
+	// ðŸ”” Notifikasi Seller: Konfirmasi produk baru berhasil didaftarkan
 	if Objek.SellerID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "📦 Produk Berhasil Ditambahkan",
+			Judul:     "ðŸ“¦ Produk Berhasil Ditambahkan",
 			Pesan:     fmt.Sprintf("Produk '%s' Anda telah berhasil didaftarkan ke sistem.", Objek.NamaBarang),
 			Pop:       0.5,
 			Archive:   true,
@@ -169,7 +169,7 @@ func CreateMasukanBarangInduk(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 				Special:  map[string]interface{}{"click_action": "OPEN_PRODUCT_DETAIL"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	wg.Wait()
@@ -229,12 +229,12 @@ func UpdateEditBarangInduk(Data mb_cud_serializer.ParsedDataMessage, ctx context
 		fmt.Printf("berhasil memasukan data ke dalam search engine dengan uid task %s", task_info.IndexUID)
 	}
 
-	// 🔔 Silent Update Seller: Sinkronisasi data detail produk induk di background app
+	// ðŸ”” Silent Update Seller: Sinkronisasi data detail produk induk di background app
 	if Objek.SellerID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Data Produk Diperbarui",
+			Judul:     "ðŸ”„ Data Produk Diperbarui",
 			Pesan:     fmt.Sprintf("Informasi produk '%s' berhasil disinkronisasi.", Objek.NamaBarang),
 			Pop:       0, // Silent update
 			Archive:   true,
@@ -250,7 +250,7 @@ func UpdateEditBarangInduk(Data mb_cud_serializer.ParsedDataMessage, ctx context
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_PRODUCT"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -299,12 +299,12 @@ func DeleteHapusBarangInduk(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		fmt.Printf("berhasil memasukan data ke dalam search engine dengan uid task %s", task_info.IndexUID)
 	}
 
-	// 🔔 Silent Update Seller: Hapus produk dari list inventory UI lokal seller
+	// ðŸ”” Silent Update Seller: Hapus produk dari list inventory UI lokal seller
 	if Objek.SellerID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🗑️ Produk Dihapus",
+			Judul:     "ðŸ—‘ï¸ Produk Dihapus",
 			Pesan:     fmt.Sprintf("Produk '%s' telah dihapus dari etalase.", Objek.NamaBarang),
 			Pop:       0, // Silent update
 			Archive:   true,
@@ -320,7 +320,7 @@ func DeleteHapusBarangInduk(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 				Special:  map[string]interface{}{"click_action": "SILENT_REMOVE_PRODUCT"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -367,12 +367,12 @@ func CreateMasukanKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Notifikasi Seller: Penambahan varian/kategori barang baru
+	// ðŸ”” Notifikasi Seller: Penambahan varian/kategori barang baru
 	if Objek.SellerID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "✨ Varian Baru Ditambahkan",
+			Judul:     "âœ¨ Varian Baru Ditambahkan",
 			Pesan:     fmt.Sprintf("Varian baru '%s' dengan stok %d berhasil ditambahkan.", Objek.Nama, Objek.Stok),
 			Pop:       0.5,
 			Archive:   true,
@@ -388,7 +388,7 @@ func CreateMasukanKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 				Special:  map[string]interface{}{"click_action": "OPEN_PRODUCT_VARIANT"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -435,12 +435,12 @@ func UpdateEditKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Seller: Perubahan detail varian (stok, sku, deskripsi)
+	// ðŸ”” Silent Update Seller: Perubahan detail varian (stok, sku, deskripsi)
 	if Objek.SellerID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Varian Produk Diperbarui",
+			Judul:     "ðŸ”„ Varian Produk Diperbarui",
 			Pesan:     fmt.Sprintf("Informasi varian '%s' telah disinkronisasi.", Objek.Nama),
 			Pop:       0, // Silent update
 			Archive:   true,
@@ -456,7 +456,7 @@ func UpdateEditKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_VARIANT"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -503,12 +503,12 @@ func UpdateUbahHargaKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Seller: Perubahan harga varian tertentu
+	// ðŸ”” Silent Update Seller: Perubahan harga varian tertentu
 	if Objek.SellerID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "💰 Harga Varian Berubah",
+			Judul:     "ðŸ’° Harga Varian Berubah",
 			Pesan:     fmt.Sprintf("Perubahan harga varian '%s' menjadi Rp%d berhasil diterapkan.", Objek.Nama, Objek.Harga),
 			Pop:       0, // Silent update
 			Archive:   true,
@@ -524,7 +524,7 @@ func UpdateUbahHargaKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_PRICE"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -570,12 +570,12 @@ func DeleteHapusBarangKategori(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Seller: Hapus varian dari list inventory UI lokal seller
+	// ðŸ”” Silent Update Seller: Hapus varian dari list inventory UI lokal seller
 	if Objek.SellerID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🗑️ Varian Produk Dihapus",
+			Judul:     "ðŸ—‘ï¸ Varian Produk Dihapus",
 			Pesan:     fmt.Sprintf("Varian '%s' telah dihapus dari sistem.", Objek.Nama),
 			Pop:       0, // Silent update
 			Archive:   true,
@@ -591,7 +591,7 @@ func DeleteHapusBarangKategori(Data mb_cud_serializer.ParsedDataMessage, ctx con
 				Special:  map[string]interface{}{"click_action": "SILENT_REMOVE_VARIANT"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -637,12 +637,12 @@ func UpdateDownStokBarangInduk(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Seller: Update Stok
+	// ðŸ”” Silent Update Seller: Update Stok
 	if Objek.SellerID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Stok Varian Diperbarui",
+			Judul:     "ðŸ”„ Stok Varian Diperbarui",
 			Pesan:     fmt.Sprintf("Stok untuk varian '%s' telah diperbarui.", Objek.Nama),
 			Pop:       0,
 			Archive:   true,
@@ -658,7 +658,7 @@ func UpdateDownStokBarangInduk(Data mb_cud_serializer.ParsedDataMessage, ctx con
 				Special:  map[string]interface{}{"click_action": "SILENT_UPDATE_STOK"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -705,12 +705,12 @@ func UpdateDownKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Seller: Update Kategori/Detail Barang
+	// ðŸ”” Silent Update Seller: Update Kategori/Detail Barang
 	if Objek.SellerID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "📝 Data Varian Diubah",
+			Judul:     "ðŸ“ Data Varian Diubah",
 			Pesan:     fmt.Sprintf("Informasi varian '%s' telah diperbarui.", Objek.Nama),
 			Pop:       0,
 			Archive:   true,
@@ -726,7 +726,7 @@ func UpdateDownKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 				Special:  map[string]interface{}{"click_action": "SILENT_UPDATE_VARIANT"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -882,11 +882,11 @@ func CreateMasukanChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 	if idPengguna == 0 {
 		return errors.New("Gagal mendapatkan id pengguna")
 	} else {
-		// 🔔 Push Notifikasi Balasan Komentar
+		// ðŸ”” Push Notifikasi Balasan Komentar
 		var Notifikasi = notification_models.NotificationPengguna{
 			IDPengguna: idPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "💬 Komentar Anda Dibalas",
+			Judul:      "ðŸ’¬ Komentar Anda Dibalas",
 			Pesan:      fmt.Sprintf("Seseorang membalas komentar Anda: \"%s\"", Objek.IsiKomentar),
 			Pop:        1, // Munculkan pop-up / push notif aktif
 			Archive:    false,
@@ -902,7 +902,7 @@ func CreateMasukanChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 				Special:  map[string]interface{}{"click_action": "OPEN_COMMENT_REPLY"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationPengguna](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationPengguna](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 	return nil
 }

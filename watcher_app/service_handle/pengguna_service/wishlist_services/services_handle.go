@@ -1,4 +1,4 @@
-package wishlist_pengguna_handle
+﻿package wishlist_pengguna_handle
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -53,7 +53,7 @@ func CreateTambahBarangKeWishlist(Data mb_cud_serializer.ParsedDataMessage, ctx 
 	var NotificationAddWishlist notification_models.NotificationPengguna = notification_models.NotificationPengguna{
 		IDPengguna: Objek.IdPengguna, // Kirim balik ke pembeli sebagai konfirmasi
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "❤️ Berhasil Disimpan ke Wishlist",
+		Judul:      "â¤ï¸ Berhasil Disimpan ke Wishlist",
 		Pesan:      "Produk incaranmu sukses masuk daftar favorit. Kami akan kabari kalau ada diskon atau promo menarik untuk produk ini ya!",
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Keep seminggu di tab notif
@@ -73,7 +73,7 @@ func CreateTambahBarangKeWishlist(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotificationAddWishlist, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationAddWishlist, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
 		fmt.Printf("Gagal mengirim notifikasi tambah wishlist ke pengguna %d: %v\n", Objek.IdPengguna, err)
 	}
 
@@ -112,3 +112,4 @@ func DeleteHapusBarangDariWishlist(Data mb_cud_serializer.ParsedDataMessage, ctx
 
 	return nil
 }
+

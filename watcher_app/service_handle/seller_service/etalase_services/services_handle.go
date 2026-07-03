@@ -1,4 +1,4 @@
-package etalase_seller_handle
+﻿package etalase_seller_handle
 
 import (
 	"context"
@@ -7,11 +7,11 @@ import (
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -48,12 +48,12 @@ func CreateTambahEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.SellerID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "📦 Etalase Baru Dibuat",
+			Judul:     "ðŸ“¦ Etalase Baru Dibuat",
 			Pesan:     fmt.Sprintf("Etalase '%s' telah berhasil dibuat.", Objek.Nama),
 			Pop:       1,
 			Archive:   false,
@@ -69,7 +69,7 @@ func CreateTambahEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx con
 				Special:  map[string]interface{}{"click_action": "SELLER_SHOWCASE_CREATED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -105,12 +105,12 @@ func UpdateEditEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.SellerID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "✏️ Etalase Diperbarui",
+			Judul:     "âœï¸ Etalase Diperbarui",
 			Pesan:     fmt.Sprintf("Informasi etalase '%s' berhasil diubah.", Objek.Nama),
 			Pop:       1,
 			Archive:   false,
@@ -126,7 +126,7 @@ func UpdateEditEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 				Special:  map[string]interface{}{"click_action": "SELLER_SHOWCASE_UPDATED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -162,12 +162,12 @@ func DeleteHapusEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.SellerID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.SellerID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🗑️ Etalase Dihapus",
+			Judul:     "ðŸ—‘ï¸ Etalase Dihapus",
 			Pesan:     fmt.Sprintf("Etalase '%s' telah berhasil dihapus.", Objek.Nama),
 			Pop:       1,
 			Archive:   false,
@@ -183,7 +183,7 @@ func DeleteHapusEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 				Special:  map[string]interface{}{"click_action": "SELLER_SHOWCASE_REMOVED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -216,11 +216,11 @@ func CreateTambahkanBarangKeEtalase(Data mb_cud_serializer.ParsedDataMessage, ct
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI (Silent Update UI Lokal Seller)
+	// ðŸ”” SISTEM NOTIFIKASI (Silent Update UI Lokal Seller)
 	var Notifikasi = notification_models.NotificationSeller{
 		IDSeller:  0, // Handler service akan memproses lewat data payload map/special jika ditangkap di konsumen API internal
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🔄 Produk Ditambahkan ke Etalase",
+		Judul:     "ðŸ”„ Produk Ditambahkan ke Etalase",
 		Pesan:     "Item produk berhasil dikaitkan ke dalam susunan etalase.",
 		Pop:       0,
 		Archive:   true,
@@ -236,7 +236,7 @@ func CreateTambahkanBarangKeEtalase(Data mb_cud_serializer.ParsedDataMessage, ct
 			Special:  map[string]interface{}{"click_action": "SILENT_ADD_PRODUCT_TO_SHOWCASE"},
 		},
 	}
-	_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 
 	return nil
 }
@@ -269,11 +269,11 @@ func DeleteHapusBarangDariEtalase(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI (Silent Update UI Lokal Seller)
+	// ðŸ”” SISTEM NOTIFIKASI (Silent Update UI Lokal Seller)
 	var Notifikasi = notification_models.NotificationSeller{
 		IDSeller:  0,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🔄 Produk Dilepas dari Etalase",
+		Judul:     "ðŸ”„ Produk Dilepas dari Etalase",
 		Pesan:     "Kaitan produk pada etalase pilihan telah berhasil dilepas.",
 		Pop:       0,
 		Archive:   true,
@@ -289,7 +289,7 @@ func DeleteHapusBarangDariEtalase(Data mb_cud_serializer.ParsedDataMessage, ctx 
 			Special:  map[string]interface{}{"click_action": "SILENT_REMOVE_PRODUCT_FROM_SHOWCASE"},
 		},
 	}
-	_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 
 	return nil
 }

@@ -1,4 +1,4 @@
-package rekening_kurir_handle
+﻿package rekening_kurir_handle
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -71,7 +71,7 @@ func CreateMasukanRekeningKurir(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		},
 	}
 
-	if err := notification_request.PostToNotification[notification_models.NotificationKurir](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification[notification_models.NotificationKurir](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		return err
 	}
 
@@ -130,7 +130,7 @@ func UpdateEditRekeningKurir(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 		},
 	}
 
-	if err := notification_request.PostToNotification[notification_models.NotificationKurir](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification[notification_models.NotificationKurir](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		return err
 	}
 
@@ -190,10 +190,11 @@ func DeleteHapusRekeningKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		},
 	}
 
-	if err := notification_request.PostToNotification[notification_models.NotificationKurir](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification[notification_models.NotificationKurir](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		return err
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
+

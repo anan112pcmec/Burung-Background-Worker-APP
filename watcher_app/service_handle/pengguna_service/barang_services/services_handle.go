@@ -1,4 +1,4 @@
-package barang_pengguna_handle
+﻿package barang_pengguna_handle
 
 import (
 	"context"
@@ -15,7 +15,7 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -148,14 +148,14 @@ func CreateMasukanKomentarBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 	if Objek.IsSeller {
 		// Kasus: Seller menjawab pertanyaan pembeli
 		targetUserID = Objek.IdEntity                        // Notif dikirim ke pembeli asli
-		targetPath = environment.PenggunaPathNotifikasiMasuk // Path khusus pengguna/pembeli
-		judulNotif = "💬 Pertanyaanmu Dijawab Seller!"
+		targetPath = cache.PenggunaPathNotifikasiMasuk // Path khusus pengguna/pembeli
+		judulNotif = "ðŸ’¬ Pertanyaanmu Dijawab Seller!"
 		pesanNotif = fmt.Sprintf("Toko baru saja membalas diskusimu: \"%s\". Cek jawabannya sekarang!", cuplikanKomentar)
 	} else {
 		// Kasus: Pembeli bertanya di produk seller
 		targetUserID = int64(idSeller)                     // Notif dikirim ke seller
-		targetPath = environment.SellerPathNotifikasiMasuk // Path khusus seller sesuai request lu
-		judulNotif = "🛒 Ada Pertanyaan Baru Produk!"
+		targetPath = cache.SellerPathNotifikasiMasuk // Path khusus seller sesuai request lu
+		judulNotif = "ðŸ›’ Ada Pertanyaan Baru Produk!"
 		pesanNotif = fmt.Sprintf("Calon pembeli nanyain produk lu nih: \"%s\". Yuk bales biar makin laris!", cuplikanKomentar)
 	}
 
@@ -185,7 +185,7 @@ func CreateMasukanKomentarBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 	}
 
 	// 4. Tembak ke API Notifikasi dengan path yang sudah dinamis
-	if err := notification_request.PostToNotification(ctx, NotificationKomentar, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, targetPath); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationKomentar, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, targetPath); err != nil {
 		return fmt.Errorf("gagal mengirim notifikasi komentar: %w", err)
 	}
 
@@ -314,19 +314,19 @@ func CreateMasukanChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		// Sementara kita pakai logika deteksi: jika yang mention adalah seller, target kemungkinan besar pengguna, dst.
 		if Objek.IsSeller {
 			targetUserID = Objek.IdEntity // Mengarah ke pembeli terkait thread
-			targetPath = environment.PenggunaPathNotifikasiMasuk
+			targetPath = cache.PenggunaPathNotifikasiMasuk
 		} else {
 			targetUserID = Objek.IdEntity // Mengarah ke user lain / seller
-			targetPath = environment.PenggunaPathNotifikasiMasuk
+			targetPath = cache.PenggunaPathNotifikasiMasuk
 		}
-		judulNotif = "🔔 Kamu Disebut dalam Diskusi!"
+		judulNotif = "ðŸ”” Kamu Disebut dalam Diskusi!"
 		pesanNotif = fmt.Sprintf("@%s menyebutmu di komentar: \"%s\". Yuk join obrolannya!", Objek.Mention, cuplikanChild)
 
 	} else if Objek.IsSeller {
 		// Skenario B: Seller yang balas komentar biasa tanpa mention khusus
 		targetUserID = Objek.IdEntity // Mengirim ke pembeli utama pemilik thread
-		targetPath = environment.PenggunaPathNotifikasiMasuk
-		judulNotif = "💬 Pertanyaanmu Dibalas Seller!"
+		targetPath = cache.PenggunaPathNotifikasiMasuk
+		judulNotif = "ðŸ’¬ Pertanyaanmu Dibalas Seller!"
 		pesanNotif = fmt.Sprintf("Seller baru saja menanggapi diskusi: \"%s\"", cuplikanChild)
 
 	} else {
@@ -334,8 +334,8 @@ func CreateMasukanChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		// Karena di model ini tidak bawa idSeller langsung dari database (seperti induknya),
 		// idealnya lu ambil dulu idSeller via DB, tapi kalau mau cepat/sementara pakai target idEntity pembeli/seller lain:
 		targetUserID = Objek.IdEntity
-		targetPath = environment.SellerPathNotifikasiMasuk // Masuk ke dashboard/notif seller
-		judulNotif = "💬 Ada Balasan Baru di Diskusi Produk!"
+		targetPath = cache.SellerPathNotifikasiMasuk // Masuk ke dashboard/notif seller
+		judulNotif = "ðŸ’¬ Ada Balasan Baru di Diskusi Produk!"
 		pesanNotif = fmt.Sprintf("Ada tanggapan baru di lapak lu nih: \"%s\"", cuplikanChild)
 	}
 
@@ -365,7 +365,7 @@ func CreateMasukanChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 	}
 
 	// 4. Kirim Notifikasi secara dinamis
-	if err := notification_request.PostToNotification(ctx, NotificationChild, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, targetPath); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationChild, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, targetPath); err != nil {
 		return fmt.Errorf("gagal mengirim notifikasi child komentar: %w", err)
 	}
 
@@ -412,18 +412,18 @@ func CreateMentionChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 	}
 
 	// 2. Tentukan jalur notifikasi (Default ke pengguna, kalau seller ngetag ya masuk ke path pengguna juga)
-	var targetPath string = environment.PenggunaPathNotifikasiMasuk
+	var targetPath string = cache.PenggunaPathNotifikasiMasuk
 	if Objek.IsSeller {
 		// Kalau seller yang nge-mention, berarti yang dituju pasti pembeli/pengguna biasa
-		targetPath = environment.PenggunaPathNotifikasiMasuk
+		targetPath = cache.PenggunaPathNotifikasiMasuk
 	} else {
 		// Kalau sesama pembeli atau pembeli nyenggol seller, bisa disesuaikan.
 		// Di sini kita default-kan ke pengguna dulu, aman.
-		targetPath = environment.PenggunaPathNotifikasiMasuk
+		targetPath = cache.PenggunaPathNotifikasiMasuk
 	}
 
 	// 3. Setup kalimat yang bikin user penasaran & langsung nge-klik
-	judulNotif := "🔔 Seseorang Menyebutmu!"
+	judulNotif := "ðŸ”” Seseorang Menyebutmu!"
 	pesanNotif := fmt.Sprintf("@%s nge-tag lu di diskusi produk: \"%s\". Cek obrolannya gih!", Objek.Mention, cuplikanMention)
 
 	var NotificationMention notification_models.NotificationPengguna = notification_models.NotificationPengguna{
@@ -451,7 +451,7 @@ func CreateMentionChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 	}
 
 	// 4. Kirim langsung ke service notifikasi, kelar!
-	if err := notification_request.PostToNotification(ctx, NotificationMention, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, targetPath); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationMention, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, targetPath); err != nil {
 		return fmt.Errorf("gagal mengirim notifikasi mention child: %w", err)
 	}
 	return nil
@@ -560,7 +560,7 @@ func CreateTambahKeranjangBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		return fmt.Errorf("gagal memasukan data ke historical db %s dalam %s", err, handle_services)
 	}
 
-	judulTambahKeranjang := "🛒 Berhasil Masuk Keranjang!"
+	judulTambahKeranjang := "ðŸ›’ Berhasil Masuk Keranjang!"
 	pesanTambahKeranjang := fmt.Sprintf("Mantap! Produk pilihan lu (ID Barang: %d) sebanyak %d pcs udah aman di keranjang. Yuk langsung checkout sebelum kehabisan!", Objek.IdBarangInduk, Objek.Jumlah)
 
 	var NotificationCart notification_models.NotificationPengguna = notification_models.NotificationPengguna{
@@ -587,7 +587,7 @@ func CreateTambahKeranjangBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 	}
 
 	// Kirim menggunakan PenggunaPathNotifikasiMasuk
-	if err := notification_request.PostToNotification(ctx, NotificationCart, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationCart, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
 		return fmt.Errorf("gagal mengirim notifikasi tambah keranjang ke pengguna: %w", err)
 	}
 	return nil
@@ -712,21 +712,21 @@ func CreateBerikanReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx con
 	// Bikin representasi bintang (emoji) berdasarkan rating biar visualnya keren
 	var emojiRating string
 	for i := 0; i < int(Objek.Rating); i++ {
-		emojiRating += "⭐"
+		emojiRating += "â­"
 	}
 	if emojiRating == "" {
-		emojiRating = "⭐"
+		emojiRating = "â­"
 	}
 
 	// ==========================================
 	// NOTIFIKASI 1: UNTUK PENGGUNA (PEMBELI)
 	// ==========================================
-	pesanPengguna := fmt.Sprintf("Makasih banyak udah kasih ulasan %s buat produk ini! Kontribusi lu berharga banget buat pembeli lain. 🙏", emojiRating)
+	pesanPengguna := fmt.Sprintf("Makasih banyak udah kasih ulasan %s buat produk ini! Kontribusi lu berharga banget buat pembeli lain. ðŸ™", emojiRating)
 
 	var NotificationToUser notification_models.NotificationPengguna = notification_models.NotificationPengguna{
 		IDPengguna: Objek.IdPengguna,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "🎉 Ulasan Lu Berhasil Dikirim!",
+		Judul:      "ðŸŽ‰ Ulasan Lu Berhasil Dikirim!",
 		Pesan:      pesanPengguna,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 1, 0).Format(time.RFC3339),
@@ -745,7 +745,7 @@ func CreateBerikanReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotificationToUser, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationToUser, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
 		fmt.Printf("Gagal mengirim notifikasi review ke pengguna: %v\n", err)
 		// Tetap lanjut, jangan di-return err biar transaksi utama gak rollback cuma gara-gara notif gagal
 	}
@@ -758,7 +758,7 @@ func CreateBerikanReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx con
 	var NotificationToSeller notification_models.NotificationPengguna = notification_models.NotificationPengguna{
 		IDPengguna: int64(idSeller),
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "📈 Ada Ulasan Produk Baru!",
+		Judul:      "ðŸ“ˆ Ada Ulasan Produk Baru!",
 		Pesan:      pesanSeller,
 		Pop:        4.3,
 		CreatedAt:  time.Now().Format(time.RFC3339),
@@ -779,7 +779,7 @@ func CreateBerikanReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotificationToSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationToSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk); err != nil {
 		fmt.Printf("Gagal mengirim notifikasi review ke seller: %v\n", err)
 	}
 	return nil
@@ -919,7 +919,7 @@ func CreateLikeReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 	}
 
 	// 1. Setup kalimat notifikasi penambah dopamin user wkwk
-	judulLike := "❤️ Ulasanmu Bermanfaat!"
+	judulLike := "â¤ï¸ Ulasanmu Bermanfaat!"
 	pesanLike := "Seseorang baru saja menyukai ulasan produk yang kamu tulis. Terima kasih ya sudah membantu pembeli lain!"
 
 	var NotificationLikeReview notification_models.NotificationPengguna = notification_models.NotificationPengguna{
@@ -946,7 +946,7 @@ func CreateLikeReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 	}
 
 	// 2. Kirim ke path pengguna umum
-	if err := notification_request.PostToNotification(ctx, NotificationLikeReview, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationLikeReview, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
 		fmt.Printf("Gagal mengirim notifikasi apresiasi like review: %v\n", err)
 	}
 
@@ -983,3 +983,4 @@ func DeleteUnlikeReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 	}
 	return nil
 }
+

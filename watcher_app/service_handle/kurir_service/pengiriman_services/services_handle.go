@@ -1,4 +1,4 @@
-package pengiriman_kurir_handle
+﻿package pengiriman_kurir_handle
 
 import (
 	"context"
@@ -10,6 +10,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cache_db_function "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/function"
 	cache_db_session "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/session"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
@@ -17,7 +18,6 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -67,7 +67,7 @@ func CreateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Ambil nama kurir berdasarkan IdKurir dari model
+	// ðŸ•µï¸â€â™‚ï¸ Ambil nama kurir berdasarkan IdKurir dari model
 	var NamaKurir string = ""
 	if Objek.IdKurir != 0 {
 		if err := read.WithContext(ctx).Model(&sot_models.Kurir{}).Select("nama").Where("id = ?", Objek.IdKurir).Limit(1).Take(&NamaKurir).Error; err != nil {
@@ -78,11 +78,11 @@ func CreateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 NOTIFIKASI CREATE AKTIFKAN BID KURIR (Muncul Pop-Up)
+	// ðŸ”” NOTIFIKASI CREATE AKTIFKAN BID KURIR (Muncul Pop-Up)
 	var Notifikasi notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   Objek.IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🟢 Status Bidding Aktif!",
+		Judul:     "ðŸŸ¢ Status Bidding Aktif!",
 		Pesan:     fmt.Sprintf("Halo %s, sesi bidding lu di area %s telah diaktifkan. Bersiaplah menerima alokasi orderan masuk!", NamaKurir, Objek.Kota),
 		Pop:       3.0, // Muncul pop-up selama 3 detik biar kurir dapet konfirmasi mantap
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -104,7 +104,7 @@ func CreateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		fmt.Println("Gagal mengirim notifikasi aktifkan bid kurir:", err)
 	}
 
@@ -200,7 +200,7 @@ func UpdatePosisiBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx context.
 		return fmt.Errorf("gagal memasukan data posisi ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Ambil nama kurir berdasarkan IdKurir dari model
+	// ðŸ•µï¸â€â™‚ï¸ Ambil nama kurir berdasarkan IdKurir dari model
 	var NamaKurir string = ""
 	if Objek.IdKurir != 0 {
 		if err := read.WithContext(ctx).Model(&sot_models.Kurir{}).Select("nama").Where("id = ?", Objek.IdKurir).Limit(1).Take(&NamaKurir).Error; err != nil {
@@ -211,11 +211,11 @@ func UpdatePosisiBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx context.
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 NOTIFIKASI UPDATE POSISI/BID KURIR (Silent Update, Masuk Inbox)
+	// ðŸ”” NOTIFIKASI UPDATE POSISI/BID KURIR (Silent Update, Masuk Inbox)
 	var NotifikasiUpdate notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   Objek.IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "📍 Area Bidding Berhasil Diperbarui",
+		Judul:     "ðŸ“ Area Bidding Berhasil Diperbarui",
 		Pesan:     fmt.Sprintf("Halo %s, koordinat posisi dan data bid aktif lu di area %s, %s telah diperbarui.", NamaKurir, Objek.Kota, Objek.Provinsi),
 		Pop:       0, // Tetap 0 biar silent, ngebantu kenyamanan berkendara di jalan
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -238,7 +238,7 @@ func UpdatePosisiBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx context.
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotifikasiUpdate, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		fmt.Println("Gagal mengirim notifikasi update posisi/bid kurir:", err)
 	}
 
@@ -293,11 +293,11 @@ func CreateAmbilPengirimanNonEksManualRegulerIIBidKurirNonEksSchedulerCreatePubl
 		return err
 	}
 
-	// 🔔 Notifikasi Pengguna (Pencarian Kurir)
+	// ðŸ”” Notifikasi Pengguna (Pencarian Kurir)
 	var NotifPengguna = notification_models.NotificationPengguna{
 		IDPengguna: IdPengguna,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "🔍 Mencari Kurir Terdekat",
+		Judul:      "ðŸ” Mencari Kurir Terdekat",
 		Pesan:      "Sistem kami sedang menjadwalkan alokasi kurir reguler terbaik untuk menjemput paket pesananmu.",
 		Pop:        3.0,
 		CreatedAt:  time.Now().Format(time.RFC3339),
@@ -310,13 +310,13 @@ func CreateAmbilPengirimanNonEksManualRegulerIIBidKurirNonEksSchedulerCreatePubl
 			Special:  map[string]interface{}{"click_action": "TRACK_DELIVERY_STATUS"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 
-	// 🔔 Notifikasi Seller (Pencarian Kurir)
+	// ðŸ”” Notifikasi Seller (Pencarian Kurir)
 	var NotifSeller = notification_models.NotificationSeller{
 		IDSeller:  IdSeller,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🤖 Sistem Mencari Kurir",
+		Judul:     "ðŸ¤– Sistem Mencari Kurir",
 		Pesan:     "Alokasi otomatis sedang berjalan, kurir terdekat sedang diarahkan menuju lokasi toko Anda.",
 		Pop:       3.0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -329,7 +329,7 @@ func CreateAmbilPengirimanNonEksManualRegulerIIBidKurirNonEksSchedulerCreatePubl
 			Special:  map[string]interface{}{"click_action": "MANAGE_ORDER"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -391,11 +391,11 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIpengirimanUpdatedPublish(Data mb_
 		NamaKurir = "Kurir Internal"
 	}
 
-	// 🔔 Notifikasi Pengguna (Kurir Berhasil Didapatkan)
+	// ðŸ”” Notifikasi Pengguna (Kurir Berhasil Didapatkan)
 	var NotifPengguna = notification_models.NotificationPengguna{
 		IDPengguna: IdPengguna,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "🛵 Kurir Telah Ditemukan!",
+		Judul:      "ðŸ›µ Kurir Telah Ditemukan!",
 		Pesan:      fmt.Sprintf("Pesananmu beres di-pickup oleh %s dan siap diantar langsung ke rumahmu.", NamaKurir),
 		Pop:        3.0,
 		CreatedAt:  time.Now().Format(time.RFC3339),
@@ -408,13 +408,13 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIpengirimanUpdatedPublish(Data mb_
 			Special:  map[string]interface{}{"click_action": "TRACK_DELIVERY_LIVE"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 
-	// 🔔 Notifikasi Seller (Kurir Menuju Lokasi)
+	// ðŸ”” Notifikasi Seller (Kurir Menuju Lokasi)
 	var NotifSeller = notification_models.NotificationSeller{
 		IDSeller:  Objek.IdSeller,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🤝 Kurir Siap Meluncur",
+		Judul:     "ðŸ¤ Kurir Siap Meluncur",
 		Pesan:     fmt.Sprintf("Kurir %s telah dikonfirmasi mengamankan orderan ini. Harap siapkan paket Anda.", NamaKurir),
 		Pop:       3.0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -427,7 +427,7 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIpengirimanUpdatedPublish(Data mb_
 			Special:  map[string]interface{}{"click_action": "MANAGE_ORDER"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -486,11 +486,11 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataAmbilPengirimanUpdate
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 Silent Notif Kurir (Update Slot Sisa Muatan)
+	// ðŸ”” Silent Notif Kurir (Update Slot Sisa Muatan)
 	var NotifKurir = notification_models.NotificationKurir{
 		IDKurir:   Objek.IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🔄 Kapasitas Bid Diperbarui",
+		Judul:     "ðŸ”„ Kapasitas Bid Diperbarui",
 		Pesan:     fmt.Sprintf("Halo %s, slot kapasitas bid lu otomatis berkurang. Sisa slot penampungan: %d.", NamaKurir, Objek.SlotTersisa),
 		Pop:       0, // Silent update biar gak menutupi layar navigasi kurir
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -503,7 +503,7 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataAmbilPengirimanUpdate
 			Special:  map[string]interface{}{"click_action": "REFRESH_DASHBOARD_CAPACITY"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -562,11 +562,11 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataStatusUpdatedPublish(
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 Silent Notif Kurir (Update Status Kerja)
+	// ðŸ”” Silent Notif Kurir (Update Status Kerja)
 	var NotifKurir = notification_models.NotificationKurir{
 		IDKurir:   Objek.IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🔄 Sinkronisasi Status Bidding",
+		Judul:     "ðŸ”„ Sinkronisasi Status Bidding",
 		Pesan:     fmt.Sprintf("Halo %s, status alokasi bidding lu di sistem saat ini bernilai [%s].", NamaKurir, Objek.Status),
 		Pop:       0, // Tetap silent agar background sync berjalan mulus tanpa mengganggu kurir
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -579,7 +579,7 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataStatusUpdatedPublish(
 			Special:  map[string]interface{}{"click_action": "REFRESH_STATUS_CORE"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -638,11 +638,11 @@ func CreateAmbilPengirimanEksManualRegulerIIbidKurirEksSchedulerCreatePublish(Da
 		return err
 	}
 
-	// 🔔 Notifikasi Pengguna
+	// ðŸ”” Notifikasi Pengguna
 	var NotifPengguna = notification_models.NotificationPengguna{
 		IDPengguna: IdPengguna,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "📦 Mempersiapkan Kurir Ekspedisi",
+		Judul:      "ðŸ“¦ Mempersiapkan Kurir Ekspedisi",
 		Pesan:      "Sistem sedang mencocokkan jadwal penjemputan paketmu dengan armada kurir ekspedisi mitra.",
 		Pop:        3.0,
 		CreatedAt:  time.Now().Format(time.RFC3339),
@@ -655,13 +655,13 @@ func CreateAmbilPengirimanEksManualRegulerIIbidKurirEksSchedulerCreatePublish(Da
 			Special:  map[string]interface{}{"click_action": "TRACK_DELIVERY_STATUS"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 
-	// 🔔 Notifikasi Seller
+	// ðŸ”” Notifikasi Seller
 	var NotifSeller = notification_models.NotificationSeller{
 		IDSeller:  IdSeller,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🤖 Penjadwalan Ekspedisi Berjalan",
+		Judul:     "ðŸ¤– Penjadwalan Ekspedisi Berjalan",
 		Pesan:     "Kurir logistik pihak ketiga sedang di-assign secara otomatis untuk menjemput produk dari gudang/toko Anda.",
 		Pop:       3.0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -674,7 +674,7 @@ func CreateAmbilPengirimanEksManualRegulerIIbidKurirEksSchedulerCreatePublish(Da
 			Special:  map[string]interface{}{"click_action": "MANAGE_ORDER"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -734,11 +734,11 @@ func UpdateAmbilPengirimanEksManualRegulerIIpengirimanEksUpdatedPublish(Data mb_
 		NamaKurir = "Kurir Vendor Ekspedisi"
 	}
 
-	// 🔔 Notifikasi Pengguna
+	// ðŸ”” Notifikasi Pengguna
 	var NotifPengguna = notification_models.NotificationPengguna{
 		IDPengguna: IdPengguna,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "🚚 Kurir Ekspedisi Dikonfirmasi!",
+		Judul:      "ðŸšš Kurir Ekspedisi Dikonfirmasi!",
 		Pesan:      fmt.Sprintf("Paketmu dikonfirmasi akan dibawa oleh %s. Status manifest pengiriman siap berjalan.", NamaKurir),
 		Pop:        3.0,
 		CreatedAt:  time.Now().Format(time.RFC3339),
@@ -751,13 +751,13 @@ func UpdateAmbilPengirimanEksManualRegulerIIpengirimanEksUpdatedPublish(Data mb_
 			Special:  map[string]interface{}{"click_action": "TRACK_EXPEDITION_LIVE"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 
-	// 🔔 Notifikasi Seller
+	// ðŸ”” Notifikasi Seller
 	var NotifSeller = notification_models.NotificationSeller{
 		IDSeller:  Objek.IdSeller,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "📦 Kurir Mitra Ekspedisi Ditugaskan",
+		Judul:     "ðŸ“¦ Kurir Mitra Ekspedisi Ditugaskan",
 		Pesan:     fmt.Sprintf("Armada dari %s telah ditunjuk untuk menangani rute pengiriman ini.", NamaKurir),
 		Pop:       3.0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -770,14 +770,14 @@ func UpdateAmbilPengirimanEksManualRegulerIIpengirimanEksUpdatedPublish(Data mb_
 			Special:  map[string]interface{}{"click_action": "MANAGE_ORDER"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 
-	// 🔔 Notifikasi Kurir Ekspedisi
+	// ðŸ”” Notifikasi Kurir Ekspedisi
 	if *Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   *Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "💼 Orderan Ekspedisi Baru Masuk",
+			Judul:     "ðŸ’¼ Orderan Ekspedisi Baru Masuk",
 			Pesan:     fmt.Sprintf("Halo %s, satu paket reguler via logistik ekspedisi resmi ditugaskan ke manifest penjemputan lu.", NamaKurir),
 			Pop:       3.0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -790,7 +790,7 @@ func UpdateAmbilPengirimanEksManualRegulerIIpengirimanEksUpdatedPublish(Data mb_
 				Special:  map[string]interface{}{"click_action": "REDIRECT_TO_EXPEDITION_MANIFEST"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -850,11 +850,11 @@ func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataUpdatedPublish(Data mb_c
 		NamaKurir = "Kurir Ekspedisi"
 	}
 
-	// 🔔 Silent Notif Kurir
+	// ðŸ”” Silent Notif Kurir
 	var NotifKurir = notification_models.NotificationKurir{
 		IDKurir:   Objek.IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🔄 Slot Bid Ekspedisi Terkalkulasi",
+		Judul:     "ðŸ”„ Slot Bid Ekspedisi Terkalkulasi",
 		Pesan:     fmt.Sprintf("Halo %s, slot muatan armada ekspedisi lu disesuaikan. Sisa slot: %d.", NamaKurir, Objek.SlotTersisa),
 		Pop:       0, // Tetap silent agar background sync aman
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -867,7 +867,7 @@ func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataUpdatedPublish(Data mb_c
 			Special:  map[string]interface{}{"click_action": "REFRESH_CAPACITY_DASHBOARD"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -926,11 +926,11 @@ func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataAmbilPengirimanEksStatus
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 Silent Notif Kurir
+	// ðŸ”” Silent Notif Kurir
 	var NotifKurir = notification_models.NotificationKurir{
 		IDKurir:   Objek.IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🔄 Sync Status Bid Ekspedisi",
+		Judul:     "ðŸ”„ Sync Status Bid Ekspedisi",
 		Pesan:     fmt.Sprintf("Halo %s, status manifest bid logistik lu saat ini ter-update [%s].", NamaKurir, Objek.Status),
 		Pop:       0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -943,7 +943,7 @@ func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataAmbilPengirimanEksStatus
 			Special:  map[string]interface{}{"click_action": "REFRESH_SYSTEM_CORE"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -992,12 +992,12 @@ func UpdateLockSiapAntarBidKurirIIEksScheduler(Data mb_cud_serializer.ParsedData
 		NamaKurir = "Kurir Ekspedisi"
 	}
 
-	// 🔔 Notifikasi Kurir (Lock Siap Antar - Wajib Pop Up)
+	// ðŸ”” Notifikasi Kurir (Lock Siap Antar - Wajib Pop Up)
 	if Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔒 Jadwal Terkunci: Siap Antar!",
+			Judul:     "ðŸ”’ Jadwal Terkunci: Siap Antar!",
 			Pesan:     fmt.Sprintf("Halo %s, manifes pengiriman eks #%d telah dikunci. Status: SIAP ANTAR. Silakan menuju lokasi jemput.", NamaKurir, Objek.IdPengirimanEks),
 			Pop:       3.0, // Munculkan pop-up agar kurir sigap berkendara ke lokasi pickup/hub
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -1010,7 +1010,7 @@ func UpdateLockSiapAntarBidKurirIIEksScheduler(Data mb_cud_serializer.ParsedData
 				Special:  map[string]interface{}{"click_action": "OPEN_NAVIGATION_TO_PICKUP"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -1057,12 +1057,12 @@ func UpdateLockSiapAntarBidKurirIINonEksScheduler(Data mb_cud_serializer.ParsedD
 		NamaKurir = "Rekan Kurir"
 	}
 
-	// 🔔 Notifikasi Kurir (Lock Siap Antar - Pop-Up Wajib Nyala)
+	// ðŸ”” Notifikasi Kurir (Lock Siap Antar - Pop-Up Wajib Nyala)
 	if Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔒 Jadwal Terkunci: Gas Pickup!",
+			Judul:     "ðŸ”’ Jadwal Terkunci: Gas Pickup!",
 			Pesan:     fmt.Sprintf("Halo %s, alokasi orderan reguler #%d sudah dikunci ke manifest-mu. Status: SIAP ANTAR. Segera merapat ke lokasi seller!", NamaKurir, Objek.IdPengiriman),
 			Pop:       3.0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -1075,7 +1075,7 @@ func UpdateLockSiapAntarBidKurirIINonEksScheduler(Data mb_cud_serializer.ParsedD
 				Special:  map[string]interface{}{"click_action": "OPEN_ROUTING_MAP_TO_SELLER"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -1135,11 +1135,11 @@ func UpdateLockSiapAntarBidKurirIIbidKurirDataLockSiapAntarUpdatedPublish(Data m
 		NamaKurir = "Kurir"
 	}
 
-	// 🔔 Silent Notif Kurir
+	// ðŸ”” Silent Notif Kurir
 	var NotifKurir = notification_models.NotificationKurir{
 		IDKurir:   Objek.IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🔄 Kapasitas Slot Terkunci",
+		Judul:     "ðŸ”„ Kapasitas Slot Terkunci",
 		Pesan:     fmt.Sprintf("Halo %s, slot muatan otomatis dikunci akibat alokasi aktif. Sisa slot: %d.", NamaKurir, Objek.SlotTersisa),
 		Pop:       0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -1152,7 +1152,7 @@ func UpdateLockSiapAntarBidKurirIIbidKurirDataLockSiapAntarUpdatedPublish(Data m
 			Special:  map[string]interface{}{"click_action": "REFRESH_CAPACITY"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -1223,11 +1223,11 @@ func UpdateLockSiapAntarBidKurirIIkurirLockSiapAntarUpdatedPublish(Data mb_cud_s
 		return fmt.Errorf("gagal memperbarui data di cache %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Notif Kurir (Status Kurir Berubah Jadi Mengantar Paket di Core Engine)
+	// ðŸ”” Silent Notif Kurir (Status Kurir Berubah Jadi Mengantar Paket di Core Engine)
 	var NotifKurir = notification_models.NotificationKurir{
 		IDKurir:   Objek.ID,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🔄 Status Akun Sinkron",
+		Judul:     "ðŸ”„ Status Akun Sinkron",
 		Pesan:     fmt.Sprintf("Profil dan status kerja lu [%s] sukses diselaraskan ke server utama.", Objek.StatusKurir),
 		Pop:       0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -1240,7 +1240,7 @@ func UpdateLockSiapAntarBidKurirIIkurirLockSiapAntarUpdatedPublish(Data mb_cud_s
 			Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_SESSION"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -1281,7 +1281,7 @@ func CreatePickedUpPengirimanNonEksIIjejakPengirimanCreatePublish(Data mb_cud_se
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Lakukan tracing data Pengiriman untuk mengambil Seller ID & Pengguna ID
+	// ðŸ•µï¸â€â™‚ï¸ Lakukan tracing data Pengiriman untuk mengambil Seller ID & Pengguna ID
 	var (
 		IdPengguna int64 = 0
 		IdSeller   int64 = 0
@@ -1293,12 +1293,12 @@ func CreatePickedUpPengirimanNonEksIIjejakPengirimanCreatePublish(Data mb_cud_se
 		_ = read.WithContext(ctx).Model(&sot_models.AlamatPengguna{}).Select("id_pengguna").Where("id = ?", pengiriman.IdAlamatPengguna).Limit(1).Take(&IdPengguna).Error
 	}
 
-	// 🔔 Notifikasi Pengguna (Paket telah di-pickup / dibawa lari kurir)
+	// ðŸ”” Notifikasi Pengguna (Paket telah di-pickup / dibawa lari kurir)
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "🚀 Paketmu Sedang Diantar!",
+			Judul:      "ðŸš€ Paketmu Sedang Diantar!",
 			Pesan:      fmt.Sprintf("Hore! Paketmu telah berhasil di-pickup dari toko penjuall. Lokasi terkini: %s (%s). Pantau pergerakannya yuk!", Objek.Lokasi, Objek.Keterangan),
 			Pop:        3.0, // Alert pop-up agar pembeli senang memantau peta
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -1311,15 +1311,15 @@ func CreatePickedUpPengirimanNonEksIIjejakPengirimanCreatePublish(Data mb_cud_se
 				Special:  map[string]interface{}{"click_action": "OPEN_LIVE_TRACKING_PAGE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
-	// 🔔 Notifikasi Seller (Serah terima produk selesai)
+	// ðŸ”” Notifikasi Seller (Serah terima produk selesai)
 	if IdSeller != 0 {
 		var NotifSeller = notification_models.NotificationSeller{
 			IDSeller:  IdSeller,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "📦 Paket Sukses Diserahkan",
+			Judul:     "ðŸ“¦ Paket Sukses Diserahkan",
 			Pesan:     fmt.Sprintf("Barang dengan ID Pengiriman #%d telah dibawa oleh kurir dari toko Anda untuk pengantaran rute reguler.", Objek.IdPengiriman),
 			Pop:       3.0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -1332,7 +1332,7 @@ func CreatePickedUpPengirimanNonEksIIjejakPengirimanCreatePublish(Data mb_cud_se
 				Special:  map[string]interface{}{"click_action": "MONAGE_ORDER_DELIVERING"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -1371,12 +1371,12 @@ func UpdatePickedUpPengirimanNonEksIIschedulerPickedUpNonEksUpdatedPublish(Data 
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Scheduler Kurir
+	// ðŸ”” Silent Update Scheduler Kurir
 	if Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Sync Scheduler Picked Up",
+			Judul:     "ðŸ”„ Sync Scheduler Picked Up",
 			Pesan:     fmt.Sprintf("Manifest scheduler #%d diperbarui ke status %s.", Objek.ID, Objek.Status),
 			Pop:       0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -1389,7 +1389,7 @@ func UpdatePickedUpPengirimanNonEksIIschedulerPickedUpNonEksUpdatedPublish(Data 
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -1437,12 +1437,12 @@ func UpdatePickedUpPengirimanNonEksIIpengirimanPickedUpNonEksUpdatedPublish(Data
 	var IdPengguna int64 = 0
 	_ = read.WithContext(ctx).Model(&sot_models.AlamatPengguna{}).Select("id_pengguna").Where("id = ?", Objek.IdAlamatPengguna).Limit(1).Take(&IdPengguna).Error
 
-	// 🔔 Notifikasi Pengguna
+	// ðŸ”” Notifikasi Pengguna
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "📦 Pengiriman Di-update: Picked Up",
+			Judul:      "ðŸ“¦ Pengiriman Di-update: Picked Up",
 			Pesan:      fmt.Sprintf("Status logistik pengiriman #%d saat ini: %s.", Objek.ID, Objek.Status),
 			Pop:        3.0,
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -1455,7 +1455,7 @@ func UpdatePickedUpPengirimanNonEksIIpengirimanPickedUpNonEksUpdatedPublish(Data
 				Special:  map[string]interface{}{"click_action": "TRACK_DELIVERY"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -1549,11 +1549,11 @@ func UpdatePickedUpPengirimanNonEksIItransaksiPickedUpNonEksUpdatedPublish(Data 
 		fmt.Printf("berhasil memasukan data transaksi ke search engine dengan info: %s ", task_info.IndexUID)
 	}
 
-	// 🔔 Notifikasi Transaksi Pembeli
+	// ðŸ”” Notifikasi Transaksi Pembeli
 	var NotifPengguna = notification_models.NotificationPengguna{
 		IDPengguna: Objek.IdPengguna,
 		Pengirim:   notification_seeders.Sistem,
-		Judul:      "🛒 Pesananmu Telah Di-pickup!",
+		Judul:      "ðŸ›’ Pesananmu Telah Di-pickup!",
 		Pesan:      fmt.Sprintf("Transaksi #%s sudah dikonfirmasi bawa oleh kurir. Bersiap menerima kedatangan paketmu ya!", Objek.KodeOrderSistem),
 		Pop:        3.0,
 		CreatedAt:  time.Now().Format(time.RFC3339),
@@ -1566,13 +1566,13 @@ func UpdatePickedUpPengirimanNonEksIItransaksiPickedUpNonEksUpdatedPublish(Data 
 			Special:  map[string]interface{}{"click_action": "OPEN_TRANSACTION_DETAIL"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 
-	// 🔔 Notifikasi Transaksi Seller
+	// ðŸ”” Notifikasi Transaksi Seller
 	var NotifSeller = notification_models.NotificationSeller{
 		IDSeller:  int64(Objek.IdSeller),
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "💸 Pesanan Telah Berpindah Tangan",
+		Judul:     "ðŸ’¸ Pesanan Telah Berpindah Tangan",
 		Pesan:     fmt.Sprintf("Order #%s sukses dipickup. Status transaksi berganti menjadi %s.", Objek.KodeOrderSistem, Objek.Status),
 		Pop:       3.0,
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -1585,7 +1585,7 @@ func UpdatePickedUpPengirimanNonEksIItransaksiPickedUpNonEksUpdatedPublish(Data 
 			Special:  map[string]interface{}{"click_action": "MONAGE_ORDER_VIEW"},
 		},
 	}
-	_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+	_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
@@ -1672,12 +1672,12 @@ func UpdateKirimPengirimanNonEksIIpengirimanPengirimanUpdatedPublish(Data mb_cud
 	var IdPengguna int64 = 0
 	_ = read.WithContext(ctx).Model(&sot_models.AlamatPengguna{}).Select("id_pengguna").Where("id = ?", Objek.IdAlamatPengguna).Limit(1).Take(&IdPengguna).Error
 
-	// 🔔 Notifikasi Pengguna (Kurir Sedang OTW Menuju Lokasimu)
+	// ðŸ”” Notifikasi Pengguna (Kurir Sedang OTW Menuju Lokasimu)
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "🛵 Kurir Sedang Menuju Rumahmu!",
+			Judul:      "ðŸ›µ Kurir Sedang Menuju Rumahmu!",
 			Pesan:      fmt.Sprintf("Paket dengan manifest #%d saat ini berstatus [%s]. Kurir internal kami sedang bergegas menuju alamat pengantaran Anda.", Objek.ID, Objek.Status),
 			Pop:        3.0, // Alert aktif agar pembeli stand by di lokasi
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -1690,7 +1690,7 @@ func UpdateKirimPengirimanNonEksIIpengirimanPengirimanUpdatedPublish(Data mb_cud
 				Special:  map[string]interface{}{"click_action": "TRACK_LIVE_MAP_COURIER"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -1771,12 +1771,12 @@ func UpdateInformasiPerjalananPengirimanNonEks(Data mb_cud_serializer.ParsedData
 		_ = read.WithContext(ctx).Model(&sot_models.AlamatPengguna{}).Select("id_pengguna").Where("id = ?", pengiriman.IdAlamatPengguna).Limit(1).Take(&IdPengguna).Error
 	}
 
-	// 🔔 Notifikasi Pengguna (Update Transit Perjalanan)
+	// ðŸ”” Notifikasi Pengguna (Update Transit Perjalanan)
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "📍 Paketmu Sedang Transit",
+			Judul:      "ðŸ“ Paketmu Sedang Transit",
 			Pesan:      fmt.Sprintf("Update terbaru nih! Paketmu sekarang berada di: %s (%s). Selangkah lebih dekat ke tempatmu!", Objek.Lokasi, Objek.Keterangan),
 			Pop:        0, // Ga perlu pop up mengganggu, cukup muncul di tray notification
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -1789,7 +1789,7 @@ func UpdateInformasiPerjalananPengirimanNonEks(Data mb_cud_serializer.ParsedData
 				Special:  map[string]interface{}{"click_action": "TRACK_DELIVERY"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -1828,12 +1828,12 @@ func DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(Data mb_cud_seria
 		return fmt.Errorf("gagal memasukan log hapus ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Scheduler Kurir (Tugas dibersihkan dari manifest kerja aktif kurir)
+	// ðŸ”” Silent Update Scheduler Kurir (Tugas dibersihkan dari manifest kerja aktif kurir)
 	if Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Manifest Cleared",
+			Judul:     "ðŸ”„ Manifest Cleared",
 			Pesan:     fmt.Sprintf("Tugas pengiriman #%d telah diselesaikan dan dihapus dari manifest aktif Anda.", Objek.IdPengiriman),
 			Pop:       0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -1846,7 +1846,7 @@ func DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(Data mb_cud_seria
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -1891,16 +1891,16 @@ func UpdateSampaiPengirimanNonEksIIpengirimanSampaiUpdatedPublish(Data mb_cud_se
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Cari ID Pengguna lewat Alamat Pengguna untuk target notifikasi pembeli
+	// ðŸ•µï¸â€â™‚ï¸ Cari ID Pengguna lewat Alamat Pengguna untuk target notifikasi pembeli
 	var IdPengguna int64 = 0
 	_ = read.WithContext(ctx).Model(&sot_models.AlamatPengguna{}).Select("id_pengguna").Where("id = ?", Objek.IdAlamatPengguna).Limit(1).Take(&IdPengguna).Error
 
-	// 🔔 1. Notifikasi ke Pembeli (Bujuk cek depan rumah & pencet tombol selesai)
+	// ðŸ”” 1. Notifikasi ke Pembeli (Bujuk cek depan rumah & pencet tombol selesai)
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "🎉 Paketmu Sudah Sampai Tujuan!",
+			Judul:      "ðŸŽ‰ Paketmu Sudah Sampai Tujuan!",
 			Pesan:      fmt.Sprintf("Hore! Pengiriman #%d statusnya telah [%s]. Buruan cek depan rumah! Kalau isinya aman, yuk klik 'Selesai' dan beri rating kurir serta tokomu ya!", Objek.ID, Objek.Status),
 			Pop:        5.0, // Suara & getar kencang karena barang yang ditunggu sudah mendarat
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -1913,15 +1913,15 @@ func UpdateSampaiPengirimanNonEksIIpengirimanSampaiUpdatedPublish(Data mb_cud_se
 				Special:  map[string]interface{}{"click_action": "OPEN_ORDER_DETAIL_PAGE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
-	// 🔔 2. Notifikasi ke Penjual / Seller (Kasih tau kalau pesanan beres & siap cair)
+	// ðŸ”” 2. Notifikasi ke Penjual / Seller (Kasih tau kalau pesanan beres & siap cair)
 	if Objek.IdSeller != 0 {
 		var NotifSeller = notification_models.NotificationSeller{
 			IDSeller:  Objek.IdSeller,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "💰 Pembeli Telah Menerima Paket!",
+			Judul:     "ðŸ’° Pembeli Telah Menerima Paket!",
 			Pesan:     fmt.Sprintf("Mantap! Pesanan dengan ID Pengiriman #%d telah sukses diantarkan kurir ke pembeli. Saldo Anda akan segera diteruskan setelah pembeli melakukan konfirmasi.", Objek.ID),
 			Pop:       3.0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -1934,7 +1934,7 @@ func UpdateSampaiPengirimanNonEksIIpengirimanSampaiUpdatedPublish(Data mb_cud_se
 				Special:  map[string]interface{}{"click_action": "MONAGE_ORDER_DELIVERED"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -1983,12 +1983,12 @@ func UpdateSampaiPengirimanNonEksIIbidKurirDataSampaiUpdatedPublish(Data mb_cud_
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Slot/Status Bid Kurir (Biar aplikasi kurir auto-refresh kuota)
+	// ðŸ”” Silent Update Slot/Status Bid Kurir (Biar aplikasi kurir auto-refresh kuota)
 	if Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Kuota Bid Diperbarui",
+			Judul:     "ðŸ”„ Kuota Bid Diperbarui",
 			Pesan:     fmt.Sprintf("Slot kerja berhasil disesuaikan. Sisa slot aktif Anda saat ini: %d.", Objek.SlotTersisa),
 			Pop:       0, // Silent refresh di background
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -2001,7 +2001,7 @@ func UpdateSampaiPengirimanNonEksIIbidKurirDataSampaiUpdatedPublish(Data mb_cud_
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_CAPACITY"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2040,7 +2040,7 @@ func UpdateSampaiPengirimanNonEksIIjejakPengirimanSampaiUpdatedPublish(Data mb_c
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Tracing data Pengiriman untuk ambil IdPengguna & IdSeller (MULTI-ENTITY)
+	// ðŸ•µï¸â€â™‚ï¸ Tracing data Pengiriman untuk ambil IdPengguna & IdSeller (MULTI-ENTITY)
 	var (
 		IdPengguna int64 = 0
 		IdSeller   int64 = 0
@@ -2051,12 +2051,12 @@ func UpdateSampaiPengirimanNonEksIIjejakPengirimanSampaiUpdatedPublish(Data mb_c
 		_ = read.WithContext(ctx).Model(&sot_models.AlamatPengguna{}).Select("id_pengguna").Where("id = ?", pengiriman.IdAlamatPengguna).Limit(1).Take(&IdPengguna).Error
 	}
 
-	// 🔔 1. Notifikasi ke Pembeli (Jejak Akhir Penerimaan + Ajakan Review)
+	// ðŸ”” 1. Notifikasi ke Pembeli (Jejak Akhir Penerimaan + Ajakan Review)
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "📦 Selesai! Paketmu Telah Diterima",
+			Judul:      "ðŸ“¦ Selesai! Paketmu Telah Diterima",
 			Pesan:      fmt.Sprintf("Yeay, tracking log mencatat pesananmu sudah sampai di %s (%s). Suka dengan pelayanannya? Yuk, kasih review terbaikmu sekarang!", Objek.Lokasi, Objek.Keterangan),
 			Pop:        3.0,
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -2069,15 +2069,15 @@ func UpdateSampaiPengirimanNonEksIIjejakPengirimanSampaiUpdatedPublish(Data mb_c
 				Special:  map[string]interface{}{"click_action": "LEAVE_A_REVIEW"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
-	// 🔔 2. Notifikasi ke Penjual / Seller (Log Validasi Akhir Pengiriman Beres)
+	// ðŸ”” 2. Notifikasi ke Penjual / Seller (Log Validasi Akhir Pengiriman Beres)
 	if IdSeller != 0 {
 		var NotifSeller = notification_models.NotificationSeller{
 			IDSeller:  IdSeller,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "✅ Log Pengiriman Selesai",
+			Judul:     "âœ… Log Pengiriman Selesai",
 			Pesan:     fmt.Sprintf("Sistem mencatat riwayat perjalanan akhir untuk pengiriman #%d telah terverifikasi sukses di lokasi: %s.", Objek.IdPengiriman, Objek.Lokasi),
 			Pop:       0, // Log sekunder, tidak perlu getar berlebih
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -2090,7 +2090,7 @@ func UpdateSampaiPengirimanNonEksIIjejakPengirimanSampaiUpdatedPublish(Data mb_c
 				Special:  map[string]interface{}{"click_action": "MONAGE_ORDER_DELIVERED"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2189,12 +2189,12 @@ func UpdateSampaiPengirimanNonEksIItransaksiSampaiUpdatedPublish(Data mb_cud_ser
 		fmt.Printf("berhasil memasukan data transaksi ke search engine dengan info: %s ", task_info.IndexUID)
 	}
 
-	// 🔔 1. Notifikasi ke Pembeli (Transaksi Selesai Resmi)
+	// ðŸ”” 1. Notifikasi ke Pembeli (Transaksi Selesai Resmi)
 	if Objek.IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: Objek.IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "🛍️ Transaksi Selesai!",
+			Judul:      "ðŸ›ï¸ Transaksi Selesai!",
 			Pesan:      fmt.Sprintf("Pesananmu dengan kode %s telah selesai diproses. Terima kasih sudah berbelanja! Ditunggu orderan berikutnya, ya.", Objek.KodeOrderSistem),
 			Pop:        3.0,
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -2207,15 +2207,15 @@ func UpdateSampaiPengirimanNonEksIItransaksiSampaiUpdatedPublish(Data mb_cud_ser
 				Special:  map[string]interface{}{"click_action": "OPEN_TRANSACTION_DETAIL"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
-	// 🔔 2. Notifikasi ke Penjual (Transaksi Selesai, Siap Terima Dana)
+	// ðŸ”” 2. Notifikasi ke Penjual (Transaksi Selesai, Siap Terima Dana)
 	if Objek.IdSeller != 0 {
 		var NotifSeller = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IdSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "📈 Penjualan Sukses Selesai",
+			Judul:     "ðŸ“ˆ Penjualan Sukses Selesai",
 			Pesan:     fmt.Sprintf("Selamat! Transaksi %s senilai Rp %d dari pembeli telah selesai sepenuhnya. Data keuangan Anda sedang disinkronkan oleh sistem.", Objek.KodeOrderSistem, Objek.Total),
 			Pop:       3.0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -2228,7 +2228,7 @@ func UpdateSampaiPengirimanNonEksIItransaksiSampaiUpdatedPublish(Data mb_cud_ser
 				Special:  map[string]interface{}{"click_action": "MONAGE_ORDER_COMPLETED"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2283,12 +2283,12 @@ func CreateSampaiPengirimanNonEksIIpayOutSellerCreatePublish(Data mb_cud_seriali
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Notifikasi ke Penjual (Duit Hasil Jualan Cair Ke Rekening!)
+	// ðŸ”” Notifikasi ke Penjual (Duit Hasil Jualan Cair Ke Rekening!)
 	if Objek.IdSeller != 0 {
 		var NotifSeller = notification_models.NotificationSeller{
 			IDSeller:  Objek.IdSeller,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "💰 Dana Penjualan Telah Ditransfer!",
+			Judul:     "ðŸ’° Dana Penjualan Telah Ditransfer!",
 			Pesan:     fmt.Sprintf("Hore! Dana sebesar Rp %d berhasil dicairkan ke rekening %s (%s) Anda dengan status [%s]. Silakan cek mutasi rekening Anda.", Objek.Amount, Objek.BankCode, Objek.AccountNumber, Objek.Status),
 			Pop:       5.0, // Urusan duit wajib pop-up paling kenceng biar seller puas
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -2301,7 +2301,7 @@ func CreateSampaiPengirimanNonEksIIpayOutSellerCreatePublish(Data mb_cud_seriali
 				Special:  map[string]interface{}{"click_action": "OPEN_FINANCIAL_LOG"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2356,12 +2356,12 @@ func CreateSampaiPengirimanNonEksIIpayOutKurirCreatePublish(Data mb_cud_serializ
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Notifikasi ke Kurir (Gaji / Insentif Rute Cair)
+	// ðŸ”” Notifikasi ke Kurir (Gaji / Insentif Rute Cair)
 	if Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "💸 Ongkir/Insentif Pengantaran Cair!",
+			Judul:     "ðŸ’¸ Ongkir/Insentif Pengantaran Cair!",
 			Pesan:     fmt.Sprintf("Kerja bagus! Pendapatan sebesar Rp %d hasil pengantaran sukses ditransfer ke rekening bank %s Anda. Status: [%s]. Cek dompet digitalmu sekarang!", Objek.Amount, Objek.BankCode, Objek.Status),
 			Pop:       5.0, // Kurir paling senang dapat notif duit masuk, kasih pop-up maksimal!
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -2374,7 +2374,7 @@ func CreateSampaiPengirimanNonEksIIpayOutKurirCreatePublish(Data mb_cud_serializ
 				Special:  map[string]interface{}{"click_action": "OPEN_WALLET_BALANCE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2412,19 +2412,19 @@ func CreatePickedUpPengirimanEksIIjejakPengirimanEksCreatePublish(Data mb_cud_se
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Ambil IdTransaksi dari Pengiriman Ekspedisi untuk dapetin info Pembeli
+	// ðŸ•µï¸â€â™‚ï¸ Ambil IdTransaksi dari Pengiriman Ekspedisi untuk dapetin info Pembeli
 	var IdPengguna int64 = 0
 	var pe sot_models.PengirimanEkspedisi
 	if err := read.WithContext(ctx).Model(&sot_models.PengirimanEkspedisi{}).Select("id_transaksi").Where("id = ?", Objek.IdPengirimanEkspedisi).Limit(1).Take(&pe).Error; err == nil {
 		_ = read.WithContext(ctx).Model(&sot_models.Transaksi{}).Select("id_pengguna").Where("id = ?", pe.IdTransaksi).Limit(1).Take(&IdPengguna).Error
 	}
 
-	// 🔔 Notifikasi Pembeli: Jejak pertama logistik eksternal tercatat
+	// ðŸ”” Notifikasi Pembeli: Jejak pertama logistik eksternal tercatat
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "🚚 Paketmu Mulas Bergerak!",
+			Judul:      "ðŸšš Paketmu Mulas Bergerak!",
 			Pesan:      fmt.Sprintf("Status logistik eksternal baru: paketmu saat ini berada di %s (%s).", Objek.Lokasi, Objek.Keterangan),
 			Pop:        1.0,
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -2437,7 +2437,7 @@ func CreatePickedUpPengirimanEksIIjejakPengirimanEksCreatePublish(Data mb_cud_se
 				Special:  map[string]interface{}{"click_action": "OPEN_TRACKING_PAGE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2476,12 +2476,12 @@ func UpdatePickedUpPengirimanEksIIschedulerEksPickedUpUpdatedPublish(Data mb_cud
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Kurir Ekspedisi (Update status antrean rute pick-up kurir internal depo)
+	// ðŸ”” Silent Update Kurir Ekspedisi (Update status antrean rute pick-up kurir internal depo)
 	if Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Status Rute Diperbarui",
+			Judul:     "ðŸ”„ Status Rute Diperbarui",
 			Pesan:     fmt.Sprintf("Penjadwalan manifest #%d diubah menjadi [%s].", Objek.IdPengirimanEks, Objek.Status),
 			Pop:       0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -2494,7 +2494,7 @@ func UpdatePickedUpPengirimanEksIIschedulerEksPickedUpUpdatedPublish(Data mb_cud
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2539,16 +2539,16 @@ func UpdatePickedUpPengirimanEksIIpengirimanEksPickedUpUpdatedPublish(Data mb_cu
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Ambil IdPengguna via Transaksi
+	// ðŸ•µï¸â€â™‚ï¸ Ambil IdPengguna via Transaksi
 	var IdPengguna int64 = 0
 	_ = read.WithContext(ctx).Model(&sot_models.Transaksi{}).Select("id_pengguna").Where("id = ?", Objek.IdTransaksi).Limit(1).Take(&IdPengguna).Error
 
-	// 🔔 Notifikasi ke Penjual: Barang sukses diserahkan ke Ekspedisi
+	// ðŸ”” Notifikasi ke Penjual: Barang sukses diserahkan ke Ekspedisi
 	if Objek.IdSeller != 0 {
 		var NotifSeller = notification_models.NotificationSeller{
 			IDSeller:  Objek.IdSeller,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "📦 Serah Terima Ekspedisi Berhasil",
+			Judul:     "ðŸ“¦ Serah Terima Ekspedisi Berhasil",
 			Pesan:     fmt.Sprintf("Paket dari pengiriman #%d sukses di-pickup oleh pihak mitra ekspedisi. Tanggung jawab pengiriman kini beralih ke kurir logistik eksternal.", Objek.ID),
 			Pop:       2.0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -2561,15 +2561,15 @@ func UpdatePickedUpPengirimanEksIIpengirimanEksPickedUpUpdatedPublish(Data mb_cu
 				Special:  map[string]interface{}{"click_action": "MONAGE_SHIPPING_STATUS"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
-	// 🔔 Notifikasi ke Pembeli: Status pengiriman total berubah jadi PICKED_UP
+	// ðŸ”” Notifikasi ke Pembeli: Status pengiriman total berubah jadi PICKED_UP
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "📦 Paket Telah Di-pickup Kurir",
+			Judul:      "ðŸ“¦ Paket Telah Di-pickup Kurir",
 			Pesan:      fmt.Sprintf("Asik! Paketmu untuk transaksi #%d sudah diterima oleh pihak ekspedisi rekanan dan siap diberangkatkan ke kota tujuan.", Objek.IdTransaksi),
 			Pop:        3.0,
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -2582,7 +2582,7 @@ func UpdatePickedUpPengirimanEksIIpengirimanEksPickedUpUpdatedPublish(Data mb_cu
 				Special:  map[string]interface{}{"click_action": "OPEN_ORDER_TRACKING"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2676,12 +2676,12 @@ func UpdatePickedUpPengirimanEksIItransaksiPickedUpUpdatedPublish(Data mb_cud_se
 		fmt.Printf("berhasil memasukan data transaksi ke search engine dengan info: %s ", task_info.IndexUID)
 	}
 
-	// 🔔 Notifikasi Pembeli: Transaksi resmi berganti status utama di dashboard mereka
+	// ðŸ”” Notifikasi Pembeli: Transaksi resmi berganti status utama di dashboard mereka
 	if Objek.IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: Objek.IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "💼 Pesanan Sedang Dikirim",
+			Judul:      "ðŸ’¼ Pesanan Sedang Dikirim",
 			Pesan:      fmt.Sprintf("Transaksi #%s sudah diproses kurir ekspedisi. Pantau terus halaman tracking untuk update real-time logistiknya.", Objek.KodeOrderSistem),
 			Pop:        2.0,
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -2694,7 +2694,7 @@ func UpdatePickedUpPengirimanEksIItransaksiPickedUpUpdatedPublish(Data mb_cud_se
 				Special:  map[string]interface{}{"click_action": "OPEN_TRANSACTION_DETAIL"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2733,12 +2733,12 @@ func UpdateKirimPengirimanEksIIschedulerPengirimanUpdatedPublish(Data mb_cud_ser
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Kurir: Status transit antar depo berubah
+	// ðŸ”” Silent Update Kurir: Status transit antar depo berubah
 	if Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Transit Log Updated",
+			Judul:     "ðŸ”„ Transit Log Updated",
 			Pesan:     fmt.Sprintf("Jadwal pengiriman ekspedisi #%d status updated to [%s].", Objek.IdPengirimanEks, Objek.Status),
 			Pop:       0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -2751,7 +2751,7 @@ func UpdateKirimPengirimanEksIIschedulerPengirimanUpdatedPublish(Data mb_cud_ser
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_ROUTING"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2796,16 +2796,16 @@ func UpdateKirimPengirimanEksIIpengirimanEksUpdatedPublish(Data mb_cud_serialize
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Ambil IdPengguna lewat Transaksi
+	// ðŸ•µï¸â€â™‚ï¸ Ambil IdPengguna lewat Transaksi
 	var IdPengguna int64 = 0
 	_ = read.WithContext(ctx).Model(&sot_models.Transaksi{}).Select("id_pengguna").Where("id = ?", Objek.IdTransaksi).Limit(1).Take(&IdPengguna).Error
 
-	// 🔔 Notifikasi Pembeli: Konfirmasi kalau paket bener-bener on the way antar hub logistik
+	// ðŸ”” Notifikasi Pembeli: Konfirmasi kalau paket bener-bener on the way antar hub logistik
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "🚀 Paketmu Sedang Dalam Perjalanan!",
+			Judul:      "ðŸš€ Paketmu Sedang Dalam Perjalanan!",
 			Pesan:      fmt.Sprintf("Pengiriman eksternal #%d diperbarui menjadi [%s]. Armada kurir sedang mengarah ke wilayah transit terdekat.", Objek.ID, Objek.Status),
 			Pop:        2.0,
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -2818,7 +2818,7 @@ func UpdateKirimPengirimanEksIIpengirimanEksUpdatedPublish(Data mb_cud_serialize
 				Special:  map[string]interface{}{"click_action": "OPEN_TRACKING_PAGE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2857,19 +2857,19 @@ func UpdateKirimPengirimanEksIIpengirimanPengirimanEksUpdatedPublish(Data mb_cud
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Ambil IdPengguna lewat PengirimanEkspedisi -> Transaksi
+	// ðŸ•µï¸â€â™‚ï¸ Ambil IdPengguna lewat PengirimanEkspedisi -> Transaksi
 	var IdPengguna int64 = 0
 	var pe sot_models.PengirimanEkspedisi
 	if err := read.WithContext(ctx).Model(&sot_models.PengirimanEkspedisi{}).Select("id_transaksi").Where("id = ?", Objek.IdPengirimanEkspedisi).Limit(1).Take(&pe).Error; err == nil {
 		_ = read.WithContext(ctx).Model(&sot_models.Transaksi{}).Select("id_pengguna").Where("id = ?", pe.IdTransaksi).Limit(1).Take(&IdPengguna).Error
 	}
 
-	// 🔔 Notifikasi Pembeli: Setiap log detail dari manifest pihak ketiga masuk
+	// ðŸ”” Notifikasi Pembeli: Setiap log detail dari manifest pihak ketiga masuk
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "📍 Update Lokasi Paket",
+			Judul:      "ðŸ“ Update Lokasi Paket",
 			Pesan:      fmt.Sprintf("Paket terdeteksi tiba di %s: %s.", Objek.Lokasi, Objek.Keterangan),
 			Pop:        1.0, // Log perjalanan berkala cukup getar halus
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -2882,7 +2882,7 @@ func UpdateKirimPengirimanEksIIpengirimanPengirimanEksUpdatedPublish(Data mb_cud
 				Special:  map[string]interface{}{"click_action": "OPEN_TRACKING_PAGE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2920,19 +2920,19 @@ func UpdateInformasiPerjalananPengirimanEks(Data mb_cud_serializer.ParsedDataMes
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Ambil IdTransaksi dari Pengiriman Ekspedisi untuk melacak Pembeli
+	// ðŸ•µï¸â€â™‚ï¸ Ambil IdTransaksi dari Pengiriman Ekspedisi untuk melacak Pembeli
 	var IdPengguna int64 = 0
 	var pe sot_models.PengirimanEkspedisi
 	if err := read.WithContext(ctx).Model(&sot_models.PengirimanEkspedisi{}).Select("id_transaksi").Where("id = ?", Objek.IdPengirimanEkspedisi).Limit(1).Take(&pe).Error; err == nil {
 		_ = read.WithContext(ctx).Model(&sot_models.Transaksi{}).Select("id_pengguna").Where("id = ?", pe.IdTransaksi).Limit(1).Take(&IdPengguna).Error
 	}
 
-	// 🔔 Notifikasi ke Pembeli: Log informasi rute diperbarui
+	// ðŸ”” Notifikasi ke Pembeli: Log informasi rute diperbarui
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "📍 Pembaruan Informasi Perjalanan",
+			Judul:      "ðŸ“ Pembaruan Informasi Perjalanan",
 			Pesan:      fmt.Sprintf("Ada pembaruan manifes kurir: Paket Anda terdeteksi di %s (%s).", Objek.Lokasi, Objek.Keterangan),
 			Pop:        1.0,
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -2945,7 +2945,7 @@ func UpdateInformasiPerjalananPengirimanEks(Data mb_cud_serializer.ParsedDataMes
 				Special:  map[string]interface{}{"click_action": "OPEN_TRACKING_PAGE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -2984,12 +2984,12 @@ func DeleteSampaipengirimanEksIIbidKurirEksDeletePublish(Data mb_cud_serializer.
 		return fmt.Errorf("gagal memasukan log hapus ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Kurir: Bersihkan jadwal manifest dari antrean lokal aplikasi kurir
+	// ðŸ”” Silent Update Kurir: Bersihkan jadwal manifest dari antrean lokal aplikasi kurir
 	if Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🗑️ Penjadwalan Selesai",
+			Judul:     "ðŸ—‘ï¸ Penjadwalan Selesai",
 			Pesan:     fmt.Sprintf("Manifest rute #%d telah ditutup dan dihapus dari daftar tugas aktif Anda.", Objek.IdPengirimanEks),
 			Pop:       0, // Pembersihan antrean tidak perlu mengganggu layar HP kurir
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -3002,7 +3002,7 @@ func DeleteSampaipengirimanEksIIbidKurirEksDeletePublish(Data mb_cud_serializer.
 				Special:  map[string]interface{}{"click_action": "SILENT_REMOVE_QUEUE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -3047,16 +3047,16 @@ func UpdateSampaiPengirimanEksIIpengirimanSampaiEksUpdatedPublish(Data mb_cud_se
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Ambil IdPengguna via Transaksi
+	// ðŸ•µï¸â€â™‚ï¸ Ambil IdPengguna via Transaksi
 	var IdPengguna int64 = 0
 	_ = read.WithContext(ctx).Model(&sot_models.Transaksi{}).Select("id_pengguna").Where("id = ?", Objek.IdTransaksi).Limit(1).Take(&IdPengguna).Error
 
-	// 🔔 1. Notifikasi ke Pembeli: Paket mendarat dengan selamat
+	// ðŸ”” 1. Notifikasi ke Pembeli: Paket mendarat dengan selamat
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "🎉 Paketmu Sudah Sampai!",
+			Judul:      "ðŸŽ‰ Paketmu Sudah Sampai!",
 			Pesan:      fmt.Sprintf("Hore! Pengiriman #%d untuk transaksi Anda telah berhasil dikirimkan ke alamat tujuan. Silakan periksa paket Anda.", Objek.ID),
 			Pop:        4.0, // Penting banget agar user langsung ngecek pagar rumah
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -3069,15 +3069,15 @@ func UpdateSampaiPengirimanEksIIpengirimanSampaiEksUpdatedPublish(Data mb_cud_se
 				Special:  map[string]interface{}{"click_action": "OPEN_TRANSACTION_DETAIL"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
-	// 🔔 2. Notifikasi ke Penjual: Konfirmasi barang sampai tujuan
+	// ðŸ”” 2. Notifikasi ke Penjual: Konfirmasi barang sampai tujuan
 	if Objek.IdSeller != 0 {
 		var NotifSeller = notification_models.NotificationSeller{
 			IDSeller:  Objek.IdSeller,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🏁 Pengiriman Selesai",
+			Judul:     "ðŸ Pengiriman Selesai",
 			Pesan:     fmt.Sprintf("Paket dari pesanan #%d telah sukses diserahkan ke pembeli oleh mitra ekspedisi. Menunggu konfirmasi akhir dari pembeli.", Objek.IdTransaksi),
 			Pop:       2.0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -3090,7 +3090,7 @@ func UpdateSampaiPengirimanEksIIpengirimanSampaiEksUpdatedPublish(Data mb_cud_se
 				Special:  map[string]interface{}{"click_action": "MONAGE_ORDER_COMPLETED"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -3139,12 +3139,12 @@ func UpdateSampaiPengirimanEksIIbidKurirDataEksSampaiUpdatedPublish(Data mb_cud_
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Kurir: Sinkronisasi sisa slot muatan truk/motor logistik depo eksternal
+	// ðŸ”” Silent Update Kurir: Sinkronisasi sisa slot muatan truk/motor logistik depo eksternal
 	if Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Slot Kuota Diperbarui",
+			Judul:     "ðŸ”„ Slot Kuota Diperbarui",
 			Pesan:     fmt.Sprintf("Sisa slot muatan kurir diperbarui menjadi %d kg untuk wilayah %s.", Objek.SlotTersisa, Objek.Kota),
 			Pop:       0, // Sync background data aplikasi kurir
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -3157,7 +3157,7 @@ func UpdateSampaiPengirimanEksIIbidKurirDataEksSampaiUpdatedPublish(Data mb_cud_
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_CAPACITY"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -3196,19 +3196,19 @@ func UpdateSampaiPengirimanEksIIjejakPengirimanEksSampaiUpdatedPublish(Data mb_c
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🕵️‍♂️ Ambil IdTransaksi dari Pengiriman Ekspedisi untuk melacak Pembeli
+	// ðŸ•µï¸â€â™‚ï¸ Ambil IdTransaksi dari Pengiriman Ekspedisi untuk melacak Pembeli
 	var IdPengguna int64 = 0
 	var pe sot_models.PengirimanEkspedisi
 	if err := read.WithContext(ctx).Model(&sot_models.PengirimanEkspedisi{}).Select("id_transaksi").Where("id = ?", Objek.IdPengirimanEkspedisi).Limit(1).Take(&pe).Error; err == nil {
 		_ = read.WithContext(ctx).Model(&sot_models.Transaksi{}).Select("id_pengguna").Where("id = ?", pe.IdTransaksi).Limit(1).Take(&IdPengguna).Error
 	}
 
-	// 🔔 Notifikasi Pembeli: Manifes manifes logistik menandakan barang telah diterima di titik akhir
+	// ðŸ”” Notifikasi Pembeli: Manifes manifes logistik menandakan barang telah diterima di titik akhir
 	if IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "📍 Logistik Ekspedisi Selesai",
+			Judul:      "ðŸ“ Logistik Ekspedisi Selesai",
 			Pesan:      fmt.Sprintf("Titik akhir terdata: Paket sudah tiba di %s (%s).", Objek.Lokasi, Objek.Keterangan),
 			Pop:        1.0,
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -3221,7 +3221,7 @@ func UpdateSampaiPengirimanEksIIjejakPengirimanEksSampaiUpdatedPublish(Data mb_c
 				Special:  map[string]interface{}{"click_action": "OPEN_TRACKING_PAGE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -3315,12 +3315,12 @@ func UpdateSampaiPengirimanEksIItransaksiSampaiEksUpdatedPublish(Data mb_cud_ser
 		fmt.Printf("berhasil memasukan data transaksi ke search engine dengan info: %s ", task_info.IndexUID)
 	}
 
-	// 🔔 Notifikasi Pembeli: Transaksi utama selesai, dorong pembeli untuk klik selesaikan / review produk
+	// ðŸ”” Notifikasi Pembeli: Transaksi utama selesai, dorong pembeli untuk klik selesaikan / review produk
 	if Objek.IdPengguna != 0 {
 		var NotifPengguna = notification_models.NotificationPengguna{
 			IDPengguna: Objek.IdPengguna,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "📦 Paket Diterima! Yuk Konfirmasi",
+			Judul:      "ðŸ“¦ Paket Diterima! Yuk Konfirmasi",
 			Pesan:      fmt.Sprintf("Pesanan #%s dinyatakan sampai tujuan oleh sistem ekspedisi eksternal. Jangan lupa konfirmasi terima barang dan beri ulasan ya!", Objek.KodeOrderSistem),
 			Pop:        3.0,
 			CreatedAt:  time.Now().Format(time.RFC3339),
@@ -3333,7 +3333,7 @@ func UpdateSampaiPengirimanEksIItransaksiSampaiEksUpdatedPublish(Data mb_cud_ser
 				Special:  map[string]interface{}{"click_action": "OPEN_REVIEW_PAGE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifPengguna, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifPengguna, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -3388,12 +3388,12 @@ func CreateSampaiPengirimanEksIIpayOutKurirEksCreatePublish(Data mb_cud_serializ
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Notifikasi Finansial Kurir: Pengiriman sukses berbuah saldo/ongkir cair ke rekening
+	// ðŸ”” Notifikasi Finansial Kurir: Pengiriman sukses berbuah saldo/ongkir cair ke rekening
 	if Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "💰 Dana Pengiriman Telah Cair!",
+			Judul:     "ðŸ’° Dana Pengiriman Telah Cair!",
 			Pesan:     fmt.Sprintf("Selamat! Saldo komisi sebesar Rp %v sukses ditransfer ke rekening %s Anda.", Objek.Amount, Objek.BankCode),
 			Pop:       4.0, // Push notif keuangan penting banget dikasih pop tinggi
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -3406,7 +3406,7 @@ func CreateSampaiPengirimanEksIIpayOutKurirEksCreatePublish(Data mb_cud_serializ
 				Special:  map[string]interface{}{"click_action": "OPEN_WALLET_HISTORY"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -3476,12 +3476,12 @@ func UpdateSampaiPengirimanEksIIkurirUpdatedSampaiEksPublish(Data mb_cud_seriali
 		return fmt.Errorf("gagal memperbarui data kurir di cache %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Kurir: Sinkronisasi pembaruan profil / performa rating kurir secara berkala
+	// ðŸ”” Silent Update Kurir: Sinkronisasi pembaruan profil / performa rating kurir secara berkala
 	if Objek.ID != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.ID,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Sinkronisasi Profil Berhasil",
+			Judul:     "ðŸ”„ Sinkronisasi Profil Berhasil",
 			Pesan:     "Data statistik performa dan rating kurir Anda berhasil diperbarui.",
 			Pop:       0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -3494,7 +3494,7 @@ func UpdateSampaiPengirimanEksIIkurirUpdatedSampaiEksPublish(Data mb_cud_seriali
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_PROFILE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -3543,12 +3543,12 @@ func DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(Data mb_cud_serializer
 		return fmt.Errorf("gagal memasukan log hapus ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Kurir: Hapus slot penawaran (Bid) logistik dari perangkat lokal karena masa berlaku/penugasan habis
+	// ðŸ”” Silent Update Kurir: Hapus slot penawaran (Bid) logistik dari perangkat lokal karena masa berlaku/penugasan habis
 	if Objek.IdKurir != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.IdKurir,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🗑️ Alokasi Penjadwalan Ditutup",
+			Judul:     "ðŸ—‘ï¸ Alokasi Penjadwalan Ditutup",
 			Pesan:     "Slot operasional pengiriman ekspedisi untuk periode ini resmi dinonaktifkan.",
 			Pop:       0, // Silent hapus di aplikasi klien
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -3561,7 +3561,7 @@ func DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(Data mb_cud_serializer
 				Special:  map[string]interface{}{"click_action": "SILENT_REMOVE_SLOT"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -3634,12 +3634,12 @@ func UpdateNonaktifkanBidKurirIIkurirNonaktifkanBidUpdatedPublish(Data mb_cud_se
 		return fmt.Errorf("gagal memperbarui data kurir di cache %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Silent Update Kurir: Sinkronisasi penonaktifan status fitur pencarian kerja (Bid Status)
+	// ðŸ”” Silent Update Kurir: Sinkronisasi penonaktifan status fitur pencarian kerja (Bid Status)
 	if Objek.ID != 0 {
 		var NotifKurir = notification_models.NotificationKurir{
 			IDKurir:   Objek.ID,
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "📴 Sesi Bidding Ditutup",
+			Judul:     "ðŸ“´ Sesi Bidding Ditutup",
 			Pesan:     "Status pencarian penawaran (bid) Anda saat ini telah dinonaktifkan oleh sistem.",
 			Pop:       0, // Jalur background sync, merubah state UI aplikasi kurir tanpa pop up
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -3652,7 +3652,7 @@ func UpdateNonaktifkanBidKurirIIkurirNonaktifkanBidUpdatedPublish(Data mb_cud_se
 				Special:  map[string]interface{}{"click_action": "SILENT_DISABLE_BID_MODE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifKurir, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
 	}
 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)

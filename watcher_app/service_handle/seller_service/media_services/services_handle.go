@@ -1,4 +1,4 @@
-// INFOO: INI KODE YANG DI KASIH NOTIFIKASI
+﻿// INFOO: INI KODE YANG DI KASIH NOTIFIKASI
 
 package media_seller_handle
 
@@ -9,11 +9,11 @@ import (
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -51,12 +51,12 @@ func CreateTambahFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Notifikasi ke Seller (Foto Profil Toko Berhasil Ditambahkan)
+	// ðŸ”” Notifikasi ke Seller (Foto Profil Toko Berhasil Ditambahkan)
 	if Objek.IdSeller != 0 {
 		var NotifSeller = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IdSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "📸 Foto Profil Toko Berhasil Diunggah!",
+			Judul:     "ðŸ“¸ Foto Profil Toko Berhasil Diunggah!",
 			Pesan:     "Foto profil toko kamu udah aktif dan tampil di halaman toko. Tampilan makin meyakinkan buat calon pembeli, nih!",
 			Pop:       3.0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -69,7 +69,7 @@ func CreateTambahFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage, ctx 
 				Special:  map[string]interface{}{"click_action": "OPEN_SELLER_PROFILE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -105,12 +105,12 @@ func UpdateUbahFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Notifikasi ke Seller (Foto Profil Toko Berhasil Diperbarui)
+	// ðŸ”” Notifikasi ke Seller (Foto Profil Toko Berhasil Diperbarui)
 	if Objek.IdSeller != 0 {
 		var NotifSeller = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IdSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔄 Foto Profil Toko Diperbarui!",
+			Judul:     "ðŸ”„ Foto Profil Toko Diperbarui!",
 			Pesan:     "Foto profil toko kamu berhasil diganti dengan yang baru. Update kece, biar makin dikenal pembeli!",
 			Pop:       3.0,
 			CreatedAt: time.Now().Format(time.RFC3339),
@@ -123,7 +123,7 @@ func UpdateUbahFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 				Special:  map[string]interface{}{"click_action": "OPEN_SELLER_PROFILE"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, NotifSeller, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification(ctx, NotifSeller, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil

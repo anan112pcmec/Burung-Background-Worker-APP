@@ -6,6 +6,7 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
+
 )
 
 type Pengguna struct {
@@ -83,6 +84,7 @@ func (p *Pengguna) CreateSotReplicaTable(ctx context.Context, s *gocql.Session) 
 	fmt.Println("Berhasil Eksekusi query membuat tabel sot_replica")
 	return nil
 }
+
 func (p *Pengguna) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":              p.ID,

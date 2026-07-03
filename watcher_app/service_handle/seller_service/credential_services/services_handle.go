@@ -1,4 +1,4 @@
-package credential_seller_handle
+﻿package credential_seller_handle
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"github.com/meilisearch/meilisearch-go"
 	"github.com/redis/go-redis/v9"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cache_db_function "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/function"
 	cache_db_session "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/session"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
@@ -16,7 +17,6 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -87,12 +87,12 @@ func UpdateValidateUbahPasswordSeller(Data mb_cud_serializer.ParsedDataMessage, 
 		return fmt.Errorf("gagal mengupdate session data %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Push Notifikasi Ubah Password
+	// ðŸ”” Push Notifikasi Ubah Password
 	if Objek.ID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.ID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔒 Keamanan: Password Diubah",
+			Judul:     "ðŸ”’ Keamanan: Password Diubah",
 			Pesan:     "Password akun Toko Anda berhasil diperbarui. Jika ini bukan Anda, segera hubungi bantuan.",
 			Pop:       1,
 			Archive:   false,
@@ -108,7 +108,7 @@ func UpdateValidateUbahPasswordSeller(Data mb_cud_serializer.ParsedDataMessage, 
 				Special:  map[string]interface{}{"click_action": "SECURITY_PASSWORD_CHANGED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -146,12 +146,12 @@ func CreateTambahRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Push Notifikasi Tambah Rekening
+	// ðŸ”” Push Notifikasi Tambah Rekening
 	if Objek.IDSeller != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IDSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "💳 Rekening Baru Ditambahkan",
+			Judul:     "ðŸ’³ Rekening Baru Ditambahkan",
 			Pesan:     fmt.Sprintf("Rekening Bank %s berhasil ditambahkan ke profil Toko Anda.", Objek.NamaBank),
 			Pop:       1,
 			Archive:   false,
@@ -167,7 +167,7 @@ func CreateTambahRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 				Special:  map[string]interface{}{"click_action": "BANK_ACCOUNT_ADDED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -205,12 +205,12 @@ func UpdateEditRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Push Notifikasi Edit Rekening
+	// ðŸ”” Push Notifikasi Edit Rekening
 	if Objek.IDSeller != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IDSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "✏️ Informasi Rekening Diubah",
+			Judul:     "âœï¸ Informasi Rekening Diubah",
 			Pesan:     fmt.Sprintf("Data pada rekening Bank %s Anda telah berhasil diperbarui.", Objek.NamaBank),
 			Pop:       1,
 			Archive:   false,
@@ -226,7 +226,7 @@ func UpdateEditRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 				Special:  map[string]interface{}{"click_action": "BANK_ACCOUNT_EDITED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -264,12 +264,12 @@ func UpdateSetDefaultRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ct
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Push Notifikasi Set Default Rekening
+	// ðŸ”” Push Notifikasi Set Default Rekening
 	if Objek.IDSeller != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IDSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "📌 Rekening Utama Diatur",
+			Judul:     "ðŸ“Œ Rekening Utama Diatur",
 			Pesan:     fmt.Sprintf("Rekening Bank %s sekarang telah diatur sebagai rekening utama pencairan dana Toko Anda.", Objek.NamaBank),
 			Pop:       1,
 			Archive:   false,
@@ -285,7 +285,7 @@ func UpdateSetDefaultRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ct
 				Special:  map[string]interface{}{"click_action": "BANK_ACCOUNT_SET_DEFAULT"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -323,12 +323,12 @@ func DeleteHapusRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 Push Notifikasi Hapus Rekening
+	// ðŸ”” Push Notifikasi Hapus Rekening
 	if Objek.IDSeller != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.IDSeller),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🗑️ Rekening Dihapus",
+			Judul:     "ðŸ—‘ï¸ Rekening Dihapus",
 			Pesan:     fmt.Sprintf("Rekening Bank %s Anda telah berhasil dihapus dari sistem.", Objek.NamaBank),
 			Pop:       1,
 			Archive:   false,
@@ -344,7 +344,7 @@ func DeleteHapusRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx con
 				Special:  map[string]interface{}{"click_action": "BANK_ACCOUNT_REMOVED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil

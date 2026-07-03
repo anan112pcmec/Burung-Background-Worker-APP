@@ -1,4 +1,4 @@
-package credential_kurir_handle
+﻿package credential_kurir_handle
 
 import (
 	"context"
@@ -10,6 +10,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cache_db_function "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/function"
 	cache_db_session "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/session"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
@@ -17,7 +18,6 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -92,13 +92,13 @@ func UpdateValidateUbahPasswordKurir(Data mb_cud_serializer.ParsedDataMessage, c
 		fmt.Println("task dengan id:" + task_info.IndexUID + " diproses")
 	}
 
-	// 🔔 LOGIK NOTIFIKASI KEAMANAN (UBAH PASSWORD)
-	pesanKeamanan := fmt.Sprintf("🔐 Pengingat Keamanan: Halo %s, password akun kurir lu baru saja berhasil diubah. Kalau ini bukan lu, cepetan hubungi tim support!", Objek.Nama)
+	// ðŸ”” LOGIK NOTIFIKASI KEAMANAN (UBAH PASSWORD)
+	pesanKeamanan := fmt.Sprintf("ðŸ” Pengingat Keamanan: Halo %s, password akun kurir lu baru saja berhasil diubah. Kalau ini bukan lu, cepetan hubungi tim support!", Objek.Nama)
 
 	var Notifikasi notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   Objek.ID, // Karena Objek adalah Kurir, maka ID-nya adalah ID Kurir itu sendiri
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "⚠️ Password Akun Lu Berhasil Diubah!",
+		Judul:     "âš ï¸ Password Akun Lu Berhasil Diubah!",
 		Pesan:     pesanKeamanan,
 		Pop:       5.0, // Munculin pop-up/toast selama 5 detik biar kurir langsung ngeh demi keamanan
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -118,7 +118,7 @@ func UpdateValidateUbahPasswordKurir(Data mb_cud_serializer.ParsedDataMessage, c
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		return fmt.Errorf("gagal mengirim notifikasi ubah password kurir: %w", err)
 	}
 

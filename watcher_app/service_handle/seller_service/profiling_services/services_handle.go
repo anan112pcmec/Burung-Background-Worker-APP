@@ -1,4 +1,4 @@
-package profiling_seller_handle
+﻿package profiling_seller_handle
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"github.com/meilisearch/meilisearch-go"
 	"github.com/redis/go-redis/v9"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cache_db_function "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/function"
 	cache_db_session "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/session"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
@@ -16,7 +17,6 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -87,12 +87,12 @@ func UpdateUpdatePersonalSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		return fmt.Errorf("gagal mengupdate session data %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.ID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.ID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🔒 Data Personal Diperbarui",
+			Judul:     "ðŸ”’ Data Personal Diperbarui",
 			Pesan:     "Informasi kredensial dan data personal akun toko Anda telah berhasil diperbarui.",
 			Pop:       1,
 			Archive:   false,
@@ -108,7 +108,7 @@ func UpdateUpdatePersonalSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 				Special:  map[string]interface{}{"click_action": "SELLER_PERSONAL_DATA_UPDATED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil
@@ -177,12 +177,12 @@ func UpdateUpdateInfoGeneralPublic(Data mb_cud_serializer.ParsedDataMessage, ctx
 		return fmt.Errorf("gagal mengupdate session data %s dalam %s", err, handle_services)
 	}
 
-	// 🔔 SISTEM NOTIFIKASI
+	// ðŸ”” SISTEM NOTIFIKASI
 	if Objek.ID != 0 {
 		var Notifikasi = notification_models.NotificationSeller{
 			IDSeller:  int64(Objek.ID),
 			Pengirim:  notification_seeders.Sistem,
-			Judul:     "🏪 Profil Toko Diperbarui",
+			Judul:     "ðŸª Profil Toko Diperbarui",
 			Pesan:     fmt.Sprintf("Informasi umum toko Anda yang terlihat oleh publik resmi diubah."),
 			Pop:       1,
 			Archive:   false,
@@ -198,7 +198,7 @@ func UpdateUpdateInfoGeneralPublic(Data mb_cud_serializer.ParsedDataMessage, ctx
 				Special:  map[string]interface{}{"click_action": "SELLER_PUBLIC_INFO_UPDATED"},
 			},
 		}
-		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk)
+		_ = notification_request.PostToNotification[notification_models.NotificationSeller](ctx, Notifikasi, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk)
 	}
 
 	return nil

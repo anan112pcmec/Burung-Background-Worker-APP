@@ -1,4 +1,4 @@
-package social_media_pengguna_handle
+﻿package social_media_pengguna_handle
 
 import (
 	"context"
@@ -15,7 +15,7 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -182,7 +182,7 @@ func CreateFollowSeller(Data mb_cud_serializer.ParsedDataMessage, read *gorm.DB,
 	var idSeller int32 = int32(Objek.IdFollowed)
 
 	// 2. Racik teks notifikasi biar seller semangat jualan
-	judulFollow := "🚀 Tokomu Punya Pengikut Baru!"
+	judulFollow := "ðŸš€ Tokomu Punya Pengikut Baru!"
 	pesanFollow := "Asyik! Seseorang baru saja mulai mengikuti tokomu. Yuk, upload produk baru atau bikin promo menarik buat memikat pengikut barumu!"
 
 	var NotificationFollow notification_models.NotificationPengguna = notification_models.NotificationPengguna{
@@ -209,7 +209,7 @@ func CreateFollowSeller(Data mb_cud_serializer.ParsedDataMessage, read *gorm.DB,
 	}
 
 	// 3. Tembak ke SellerPathNotifikasiMasuk sesuai request lu
-	if err := notification_request.PostToNotification(ctx, NotificationFollow, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.SellerPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationFollow, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.SellerPathNotifikasiMasuk); err != nil {
 		// Cukup cetak log loggin aja kalau gagal kirim notif, biar flow follow-nya gak ikut gagal
 		fmt.Printf("Gagal mengirim notifikasi follower baru ke seller %d: %v\n", idSeller, err)
 	}
@@ -267,3 +267,4 @@ func DeleteUnfollowSeller(Data mb_cud_serializer.ParsedDataMessage, Read *gorm.D
 
 	return nil
 }
+

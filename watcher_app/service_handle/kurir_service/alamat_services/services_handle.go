@@ -1,4 +1,4 @@
-package alamat_kurir_handle
+﻿package alamat_kurir_handle
 
 import (
 	"context"
@@ -11,12 +11,12 @@ import (
 	"github.com/meilisearch/meilisearch-go"
 	"gorm.io/gorm"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/environment"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -96,17 +96,17 @@ func CreateMasukanAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 
 	switch {
 	case strings.Contains(panggilanAlamat, "hub") || strings.Contains(panggilanAlamat, "pool"):
-		pesanNotifikasi = fmt.Sprintf("🏢 Hub/Pool baru ('%s') berhasil didaftarkan. Koordinat operasional siap digunakan untuk pickup barang!", Objek.NamaAlamat)
+		pesanNotifikasi = fmt.Sprintf("ðŸ¢ Hub/Pool baru ('%s') berhasil didaftarkan. Koordinat operasional siap digunakan untuk pickup barang!", Objek.NamaAlamat)
 	case strings.Contains(panggilanAlamat, "rumah") || strings.Contains(panggilanAlamat, "basecamp"):
-		pesanNotifikasi = fmt.Sprintf("🏠 Basecamp kurir lu ('%s') udah disimpan. Sekarang titik istirahat atau standby jadi lebih presisi!", Objek.NamaAlamat)
+		pesanNotifikasi = fmt.Sprintf("ðŸ  Basecamp kurir lu ('%s') udah disimpan. Sekarang titik istirahat atau standby jadi lebih presisi!", Objek.NamaAlamat)
 	default:
-		pesanNotifikasi = fmt.Sprintf("📍 Alamat operasional baru ('%s' - %s) sukses ditambahkan ke profil kurir lu.", Objek.PanggilanAlamat, Objek.NamaAlamat)
+		pesanNotifikasi = fmt.Sprintf("ðŸ“ Alamat operasional baru ('%s' - %s) sukses ditambahkan ke profil kurir lu.", Objek.PanggilanAlamat, Objek.NamaAlamat)
 	}
 
 	var Notification notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:   Objek.IdKurir,
 		Pengirim:  notification_seeders.Sistem,
-		Judul:     "🚀 Alamat Operasional Kurir Disimpan!",
+		Judul:     "ðŸš€ Alamat Operasional Kurir Disimpan!",
 		Pesan:     pesanNotifikasi,
 		Pop:       5.0, // Muncul sebagai pop-up selama 5 detik di aplikasi kurir
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -128,7 +128,7 @@ func CreateMasukanAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, Notification, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, Notification, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
 		return fmt.Errorf("gagal mengirim notifikasi create kurir: %w", err)
 	}
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
@@ -233,7 +233,7 @@ func UpdatedEditAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		},
 	}
 
-	if err := notification_request.PostToNotification[notification_models.NotificationKurir](ctx, Notification, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.KurirPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification[notification_models.NotificationKurir](ctx, Notification, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk); err != nil {
 		return err
 	}
 
@@ -283,13 +283,13 @@ func DeleteHapusAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		fmt.Println("task dengan id:" + task_info.IndexUID + " diproses")
 	}
 
-	// 🔔 LOGIK NOTIFIKASI DELETE
-	pesanDelete := fmt.Sprintf("🗑️ Alamat '%s' (%s) dicabut dari rute operasional lu. Inbox ini otomatis hilang dalam 3 hari.", Objek.PanggilanAlamat, Objek.NamaAlamat)
+	// ðŸ”” LOGIK NOTIFIKASI DELETE
+	pesanDelete := fmt.Sprintf("ðŸ—‘ï¸ Alamat '%s' (%s) dicabut dari rute operasional lu. Inbox ini otomatis hilang dalam 3 hari.", Objek.PanggilanAlamat, Objek.NamaAlamat)
 
 	var NotificationDelete notification_models.NotificationKurir = notification_models.NotificationKurir{
 		IDKurir:  Objek.IdKurir,
 		Pengirim: notification_seeders.Sistem,
-		Judul:    "🗑️ Alamat Kurir Dihapus",
+		Judul:    "ðŸ—‘ï¸ Alamat Kurir Dihapus",
 		Pesan:    pesanDelete,
 		// Pop sengaja dikosongin (default 0) -> Artinya gak bakal muncul pop-up/toast mengganggu di layar kurir, tapi diem-diem langsung masuk inbox tab.
 		CreatedAt: time.Now().Format(time.RFC3339),
@@ -309,7 +309,7 @@ func DeleteHapusAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		},
 	}
 
-	if err := notification_request.PostToNotification(ctx, NotificationDelete, environment.HostRunningAPIInNotifikasi, environment.PortRunningAPIInNotifikasi, environment.PenggunaPathNotifikasiMasuk); err != nil {
+	if err := notification_request.PostToNotification(ctx, NotificationDelete, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
 		return fmt.Errorf("gagal mengirim notifikasi delete kurir: %w", err)
 	}
 
