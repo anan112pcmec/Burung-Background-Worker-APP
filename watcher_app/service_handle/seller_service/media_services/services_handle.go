@@ -1676,3 +1676,4 @@ func CreateTambahMediaTransaksiApprovedVideo(Data mb_cud_serializer.ParsedDataMe
 
 	return nil
 }
+

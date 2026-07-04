@@ -1,6 +1,7 @@
 ﻿package consume_kurir_dispatcher
 
 import (
+	"context"
 	"fmt"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
@@ -19,7 +20,7 @@ import (
 	social_media_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/social_media_services"
 )
 
-func KurirCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data *T, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
+func KurirCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](ctx context.Context, data *T, read *gorm.DB, redis_authentication, redis_session *redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
 	var d mb_cud_serializer.ParsedDataMessage
 	switch v := any(data).(type) {
 	case mb_cud_serializer.ConsumeDataJson:
@@ -32,87 +33,87 @@ func KurirCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 
 	switch d.TableName {
 	case sot_models.Kurir{}.TableName():
-		if err := auth_handle.CreateValidateKurirRegistration(d); err != nil {
+		if err := auth_handle.CreateValidateKurirRegistration(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.AlamatKurir{}.TableName():
-		if err := alamat_kurir_handle.CreateMasukanAlamatKurir(d); err != nil {
+		if err := alamat_kurir_handle.CreateMasukanAlamatKurir(d, ctx, read, cass_historcal, cass_sot_replica, se_index); err != nil {
 			return err
 		}
 	case sot_models.InformasiKendaraanKurir{}.TableName():
-		if err := informasi_kurir_handle.CreateAjukanInformasiKendaraan(d); err != nil {
+		if err := informasi_kurir_handle.CreateAjukanInformasiKendaraan(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.InformasiKurir{}.TableName():
-		if err := informasi_kurir_handle.CreateAjukanInformasiKurir(d); err != nil {
+		if err := informasi_kurir_handle.CreateAjukanInformasiKurir(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaInformasiKendaraanKurirKendaraanFoto{}.TableName():
-		if err := media_kurir_handle.CreateTambahMediaInformasiKendaraanKurirKendaraanFoto(d); err != nil {
+		if err := media_kurir_handle.CreateTambahMediaInformasiKendaraanKurirKendaraanFoto(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaInformasiKendaraanKurirBPKBFoto{}.TableName():
-		if err := media_kurir_handle.CreateTambahInformasiKendaraanKurirBPKBFoto(d); err != nil {
+		if err := media_kurir_handle.CreateTambahInformasiKendaraanKurirBPKBFoto(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaInformasiKendaraanKurirSTNKFoto{}.TableName():
-		if err := media_kurir_handle.CreateTambahInformasiKendaraanKurirSTNKFoto(d); err != nil {
+		if err := media_kurir_handle.CreateTambahInformasiKendaraanKurirSTNKFoto(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaInformasiKurirKTPFoto{}.TableName():
-		if err := media_kurir_handle.CreateTambahMediaInformasiKurirKTPFoto(d); err != nil {
+		if err := media_kurir_handle.CreateTambahMediaInformasiKurirKTPFoto(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaPengirimanPickedUpFoto{}.TableName():
-		if err := media_kurir_handle.CreateTambahMediaPengirimanPickedUpFoto(d); err != nil {
+		if err := media_kurir_handle.CreateTambahMediaPengirimanPickedUpFoto(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaPengirimanSampaiFoto{}.TableName():
-		if err := media_kurir_handle.CreateTambahMediaPengirimanSampaiFoto(d); err != nil {
+		if err := media_kurir_handle.CreateTambahMediaPengirimanSampaiFoto(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaPengirimanEkspedisiPickedUpFoto{}.TableName():
-		if err := media_kurir_handle.CreateTambahMediaPengirimanEkspedisiPickedUpFoto(d); err != nil {
+		if err := media_kurir_handle.CreateTambahMediaPengirimanEkspedisiPickedUpFoto(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaPengirimanEkspedisiSampaiAgentFoto{}.TableName():
-		if err := media_kurir_handle.CreateTambahMediaPengirimanEkspedisiSampaiAgentFoto(d); err != nil {
+		if err := media_kurir_handle.CreateTambahMediaPengirimanEkspedisiSampaiAgentFoto(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "bidKurirDataCreatePublish":
-		if err := pengiriman_kurir_handle.CreateAktifkanBidKurir(d); err != nil {
+		if err := pengiriman_kurir_handle.CreateAktifkanBidKurir(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "bidKurirNonEksSchedulerCreatePublish":
-		if err := pengiriman_kurir_handle.CreateAmbilPengirimanNonEksManualRegulerIIBidKurirNonEksSchedulerCreatePublish(d); err != nil {
+		if err := pengiriman_kurir_handle.CreateAmbilPengirimanNonEksManualRegulerIIBidKurirNonEksSchedulerCreatePublish(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "bidKurirEksSchedulerCreatePublish":
-		if err := pengiriman_kurir_handle.CreateAmbilPengirimanEksManualRegulerIIbidKurirEksSchedulerCreatePublish(d); err != nil {
+		if err := pengiriman_kurir_handle.CreateAmbilPengirimanEksManualRegulerIIbidKurirEksSchedulerCreatePublish(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "payOutSellerCreatePublish":
-		if err := pengiriman_kurir_handle.CreateSampaiPengirimanNonEksIIpayOutSellerCreatePublish(d); err != nil {
+		if err := pengiriman_kurir_handle.CreateSampaiPengirimanNonEksIIpayOutSellerCreatePublish(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "payOutKurirCreatePublish":
-		if err := pengiriman_kurir_handle.CreateSampaiPengirimanNonEksIIpayOutKurirCreatePublish(d); err != nil {
+		if err := pengiriman_kurir_handle.CreateSampaiPengirimanNonEksIIpayOutKurirCreatePublish(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "jejakPengirimanEksCreatePublish":
-		if err := pengiriman_kurir_handle.CreatePickedUpPengirimanEksIIjejakPengirimanEksCreatePublish(d); err != nil {
+		if err := pengiriman_kurir_handle.CreatePickedUpPengirimanEksIIjejakPengirimanEksCreatePublish(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "payOutKurirEksCreatePublish":
-		if err := pengiriman_kurir_handle.CreateSampaiPengirimanEksIIpayOutKurirEksCreatePublish(d); err != nil {
+		if err := pengiriman_kurir_handle.CreateSampaiPengirimanEksIIpayOutKurirEksCreatePublish(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.RekeningKurir{}.TableName():
-		if err := rekening_kurir_handle.CreateMasukanRekeningKurir(d); err != nil {
+		if err := rekening_kurir_handle.CreateMasukanRekeningKurir(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.EntitySocialMedia{}.TableName():
-		if err := social_media_kurir_handle.CreateEngagementSocialMediaKurir(d); err != nil {
+		if err := social_media_kurir_handle.CreateEngagementSocialMediaKurir(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	}

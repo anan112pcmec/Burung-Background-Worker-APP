@@ -1,6 +1,7 @@
 ﻿package consume_kurir_dispatcher
 
 import (
+	"context"
 	"fmt"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
@@ -16,7 +17,7 @@ import (
 	rekening_kurir_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/kurir_service/rekening_services"
 )
 
-func KurirDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data *T, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se se_models.IndexWrapper) error {
+func KurirDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](ctx context.Context, data *T, read *gorm.DB, redis_authentication, redis_session *redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
 	var d mb_cud_serializer.ParsedDataMessage
 	switch v := any(data).(type) {
 	case mb_cud_serializer.ConsumeDataJson:
@@ -29,43 +30,43 @@ func KurirDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 
 	switch d.TableName {
 	case sot_models.AlamatKurir{}.TableName():
-		if err := alamat_kurir_handle.DeleteHapusAlamatKurir(d); err != nil {
+		if err := alamat_kurir_handle.DeleteHapusAlamatKurir(d, ctx, read, cass_historcal, cass_sot_replica, se_index); err != nil {
 			return err
 		}
 	case sot_models.MediaKurirProfilFoto{}.TableName():
-		if err := media_kurir_handle.DeleteHapusKurirProfilFoto(d); err != nil {
+		if err := media_kurir_handle.DeleteHapusKurirProfilFoto(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaInformasiKendaraanKurirKendaraanFoto{}.TableName():
-		if err := media_kurir_handle.DeleteHapusMediaInformasiKendaraanKurirKendaraanFoto(d); err != nil {
+		if err := media_kurir_handle.DeleteHapusMediaInformasiKendaraanKurirKendaraanFoto(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaInformasiKendaraanKurirBPKBFoto{}.TableName():
-		if err := media_kurir_handle.DeleteHapusInformasiKendaraanKurirBPKBFoto(d); err != nil {
+		if err := media_kurir_handle.DeleteHapusInformasiKendaraanKurirBPKBFoto(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaInformasiKendaraanKurirSTNKFoto{}.TableName():
-		if err := media_kurir_handle.DeleteHapusInformasiKendaraanKurirSTNKFoto(d); err != nil {
+		if err := media_kurir_handle.DeleteHapusInformasiKendaraanKurirSTNKFoto(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaInformasiKurirKTPFoto{}.TableName():
-		if err := media_kurir_handle.DeleteHapusMediaInformasiKurirKTPFoto(d); err != nil {
+		if err := media_kurir_handle.DeleteHapusMediaInformasiKurirKTPFoto(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "bidKurirNonEksDeletePublish":
-		if err := pengiriman_kurir_handle.DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(d); err != nil {
+		if err := pengiriman_kurir_handle.DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "bidKurirEksDeletePublish":
-		if err := pengiriman_kurir_handle.DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(d); err != nil {
+		if err := pengiriman_kurir_handle.DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "bidKurirDataDeletePublish":
-		if err := pengiriman_kurir_handle.DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(d); err != nil {
+		if err := pengiriman_kurir_handle.DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.RekeningKurir{}.TableName():
-		if err := rekening_kurir_handle.DeleteHapusRekeningKurir(d); err != nil {
+		if err := rekening_kurir_handle.DeleteHapusRekeningKurir(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	}

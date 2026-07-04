@@ -384,3 +384,4 @@ func DeleteHapusDataBrand(Data mb_cud_serializer.ParsedDataMessage, ctx context.
 
 	return nil
 }
+

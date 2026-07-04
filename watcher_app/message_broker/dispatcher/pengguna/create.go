@@ -1,6 +1,7 @@
 ﻿package consume_pengguna_dispatcher
 
 import (
+	"context"
 	"fmt"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
@@ -20,8 +21,7 @@ import (
 	wishlist_pengguna_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/pengguna_service/wishlist_services"
 )
 
-func PenggunaCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data *T, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se se_models.IndexWrapper) error {
-
+func PenggunaCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](ctx context.Context, data *T, read *gorm.DB, redis_authentication, redis_session *redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
 	var d mb_cud_serializer.ParsedDataMessage
 	switch v := any(data).(type) {
 	case mb_cud_serializer.ConsumeDataJson:
@@ -34,71 +34,71 @@ func PenggunaCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_c
 
 	switch d.TableName {
 	case sot_models.Pengguna{}.TableName():
-		if err := auth_handle.CreateValidatePenggunaRegistration(d); err != nil {
+		if err := auth_handle.CreateValidatePenggunaRegistration(d, ctx, read, cass_historcal, cass_sot_replica, se_index); err != nil {
 			return err
 		}
 	case sot_models.AlamatPengguna.TableName(sot_models.AlamatPengguna{}):
-		if err := alamat_pengguna_handle.CreateAlamatPub(d); err != nil {
+		if err := alamat_pengguna_handle.CreateAlamatPub(d, ctx, cass_historcal, cass_sot_replica, se_index); err != nil {
 			return err
 		}
 	case sot_models.BarangDisukai.TableName(sot_models.BarangDisukai{}):
-		if err := barang_pengguna_handle.CreateLikesBarang(d); err != nil {
+		if err := barang_pengguna_handle.CreateLikesBarang(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.Komentar.TableName(sot_models.Komentar{}):
-		if err := barang_pengguna_handle.CreateMasukanKomentarBarang(d); err != nil {
+		if err := barang_pengguna_handle.CreateMasukanKomentarBarang(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.KomentarChild.TableName(sot_models.KomentarChild{}):
-		if err := barang_pengguna_handle.CreateMasukanChildKomentar(d); err != nil {
+		if err := barang_pengguna_handle.CreateMasukanChildKomentar(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.Keranjang.TableName(sot_models.Keranjang{}):
-		if err := barang_pengguna_handle.CreateTambahKeranjangBarang(d); err != nil {
+		if err := barang_pengguna_handle.CreateTambahKeranjangBarang(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.Review.TableName(sot_models.Review{}):
-		if err := barang_pengguna_handle.CreateBerikanReviewBarang(d); err != nil {
+		if err := barang_pengguna_handle.CreateBerikanReviewBarang(d, ctx, read, cass_historcal, cass_sot_replica, se_index); err != nil {
 			return err
 		}
 	case sot_models.ReviewLike{}.TableName():
-		if err := barang_pengguna_handle.CreateLikeReviewBarang(d); err != nil {
+		if err := barang_pengguna_handle.CreateLikeReviewBarang(d, ctx, read, cass_historcal, cass_sot_replica, se_index); err != nil {
 			return err
 		}
 	case "MembuatSecretPinPengguna":
-		if err := credential_pengguna_handle.CreateMembuatSecretPinPengguna(d); err != nil {
+		if err := credential_pengguna_handle.CreateMembuatSecretPinPengguna(d, ctx, read, cass_historcal, cass_sot_replica, se_index, redis_session); err != nil {
 			return err
 		}
 	case sot_models.MediaReviewFoto.TableName(sot_models.MediaReviewFoto{}):
-		if err := media_pengguna_handle.CreateTambahMediaReviewFoto(d); err != nil {
+		if err := media_pengguna_handle.CreateTambahMediaReviewFoto(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaReviewVideo.TableName(sot_models.MediaReviewVideo{}):
-		if err := media_pengguna_handle.CreateTambahMediaReviewVideo(d); err != nil {
+		if err := media_pengguna_handle.CreateTambahMediaReviewVideo(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.EntitySocialMedia.TableName(sot_models.EntitySocialMedia{}):
-		if err := social_media_pengguna_handle.CreateEngageTautkanSocialMediaPengguna(d); err != nil {
+		if err := social_media_pengguna_handle.CreateEngageTautkanSocialMediaPengguna(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.Follower.TableName(sot_models.Follower{}):
-		if err := social_media_pengguna_handle.CreateFollowSeller(d); err != nil {
+		if err := social_media_pengguna_handle.CreateFollowSeller(d, read, ctx, cass_historcal, cass_sot_replica, se_index); err != nil {
 			return err
 		}
 	case sot_models.Wishlist.TableName(sot_models.Wishlist{}):
-		if err := wishlist_pengguna_handle.CreateTambahBarangKeWishlist(d); err != nil {
+		if err := wishlist_pengguna_handle.CreateTambahBarangKeWishlist(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "LockTransaksiVa":
-		if err := transaction_pengguna_handle.CreateLockTransaksiVa(d); err != nil {
+		if err := transaction_pengguna_handle.CreateLockTransaksiVa(d, ctx, read, cass_historcal, cass_sot_replica, se_index); err != nil {
 			return err
 		}
 	case "LockTransaksiWallet":
-		if err := transaction_pengguna_handle.CreateLockTransaksiWallet(d); err != nil {
+		if err := transaction_pengguna_handle.CreateLockTransaksiWallet(d, ctx, read, cass_historcal, cass_sot_replica, se_index); err != nil {
 			return err
 		}
 	case "LockTransaksiGerai":
-		if err := transaction_pengguna_handle.CreateLockTransaksiGerai(d); err != nil {
+		if err := transaction_pengguna_handle.CreateLockTransaksiGerai(d, ctx, read, cass_historcal, cass_sot_replica, se_index); err != nil {
 			return err
 		}
 

@@ -21,7 +21,7 @@ type Consumer struct {
 	Mu          sync.Mutex
 }
 
-func (c *Consumer) WatchPublish(ctx context.Context, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
+func (c *Consumer) WatchPublish(ctx context.Context, read *gorm.DB, redis_authentication, redis_session *redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
 
 	c.Mu.Lock()
 	err := c.Ch.Qos(10, 0, false)

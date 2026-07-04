@@ -3658,3 +3658,4 @@ func UpdateNonaktifkanBidKurirIIkurirNonaktifkanBidUpdatedPublish(Data mb_cud_se
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
+

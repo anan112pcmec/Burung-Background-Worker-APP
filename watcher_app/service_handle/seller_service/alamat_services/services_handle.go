@@ -282,3 +282,4 @@ func DeleteHapusAlamatGudang(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 
 	return nil
 }
+

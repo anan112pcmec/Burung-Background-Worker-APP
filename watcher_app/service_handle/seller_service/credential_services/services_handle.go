@@ -349,3 +349,4 @@ func DeleteHapusRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx con
 
 	return nil
 }
+

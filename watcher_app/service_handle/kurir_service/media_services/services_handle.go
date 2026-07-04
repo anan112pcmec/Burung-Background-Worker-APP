@@ -1198,3 +1198,4 @@ func CreateTambahMediaPengirimanEkspedisiSampaiAgentFoto(Data mb_cud_serializer.
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
+

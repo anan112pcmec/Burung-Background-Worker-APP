@@ -198,3 +198,4 @@ func DeleteHapusRekeningKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 	return nil
 }
 
+

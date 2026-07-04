@@ -356,3 +356,4 @@ func UpdateEditInformasiKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
+

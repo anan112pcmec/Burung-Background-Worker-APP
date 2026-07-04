@@ -1,6 +1,7 @@
 package consume_sistem_dispatcher
 
 import (
+	"context"
 	"fmt"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
@@ -13,7 +14,7 @@ import (
 	payout_sistem_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/sistem_services/payout"
 )
 
-func SistemUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](data *T, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se se_models.IndexWrapper) error {
+func SistemUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](ctx context.Context, data *T, read *gorm.DB, redis_authentication, redis_session redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se se_models.IndexWrapper) error {
 
 	var d mb_cud_serializer.ParsedDataMessage
 	switch v := any(data).(type) {
@@ -27,15 +28,15 @@ func SistemUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud
 
 	switch d.TableName {
 	case sot_models.PayOutSistem{}.TableName():
-		if err := payout_sistem_handle.UpdatePayOutSistem(d); err != nil {
+		if err := payout_sistem_handle.UpdatePayOutSistem(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.PayOutSeller{}.TableName():
-		if err := payout_sistem_handle.UpdatePayoutSeller(d); err != nil {
+		if err := payout_sistem_handle.UpdatePayoutSeller(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.PayOutKurir{}.TableName():
-		if err := payout_sistem_handle.UpdatePayoutKurir(d); err != nil {
+		if err := payout_sistem_handle.UpdatePayoutKurir(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	}

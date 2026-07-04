@@ -126,3 +126,4 @@ func UpdateValidateUbahPasswordKurir(Data mb_cud_serializer.ParsedDataMessage, c
 	return nil
 
 }
+

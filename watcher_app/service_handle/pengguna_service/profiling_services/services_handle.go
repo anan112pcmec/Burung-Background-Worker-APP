@@ -103,3 +103,4 @@ func UpdateUbahPersonalProfilingPengguna(Data mb_cud_serializer.ParsedDataMessag
 
 	return nil
 }
+

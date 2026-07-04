@@ -325,3 +325,4 @@ func DeleteHapusDiskonPadaBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 
 	return nil
 }
+

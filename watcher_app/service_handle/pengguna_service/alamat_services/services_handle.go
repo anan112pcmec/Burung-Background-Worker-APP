@@ -329,3 +329,4 @@ func DeleteAlamatPub(Data mb_cud_serializer.ParsedDataMessage, ctx context.Conte
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
+
