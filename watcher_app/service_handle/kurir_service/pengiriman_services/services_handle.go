@@ -112,6 +112,99 @@ func CreateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 	return nil
 }
 
+func UpdateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper, rds_session *redis.Client) error {
+	const handle_services string = "UpdateAktifkanBidKurir"
+	var Objek sot_models.Kurir
+
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
+		return fmt.Errorf("gagal mengolah data alamat")
+	}
+
+	var ObjekCass cass_models.Kurir = cass_models.Kurir{
+		ID:            Objek.ID,
+		Nama:          Objek.Nama,
+		Username:      Objek.Username,
+		Email:         Objek.Email,
+		Jenis:         Objek.Jenis,
+		PasswordHash:  Objek.PasswordHash,
+		Deskripsi:     Objek.Deskripsi,
+		StatusKurir:   Objek.StatusKurir,
+		StatusBid:     Objek.StatusBid,
+		VerifiedKurir: Objek.VerifiedKurir,
+		Rating:        Objek.Rating,
+		TipeKendaraan: Objek.TipeKendaraan,
+		CreatedAt:     Objek.CreatedAt,
+	}
+
+	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
+
+	if err := cass_cud.UpdateData(ctx, cass_sot_replica, ObjekCass.TableNameSotReplica(), Objek.ID, parsedData); err != nil {
+		return fmt.Errorf("gagal memasukan data ke dalam sot replica async %s dalam %s", err, handle_services)
+	}
+
+	historical_format.PencatatanCombine(historical_format.Sekarang(), parsedData)
+
+	if err := cass_cud.InsertData(ctx, cass_historcal, ObjekCass.TableNameHistorical(), parsedData); err != nil {
+		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
+	}
+
+	var ObjekSearchEngine se_models.Kurir = se_models.Kurir{
+		ID:            Objek.ID,
+		Nama:          Objek.Nama,
+		Username:      Objek.Username,
+		Email:         Objek.Email,
+		Jenis:         Objek.Jenis,
+		PasswordHash:  Objek.PasswordHash,
+		Deskripsi:     Objek.Deskripsi,
+		StatusKurir:   Objek.StatusKurir,
+		StatusBid:     Objek.StatusBid,
+		VerifiedKurir: Objek.VerifiedKurir,
+		Rating:        Objek.Rating,
+		TipeKendaraan: Objek.TipeKendaraan,
+		CreatedAt:     Objek.CreatedAt,
+		UpdatedAt:     Objek.UpdatedAt,
+		DeletedAt:     &Objek.DeletedAt.Time,
+	}
+
+	if task_info, err := se_index.KurirIndex.UpdateDocuments(&ObjekSearchEngine, &meilisearch.DocumentOptions{
+		PrimaryKey: meilisearch.StringPtr("id"),
+	}); err != nil {
+		return fmt.Errorf("gagal memasukan data ke search engine %s dalam %s", err, handle_services)
+	} else {
+		fmt.Printf("berhasil memasukan data ke search engine dengan info: %s ", task_info.IndexUID)
+	}
+
+	if err := cache_db_function.UpdateSessionData(ctx, *rds_session, cache_db_session.GetSessionKey(&Objek), Objek); err != nil {
+		return fmt.Errorf("gagal mengupdate session data %s dalam %s", err, handle_services)
+	}
+
+	// 🔔 Silent Update Kurir: Sinkronisasi data aktivasi bid ke perangkat lokal
+	if Objek.ID != 0 {
+		var NotifKurir = notification_models.NotificationKurir{
+			IDKurir:   Objek.ID,
+			Pengirim:  notification_seeders.Sistem,
+			Judul:     "🔄 Fitur Bid Diaktifkan",
+			Pesan:     "Fitur bid Anda telah aktif. Sistem sedang menyinkronkan data ke perangkat.",
+			Pop:       0, // Background sync tanpa mengganggu kurir
+			Activity:  true,
+			Archive:   false,
+			Inbox:     false,
+			CreatedAt: time.Now().Format(time.RFC3339),
+			ExpiredAt: time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
+			Data: struct {
+				Metadata map[string]interface{} `json:"metadata"`
+				Special  interface{}            `json:"special"`
+			}{
+				Metadata: map[string]interface{}{"kurir_id": Objek.ID, "sync_type": "BID_ACTIVATION"},
+				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_BID_STATUS"},
+			},
+		}
+		_ = notification_request.PostToNotification(ctx, NotifKurir, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.KurirPathNotifikasiMasuk)
+	}
+	fmt.Println("Berhasil mendapatkan data", Objek.ID)
+	return nil
+}
+
 func UpdateUbahBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session) error {
 	const handle_services string = "UpdateUbahBidKurir"
 	var Objek sot_models.BidKurirData // Diselaraskan pakai BidKurirData sesuai pasangannya
@@ -158,7 +251,7 @@ func UpdateUbahBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx context.Co
 	return nil
 }
 
-func UpdatePosisiBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, read *gorm.DB, cass_historical, cass_sot_replica *gocql.Session) error {
+func UpdateUpdatePosisiBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, read *gorm.DB, cass_historical, cass_sot_replica *gocql.Session) error {
 	const handle_services string = "UpdatePosisiBidKurir"
 	var Objek sot_models.BidKurirData
 
@@ -1733,7 +1826,7 @@ func UpdateKirimPengirimanNonEksIIjejakpengirimanPengirimanUpdatedPublish(Data m
 	return nil
 }
 
-func UpdateInformasiPerjalananPengirimanNonEks(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, read *gorm.DB, cass_historical, cass_sot_replica *gocql.Session) error {
+func UpdateUpdateInformasiPerjalananPengirimanNonEks(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, read *gorm.DB, cass_historical, cass_sot_replica *gocql.Session) error {
 	const handle_services string = "UpdateInformasiPerjalananPengirimanNonEks"
 	var Objek sot_models.JejakPengiriman
 
@@ -3658,4 +3751,3 @@ func UpdateNonaktifkanBidKurirIIkurirNonaktifkanBidUpdatedPublish(Data mb_cud_se
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
-

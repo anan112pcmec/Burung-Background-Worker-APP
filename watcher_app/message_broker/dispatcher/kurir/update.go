@@ -70,11 +70,11 @@ func KurirUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 			return err
 		}
 	case "kurirUpdatedPublish":
-		if err := pengiriman_kurir_handle.UpdateAktifkanBidKurir(d); err != nil {
+		if err := pengiriman_kurir_handle.UpdateAktifkanBidKurir(d, ctx, cass_historcal, cass_sot_replica, se_index, redis_session); err != nil {
 			return err
 		}
 	case "bidKurirDataUpdatedPublish":
-		if err := pengiriman_kurir_handle.UpdateUpdatePosisiBidKurir(d); err != nil {
+		if err := pengiriman_kurir_handle.UpdateUpdatePosisiBidKurir(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "pengirimanUpdatedPublish":
@@ -122,11 +122,11 @@ func KurirUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 			return err
 		}
 	case "pengirimanPickedUpNonEksUpdatedPublish":
-		if err := pengiriman_kurir_handle.UpdatedPickedUpPengirimanNonEksIItransaksiPickedUpNonEksUpdatedPublish(d); err != nil {
+		if err := pengiriman_kurir_handle.UpdatePickedUpPengirimanNonEksIIpengirimanPickedUpNonEksUpdatedPublish(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "transaksiPickedUpNonEksUpdatedPublish":
-		if err := pengiriman_kurir_handle.UpdatedPickedUpPengirimanNonEksIItransaksiPickedUpNonEksUpdatedPublish(d); err != nil {
+		if err := pengiriman_kurir_handle.UpdatePickedUpPengirimanNonEksIItransaksiPickedUpNonEksUpdatedPublish(d, ctx, read, cass_historcal, cass_sot_replica, se_index); err != nil {
 			return err
 		}
 	case "bidKurirPengirimanNonEksSchedulerUpdatedPublish":
@@ -142,7 +142,7 @@ func KurirUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_
 			return err
 		}
 	case "jejakPengirimanUpdatedPublish":
-		if err := pengiriman_kurir_handle.UpdateUpdateInformasiPerjalananPengirimanNonEks(d); err != nil {
+		if err := pengiriman_kurir_handle.UpdateUpdateInformasiPerjalananPengirimanNonEks(d, ctx, read, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case "pengirimanSampaiUpdatedPublish":

@@ -18,7 +18,6 @@ import (
 	etalase_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/etalase_services"
 	jenis_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/jenis_services"
 	media_seller_handle "github.com/anan112pcmec/Burung-backend-2/watcher_app/service_handle/seller_service/media_services"
-
 )
 
 func SellerDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](ctx context.Context, data *T, read *gorm.DB, redis_authentication, redis_session *redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
@@ -94,7 +93,7 @@ func SellerDeleteServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud
 			return err
 		}
 	case sot_models.MediaEtalaseFoto{}.TableName(): // 16
-		if err := media_seller_handle.DeleteHapusFotoEtalaseSeller(d); err != nil {
+		if err := media_seller_handle.DeleteHapusFotoEtalaseSeller(d, ctx, cass_historcal, cass_sot_replica); err != nil {
 			return err
 		}
 	case sot_models.MediaBarangIndukFoto{}.TableName(): // 17

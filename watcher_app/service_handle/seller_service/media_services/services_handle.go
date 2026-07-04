@@ -392,6 +392,39 @@ func UpdateUbahFotoEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx c
 	return nil
 }
 
+func DeleteHapusFotoEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session) error {
+	const handle_services string = "UpdateUbahFotoEtalaseSeller"
+	var Objek sot_models.MediaEtalaseFoto
+	if err := helper.DecodeJSONBody(Data, &Objek); err != nil {
+		return fmt.Errorf("gagal mengolah data dalam %s", handle_services)
+	} else {
+		fmt.Println(Objek)
+	}
+
+	var ObjekCass cass_models.MediaEtalaseFoto = cass_models.MediaEtalaseFoto{
+		ID:        Objek.ID,
+		IdEtalase: Objek.IdEtalase,
+		Key:       Objek.Key,
+		Format:    Objek.Format,
+		CreatedAt: Objek.CreatedAt,
+		UpdatedAt: Objek.UpdatedAt,
+	}
+
+	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
+
+	if err := cass_cud.DeleteData(ctx, cass_sot_replica, ObjekCass.TableNameSotReplica(), ObjekCass.ID); err != nil {
+		return fmt.Errorf("gagal mengupdate data ke dalam sot replica async %s dalam %s", err, handle_services)
+	}
+
+	historical_format.PencatatanCombine(historical_format.Sekarang(), parsedData)
+
+	if err := cass_cud.InsertData(ctx, cass_historical, ObjekCass.TableNameHistorical(), parsedData); err != nil {
+		return fmt.Errorf("gagal memasukan data ke dalam historical db %s dalam %s", err, handle_services)
+	}
+
+	return nil
+}
+
 func CreateTambahkanMediaBarangIndukFoto(Data mb_cud_serializer.ParsedDataMessage, ctx context.Context, cass_historical, cass_sot_replica *gocql.Session) error {
 	const handle_services string = "CreateTambahkanMediaBarangIndukFoto"
 	var Objek sot_models.MediaBarangIndukFoto
@@ -1676,4 +1709,3 @@ func CreateTambahMediaTransaksiApprovedVideo(Data mb_cud_serializer.ParsedDataMe
 
 	return nil
 }
-

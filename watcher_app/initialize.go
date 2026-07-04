@@ -110,7 +110,7 @@ func Run() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		conn.cud_consumer.WatchPublish(ctx, conn.db.Write, *conn.redis_authentication, *conn.redis_session, conn.cass_historical_session, conn.cass_sot_replica_session, searchEngineIndex)
+		conn.cud_consumer.WatchPublish(ctx, conn.db.Write, conn.redis_authentication, conn.redis_session, conn.cass_historical_session, conn.cass_sot_replica_session, searchEngineIndex)
 	}()
 
 	fmt.Println("Watcher berjalan... tekan CTRL+C untuk exit")
