@@ -24,7 +24,7 @@ func (MediaPenggunaProfilFoto) TableNameHistorical() string {
 	return "media_pengguna_profil_foto_historical"
 }
 
-func (m *MediaPenggunaProfilFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPenggunaProfilFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPenggunaProfilFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -50,7 +50,7 @@ func (m *MediaPenggunaProfilFoto) CreateHistoricalTable(ctx context.Context, ses
 	return nil
 }
 
-func (m *MediaPenggunaProfilFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaPenggunaProfilFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
@@ -69,7 +69,7 @@ func (m *MediaPenggunaProfilFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaPenggunaProfilFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPenggunaProfilFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -99,7 +99,7 @@ func (MediaSellerProfilFoto) PathName() string {
 	return "/media_seller_profil_foto/"
 }
 
-func (m *MediaSellerProfilFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaSellerProfilFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaSellerProfilFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -125,7 +125,7 @@ func (m *MediaSellerProfilFoto) CreateHistoricalTable(ctx context.Context, sessi
 	return nil
 }
 
-func (m *MediaSellerProfilFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaSellerProfilFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
@@ -144,7 +144,7 @@ func (m *MediaSellerProfilFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaSellerProfilFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaSellerProfilFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -174,7 +174,7 @@ func (MediaSellerBannerFoto) PathName() string {
 	return "/media_seller_banner_foto/"
 }
 
-func (m *MediaSellerBannerFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaSellerBannerFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaSellerBannerFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -200,7 +200,7 @@ func (m *MediaSellerBannerFoto) CreateHistoricalTable(ctx context.Context, sessi
 	return nil
 }
 
-func (m *MediaSellerBannerFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaSellerBannerFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
@@ -219,7 +219,7 @@ func (m *MediaSellerBannerFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaSellerBannerFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaSellerBannerFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -248,7 +248,7 @@ func (MediaSellerTokoFisikFoto) PathName() string {
 	return "/media_seller_toko_fisik_foto/"
 }
 
-func (m *MediaSellerTokoFisikFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaSellerTokoFisikFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaSellerTokoFisikFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -273,7 +273,7 @@ func (m *MediaSellerTokoFisikFoto) CreateHistoricalTable(ctx context.Context, se
 	return nil
 }
 
-func (m *MediaSellerTokoFisikFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaSellerTokoFisikFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
@@ -291,7 +291,7 @@ func (m *MediaSellerTokoFisikFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaSellerTokoFisikFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaSellerTokoFisikFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -321,7 +321,7 @@ func (MediaKurirProfilFoto) PathName() string {
 	return "/media_kurir_profil_foto/"
 }
 
-func (m *MediaKurirProfilFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaKurirProfilFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaKurirProfilFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -347,7 +347,7 @@ func (m *MediaKurirProfilFoto) CreateHistoricalTable(ctx context.Context, sessio
 	return nil
 }
 
-func (m *MediaKurirProfilFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaKurirProfilFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
@@ -366,7 +366,7 @@ func (m *MediaKurirProfilFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaKurirProfilFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaKurirProfilFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -396,7 +396,7 @@ func (MediaEtalaseFoto) PathName() string {
 	return "/media_etalase_foto/"
 }
 
-func (m *MediaEtalaseFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaEtalaseFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaEtalaseFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -422,7 +422,7 @@ func (m *MediaEtalaseFoto) CreateHistoricalTable(ctx context.Context, session *g
 	return nil
 }
 
-func (m *MediaEtalaseFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaEtalaseFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
@@ -441,7 +441,7 @@ func (m *MediaEtalaseFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaEtalaseFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaEtalaseFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -470,7 +470,7 @@ func (MediaBarangIndukFoto) PathName() string {
 	return "/media_barang_induk_foto/"
 }
 
-func (m *MediaBarangIndukFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBarangIndukFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBarangIndukFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -495,7 +495,7 @@ func (m *MediaBarangIndukFoto) CreateHistoricalTable(ctx context.Context, sessio
 	return nil
 }
 
-func (m *MediaBarangIndukFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaBarangIndukFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
@@ -513,7 +513,7 @@ func (m *MediaBarangIndukFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaBarangIndukFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBarangIndukFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -543,7 +543,7 @@ func (MediaBarangIndukVideo) PathName() string {
 	return "/media_barang_induk_video/"
 }
 
-func (m *MediaBarangIndukVideo) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBarangIndukVideo) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBarangIndukVideo dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -569,7 +569,7 @@ func (m *MediaBarangIndukVideo) CreateHistoricalTable(ctx context.Context, sessi
 	return nil
 }
 
-func (m *MediaBarangIndukVideo) ParseToCUDType() map[string]interface{} {
+func (m MediaBarangIndukVideo) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
@@ -588,7 +588,7 @@ func (m *MediaBarangIndukVideo) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaBarangIndukVideo) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBarangIndukVideo) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -620,7 +620,7 @@ func (MediaKategoriBarangFoto) PathName() string {
 	return "/media_kategori_barang_foto/"
 }
 
-func (m *MediaKategoriBarangFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaKategoriBarangFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaKategoriBarangFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -647,7 +647,7 @@ func (m *MediaKategoriBarangFoto) CreateHistoricalTable(ctx context.Context, ses
 	return nil
 }
 
-func (m *MediaKategoriBarangFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaKategoriBarangFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
@@ -667,7 +667,7 @@ func (m *MediaKategoriBarangFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaKategoriBarangFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaKategoriBarangFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -697,7 +697,7 @@ func (MediaDistributorDataDokumen) PathName() string {
 	return "/media_distributor_data_dokumen/"
 }
 
-func (m *MediaDistributorDataDokumen) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaDistributorDataDokumen) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaDistributorDataDokumen dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -723,7 +723,7 @@ func (m *MediaDistributorDataDokumen) CreateHistoricalTable(ctx context.Context,
 	return nil
 }
 
-func (m *MediaDistributorDataDokumen) ParseToCUDType() map[string]interface{} {
+func (m MediaDistributorDataDokumen) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
@@ -742,7 +742,7 @@ func (m *MediaDistributorDataDokumen) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaDistributorDataDokumen) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaDistributorDataDokumen) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -772,7 +772,7 @@ func (MediaDistributorDataNPWPFoto) PathName() string {
 	return "/media_distributor_data_npwp_foto/"
 }
 
-func (m *MediaDistributorDataNPWPFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaDistributorDataNPWPFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaDistributorDataNPWPFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -798,7 +798,7 @@ func (m *MediaDistributorDataNPWPFoto) CreateHistoricalTable(ctx context.Context
 	return nil
 }
 
-func (m *MediaDistributorDataNPWPFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaDistributorDataNPWPFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
@@ -817,7 +817,7 @@ func (m *MediaDistributorDataNPWPFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaDistributorDataNPWPFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaDistributorDataNPWPFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -847,7 +847,7 @@ func (MediaDistributorDataNIBFoto) PathName() string {
 	return "/media_distributor_data_nib_foto/"
 }
 
-func (m *MediaDistributorDataNIBFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaDistributorDataNIBFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaDistributorDataNIBFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -873,7 +873,7 @@ func (m *MediaDistributorDataNIBFoto) CreateHistoricalTable(ctx context.Context,
 	return nil
 }
 
-func (m *MediaDistributorDataNIBFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaDistributorDataNIBFoto) ParseToCUDType() map[string]interface{} {
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
 		deletedAtInterface = m.DeletedAt.Time
@@ -891,7 +891,7 @@ func (m *MediaDistributorDataNIBFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaDistributorDataNIBFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaDistributorDataNIBFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -921,7 +921,7 @@ func (MediaDistributorDataSuratKerjasamaDokumen) PathName() string {
 	return "/media_distributor_data_surat_kerjasama_dokumen/"
 }
 
-func (m *MediaDistributorDataSuratKerjasamaDokumen) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaDistributorDataSuratKerjasamaDokumen) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaDistributorDataSuratKerjasamaDokumen dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -947,7 +947,7 @@ func (m *MediaDistributorDataSuratKerjasamaDokumen) CreateHistoricalTable(ctx co
 	return nil
 }
 
-func (m *MediaDistributorDataSuratKerjasamaDokumen) ParseToCUDType() map[string]interface{} {
+func (m MediaDistributorDataSuratKerjasamaDokumen) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
 	var deletedAtInterface interface{} = nil
 	if m.DeletedAt.Valid {
@@ -966,7 +966,7 @@ func (m *MediaDistributorDataSuratKerjasamaDokumen) ParseToCUDType() map[string]
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaDistributorDataSuratKerjasamaDokumen) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaDistributorDataSuratKerjasamaDokumen) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -993,7 +993,7 @@ func (MediaBrandDataPerwakilanDokumen) PathName() string {
 	return "/media_brand_data_perwakilan_dokumen/"
 }
 
-func (m *MediaBrandDataPerwakilanDokumen) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataPerwakilanDokumen) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataPerwakilanDokumen dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1016,7 +1016,7 @@ func (m *MediaBrandDataPerwakilanDokumen) CreateHistoricalTable(ctx context.Cont
 	return nil
 }
 
-func (m *MediaBrandDataPerwakilanDokumen) ParseToCUDType() map[string]interface{} {
+func (m MediaBrandDataPerwakilanDokumen) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":            m.ID,
 		"id_brand_data": m.IdBrandData,
@@ -1026,7 +1026,7 @@ func (m *MediaBrandDataPerwakilanDokumen) ParseToCUDType() map[string]interface{
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaBrandDataPerwakilanDokumen) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataPerwakilanDokumen) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1053,7 +1053,7 @@ func (MediaBrandDataSertifikatFoto) PathName() string {
 	return "/media_brand_data_sertifikat_foto/"
 }
 
-func (m *MediaBrandDataSertifikatFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataSertifikatFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataSertifikatFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1076,7 +1076,7 @@ func (m *MediaBrandDataSertifikatFoto) CreateHistoricalTable(ctx context.Context
 	return nil
 }
 
-func (m *MediaBrandDataSertifikatFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaBrandDataSertifikatFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":            m.ID,
 		"id_brand_data": m.IdBrandData,
@@ -1086,7 +1086,7 @@ func (m *MediaBrandDataSertifikatFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaBrandDataSertifikatFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataSertifikatFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1113,7 +1113,7 @@ func (MediaBrandDataNIBFoto) PathName() string {
 	return "/media_brand_data_nib_foto/"
 }
 
-func (m *MediaBrandDataNIBFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataNIBFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataNIBFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1136,7 +1136,7 @@ func (m *MediaBrandDataNIBFoto) CreateHistoricalTable(ctx context.Context, sessi
 	return nil
 }
 
-func (m *MediaBrandDataNIBFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaBrandDataNIBFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":            m.ID,
 		"id_brand_data": m.IdBrandData,
@@ -1146,7 +1146,7 @@ func (m *MediaBrandDataNIBFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaBrandDataNIBFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataNIBFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1173,7 +1173,7 @@ func (MediaBrandDataNPWPFoto) PathName() string {
 	return "/media_brand_data_npwp_foto/"
 }
 
-func (m *MediaBrandDataNPWPFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataNPWPFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataNPWPFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1196,7 +1196,7 @@ func (m *MediaBrandDataNPWPFoto) CreateHistoricalTable(ctx context.Context, sess
 	return nil
 }
 
-func (m *MediaBrandDataNPWPFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaBrandDataNPWPFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":            m.ID,
 		"id_brand_data": m.IdBrandData,
@@ -1206,7 +1206,7 @@ func (m *MediaBrandDataNPWPFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaBrandDataNPWPFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataNPWPFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1233,7 +1233,7 @@ func (MediaBrandDataLogoFoto) PathName() string {
 	return "/media_brand_data_logo_foto/"
 }
 
-func (m *MediaBrandDataLogoFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataLogoFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataLogoFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1256,7 +1256,7 @@ func (m *MediaBrandDataLogoFoto) CreateHistoricalTable(ctx context.Context, sess
 	return nil
 }
 
-func (m *MediaBrandDataLogoFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaBrandDataLogoFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":            m.ID,
 		"id_brand_data": m.IdBrandData,
@@ -1266,7 +1266,7 @@ func (m *MediaBrandDataLogoFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaBrandDataLogoFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataLogoFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1293,7 +1293,7 @@ func (MediaBrandDataSuratKerjasamaDokumen) PathName() string {
 	return "/media_brand_data_surat_kerjasama_dokumen/"
 }
 
-func (m *MediaBrandDataSuratKerjasamaDokumen) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataSuratKerjasamaDokumen) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataSuratKerjasamaDokumen dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1315,7 +1315,7 @@ func (m *MediaBrandDataSuratKerjasamaDokumen) CreateHistoricalTable(ctx context.
 	return nil
 }
 
-func (m *MediaBrandDataSuratKerjasamaDokumen) ParseToCUDType() map[string]interface{} {
+func (m MediaBrandDataSuratKerjasamaDokumen) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":     m.ID,
 		"key":    m.Key,
@@ -1324,7 +1324,7 @@ func (m *MediaBrandDataSuratKerjasamaDokumen) ParseToCUDType() map[string]interf
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaBrandDataSuratKerjasamaDokumen) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataSuratKerjasamaDokumen) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1351,7 +1351,7 @@ func (MediaInformasiKendaraanKurirKendaraanFoto) PathName() string {
 	return "/media_informasi_kendaraan_kurir_kendaraan_foto/"
 }
 
-func (m *MediaInformasiKendaraanKurirKendaraanFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaInformasiKendaraanKurirKendaraanFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaInformasiKendaraanKurirKendaraanFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1374,7 +1374,7 @@ func (m *MediaInformasiKendaraanKurirKendaraanFoto) CreateHistoricalTable(ctx co
 	return nil
 }
 
-func (m *MediaInformasiKendaraanKurirKendaraanFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaInformasiKendaraanKurirKendaraanFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                           m.ID,
 		"id_informasi_kendaraan_kurir": m.IdInformasiKendaraanKurir,
@@ -1384,7 +1384,7 @@ func (m *MediaInformasiKendaraanKurirKendaraanFoto) ParseToCUDType() map[string]
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaInformasiKendaraanKurirKendaraanFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaInformasiKendaraanKurirKendaraanFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1412,7 +1412,7 @@ func (MediaInformasiKendaraanKurirBPKBFoto) PathName() string {
 
 }
 
-func (m *MediaInformasiKendaraanKurirBPKBFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaInformasiKendaraanKurirBPKBFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaInformasiKendaraanKurirBPKBFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1435,7 +1435,7 @@ func (m *MediaInformasiKendaraanKurirBPKBFoto) CreateHistoricalTable(ctx context
 	return nil
 }
 
-func (m *MediaInformasiKendaraanKurirBPKBFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaInformasiKendaraanKurirBPKBFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                           m.ID,
 		"id_informasi_kendaraan_kurir": m.IdInformasiKendaraanKurir,
@@ -1445,7 +1445,7 @@ func (m *MediaInformasiKendaraanKurirBPKBFoto) ParseToCUDType() map[string]inter
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaInformasiKendaraanKurirBPKBFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaInformasiKendaraanKurirBPKBFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1472,7 +1472,7 @@ func (MediaInformasiKendaraanKurirSTNKFoto) PathName() string {
 	return "/media_informasi_kendaraan_kurir_stnk_foto/"
 }
 
-func (m *MediaInformasiKendaraanKurirSTNKFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaInformasiKendaraanKurirSTNKFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaInformasiKendaraanKurirSTNKFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1495,7 +1495,7 @@ func (m *MediaInformasiKendaraanKurirSTNKFoto) CreateHistoricalTable(ctx context
 	return nil
 }
 
-func (m *MediaInformasiKendaraanKurirSTNKFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaInformasiKendaraanKurirSTNKFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                           m.ID,
 		"id_informasi_kendaraan_kurir": m.IdInformasiKendaraanKurir,
@@ -1505,7 +1505,7 @@ func (m *MediaInformasiKendaraanKurirSTNKFoto) ParseToCUDType() map[string]inter
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaInformasiKendaraanKurirSTNKFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaInformasiKendaraanKurirSTNKFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1532,7 +1532,7 @@ func (MediaInformasiKurirKTPFoto) PathName() string {
 	return "/media_informasi_kurir_ktp_foto/"
 }
 
-func (m *MediaInformasiKurirKTPFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaInformasiKurirKTPFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaInformasiKurirKTPFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1555,7 +1555,7 @@ func (m *MediaInformasiKurirKTPFoto) CreateHistoricalTable(ctx context.Context, 
 	return nil
 }
 
-func (m *MediaInformasiKurirKTPFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaInformasiKurirKTPFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                 m.ID,
 		"id_informasi_kurir": m.IdInformasiKurir,
@@ -1565,7 +1565,7 @@ func (m *MediaInformasiKurirKTPFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaInformasiKurirKTPFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaInformasiKurirKTPFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1592,7 +1592,7 @@ func (MediaReviewFoto) PathName() string {
 	return "/media_review_foto/"
 }
 
-func (m *MediaReviewFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaReviewFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaReviewFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1615,7 +1615,7 @@ func (m *MediaReviewFoto) CreateHistoricalTable(ctx context.Context, session *go
 	return nil
 }
 
-func (m *MediaReviewFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaReviewFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":        m.ID,
 		"id_review": m.IdReview,
@@ -1625,7 +1625,7 @@ func (m *MediaReviewFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaReviewFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaReviewFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1652,7 +1652,7 @@ func (MediaReviewVideo) PathName() string {
 	return "/media_review_video/"
 }
 
-func (m *MediaReviewVideo) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaReviewVideo) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaReviewVideo dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1675,7 +1675,7 @@ func (m *MediaReviewVideo) CreateHistoricalTable(ctx context.Context, session *g
 	return nil
 }
 
-func (m *MediaReviewVideo) ParseToCUDType() map[string]interface{} {
+func (m MediaReviewVideo) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":        m.ID,
 		"id_review": m.IdReview,
@@ -1685,7 +1685,7 @@ func (m *MediaReviewVideo) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaReviewVideo) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaReviewVideo) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1712,7 +1712,7 @@ func (MediaTransaksiApprovedFoto) PathName() string {
 	return "/media_transaksi_approved_foto/"
 }
 
-func (m *MediaTransaksiApprovedFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaTransaksiApprovedFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaTransaksiApprovedFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1735,7 +1735,7 @@ func (m *MediaTransaksiApprovedFoto) CreateHistoricalTable(ctx context.Context, 
 	return nil
 }
 
-func (m *MediaTransaksiApprovedFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaTransaksiApprovedFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":           m.ID,
 		"id_transaksi": m.IdTransaksi,
@@ -1745,7 +1745,7 @@ func (m *MediaTransaksiApprovedFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaTransaksiApprovedFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaTransaksiApprovedFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1772,7 +1772,7 @@ func (MediaTransaksiApprovedVideo) PathName() string {
 	return "/media_transaksi_approved_video/"
 }
 
-func (m *MediaTransaksiApprovedVideo) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaTransaksiApprovedVideo) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaTransaksiApprovedVideo dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1795,7 +1795,7 @@ func (m *MediaTransaksiApprovedVideo) CreateHistoricalTable(ctx context.Context,
 	return nil
 }
 
-func (m *MediaTransaksiApprovedVideo) ParseToCUDType() map[string]interface{} {
+func (m MediaTransaksiApprovedVideo) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":           m.ID,
 		"id_transaksi": m.IdTransaksi,
@@ -1805,7 +1805,7 @@ func (m *MediaTransaksiApprovedVideo) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaTransaksiApprovedVideo) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaTransaksiApprovedVideo) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1832,7 +1832,7 @@ func (MediaPengirimanPickedUpFoto) PathName() string {
 	return "/media_pengiriman_picked_up_foto/"
 }
 
-func (m *MediaPengirimanPickedUpFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPengirimanPickedUpFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPengirimanPickedUpFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1855,7 +1855,7 @@ func (m *MediaPengirimanPickedUpFoto) CreateHistoricalTable(ctx context.Context,
 	return nil
 }
 
-func (m *MediaPengirimanPickedUpFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaPengirimanPickedUpFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":            m.ID,
 		"id_pengiriman": m.IdPengiriman,
@@ -1865,7 +1865,7 @@ func (m *MediaPengirimanPickedUpFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaPengirimanPickedUpFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPengirimanPickedUpFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1893,7 +1893,7 @@ func (MediaPengirimanSampaiFoto) PathName() string {
 
 }
 
-func (m *MediaPengirimanSampaiFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPengirimanSampaiFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPengirimanSampaiFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1916,7 +1916,7 @@ func (m *MediaPengirimanSampaiFoto) CreateHistoricalTable(ctx context.Context, s
 	return nil
 }
 
-func (m *MediaPengirimanSampaiFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaPengirimanSampaiFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":            m.ID,
 		"id_pengiriman": m.IdPengiriman,
@@ -1926,7 +1926,7 @@ func (m *MediaPengirimanSampaiFoto) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaPengirimanSampaiFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPengirimanSampaiFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -1953,7 +1953,7 @@ func (MediaPengirimanEkspedisiPickedUpFoto) PathName() string {
 	return "/media_pengiriman_ekspedisi_picked_up_foto/"
 }
 
-func (m *MediaPengirimanEkspedisiPickedUpFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPengirimanEkspedisiPickedUpFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPengirimanEkspedisiPickedUpFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -1976,7 +1976,7 @@ func (m *MediaPengirimanEkspedisiPickedUpFoto) CreateHistoricalTable(ctx context
 	return nil
 }
 
-func (m *MediaPengirimanEkspedisiPickedUpFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaPengirimanEkspedisiPickedUpFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                      m.ID,
 		"id_pengiriman_ekspedisi": m.IdPengirimanEkspedisi,
@@ -1986,7 +1986,7 @@ func (m *MediaPengirimanEkspedisiPickedUpFoto) ParseToCUDType() map[string]inter
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaPengirimanEkspedisiPickedUpFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPengirimanEkspedisiPickedUpFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -2013,7 +2013,7 @@ func (MediaPengirimanEkspedisiSampaiAgentFoto) PathName() string {
 	return "/media_pengiriman_ekspedisi_sampai_agent_foto/"
 }
 
-func (m *MediaPengirimanEkspedisiSampaiAgentFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPengirimanEkspedisiSampaiAgentFoto) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPengirimanEkspedisiSampaiAgentFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2036,7 +2036,7 @@ func (m *MediaPengirimanEkspedisiSampaiAgentFoto) CreateHistoricalTable(ctx cont
 	return nil
 }
 
-func (m *MediaPengirimanEkspedisiSampaiAgentFoto) ParseToCUDType() map[string]interface{} {
+func (m MediaPengirimanEkspedisiSampaiAgentFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                      m.ID,
 		"id_pengiriman_ekspedisi": m.IdPengirimanEkspedisi,
@@ -2046,7 +2046,7 @@ func (m *MediaPengirimanEkspedisiSampaiAgentFoto) ParseToCUDType() map[string]in
 }
 
 // DropTable disesuaikan menggunakan m.TableNameHistorical() secara dinamis
-func (m *MediaPengirimanEkspedisiSampaiAgentFoto) DropTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPengirimanEkspedisiSampaiAgentFoto) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, m.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -2061,7 +2061,7 @@ func (MediaPengirimanEkspedisiSampaiAgentFoto) TableNameHistorical() string {
 	return "media_pengiriman_ekspedisi_sampai_agent_foto_historical"
 }
 
-func (m *MediaPenggunaProfilFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPenggunaProfilFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPenggunaProfilFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2084,7 +2084,7 @@ func (m *MediaPenggunaProfilFoto) CreateSotReplicaTable(ctx context.Context, ses
 	return nil
 }
 
-func (m *MediaSellerProfilFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaSellerProfilFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaSellerProfilFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2107,7 +2107,7 @@ func (m *MediaSellerProfilFoto) CreateSotReplicaTable(ctx context.Context, sessi
 	return nil
 }
 
-func (m *MediaSellerBannerFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaSellerBannerFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaSellerBannerFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2130,7 +2130,7 @@ func (m *MediaSellerBannerFoto) CreateSotReplicaTable(ctx context.Context, sessi
 	return nil
 }
 
-func (m *MediaSellerTokoFisikFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaSellerTokoFisikFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaSellerTokoFisikFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2152,7 +2152,7 @@ func (m *MediaSellerTokoFisikFoto) CreateSotReplicaTable(ctx context.Context, se
 	return nil
 }
 
-func (m *MediaKurirProfilFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaKurirProfilFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaKurirProfilFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2175,7 +2175,7 @@ func (m *MediaKurirProfilFoto) CreateSotReplicaTable(ctx context.Context, sessio
 	return nil
 }
 
-func (m *MediaEtalaseFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaEtalaseFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaEtalaseFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2198,7 +2198,7 @@ func (m *MediaEtalaseFoto) CreateSotReplicaTable(ctx context.Context, session *g
 	return nil
 }
 
-func (m *MediaBarangIndukFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBarangIndukFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBarangIndukFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2220,7 +2220,7 @@ func (m *MediaBarangIndukFoto) CreateSotReplicaTable(ctx context.Context, sessio
 	return nil
 }
 
-func (m *MediaBarangIndukVideo) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBarangIndukVideo) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBarangIndukVideo dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2243,7 +2243,7 @@ func (m *MediaBarangIndukVideo) CreateSotReplicaTable(ctx context.Context, sessi
 	return nil
 }
 
-func (m *MediaKategoriBarangFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaKategoriBarangFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaKategoriBarangFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2267,7 +2267,7 @@ func (m *MediaKategoriBarangFoto) CreateSotReplicaTable(ctx context.Context, ses
 	return nil
 }
 
-func (m *MediaDistributorDataDokumen) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaDistributorDataDokumen) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaDistributorDataDokumen dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2290,7 +2290,7 @@ func (m *MediaDistributorDataDokumen) CreateSotReplicaTable(ctx context.Context,
 	return nil
 }
 
-func (m *MediaDistributorDataNPWPFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaDistributorDataNPWPFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaDistributorDataNPWPFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2313,7 +2313,7 @@ func (m *MediaDistributorDataNPWPFoto) CreateSotReplicaTable(ctx context.Context
 	return nil
 }
 
-func (m *MediaDistributorDataNIBFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaDistributorDataNIBFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaDistributorDataNIBFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2336,7 +2336,7 @@ func (m *MediaDistributorDataNIBFoto) CreateSotReplicaTable(ctx context.Context,
 	return nil
 }
 
-func (m *MediaDistributorDataSuratKerjasamaDokumen) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaDistributorDataSuratKerjasamaDokumen) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaDistributorDataSuratKerjasamaDokumen dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2359,7 +2359,7 @@ func (m *MediaDistributorDataSuratKerjasamaDokumen) CreateSotReplicaTable(ctx co
 	return nil
 }
 
-func (m *MediaBrandDataPerwakilanDokumen) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataPerwakilanDokumen) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataPerwakilanDokumen dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2379,7 +2379,7 @@ func (m *MediaBrandDataPerwakilanDokumen) CreateSotReplicaTable(ctx context.Cont
 	return nil
 }
 
-func (m *MediaBrandDataSertifikatFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataSertifikatFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataSertifikatFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2399,7 +2399,7 @@ func (m *MediaBrandDataSertifikatFoto) CreateSotReplicaTable(ctx context.Context
 	return nil
 }
 
-func (m *MediaBrandDataNIBFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataNIBFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataNIBFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2419,7 +2419,7 @@ func (m *MediaBrandDataNIBFoto) CreateSotReplicaTable(ctx context.Context, sessi
 	return nil
 }
 
-func (m *MediaBrandDataNPWPFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataNPWPFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataNPWPFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2439,7 +2439,7 @@ func (m *MediaBrandDataNPWPFoto) CreateSotReplicaTable(ctx context.Context, sess
 	return nil
 }
 
-func (m *MediaBrandDataLogoFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataLogoFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataLogoFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2459,7 +2459,7 @@ func (m *MediaBrandDataLogoFoto) CreateSotReplicaTable(ctx context.Context, sess
 	return nil
 }
 
-func (m *MediaBrandDataSuratKerjasamaDokumen) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaBrandDataSuratKerjasamaDokumen) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaBrandDataSuratKerjasamaDokumen dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2478,7 +2478,7 @@ func (m *MediaBrandDataSuratKerjasamaDokumen) CreateSotReplicaTable(ctx context.
 	return nil
 }
 
-func (m *MediaInformasiKendaraanKurirKendaraanFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaInformasiKendaraanKurirKendaraanFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaInformasiKendaraanKurirKendaraanFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2498,7 +2498,7 @@ func (m *MediaInformasiKendaraanKurirKendaraanFoto) CreateSotReplicaTable(ctx co
 	return nil
 }
 
-func (m *MediaInformasiKendaraanKurirBPKBFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaInformasiKendaraanKurirBPKBFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaInformasiKendaraanKurirBPKBFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2518,7 +2518,7 @@ func (m *MediaInformasiKendaraanKurirBPKBFoto) CreateSotReplicaTable(ctx context
 	return nil
 }
 
-func (m *MediaInformasiKendaraanKurirSTNKFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaInformasiKendaraanKurirSTNKFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaInformasiKendaraanKurirSTNKFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2538,7 +2538,7 @@ func (m *MediaInformasiKendaraanKurirSTNKFoto) CreateSotReplicaTable(ctx context
 	return nil
 }
 
-func (m *MediaInformasiKurirKTPFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaInformasiKurirKTPFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaInformasiKurirKTPFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2558,7 +2558,7 @@ func (m *MediaInformasiKurirKTPFoto) CreateSotReplicaTable(ctx context.Context, 
 	return nil
 }
 
-func (m *MediaReviewFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaReviewFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaReviewFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2578,7 +2578,7 @@ func (m *MediaReviewFoto) CreateSotReplicaTable(ctx context.Context, session *go
 	return nil
 }
 
-func (m *MediaReviewVideo) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaReviewVideo) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaReviewVideo dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2598,7 +2598,7 @@ func (m *MediaReviewVideo) CreateSotReplicaTable(ctx context.Context, session *g
 	return nil
 }
 
-func (m *MediaTransaksiApprovedFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaTransaksiApprovedFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaTransaksiApprovedFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2618,7 +2618,7 @@ func (m *MediaTransaksiApprovedFoto) CreateSotReplicaTable(ctx context.Context, 
 	return nil
 }
 
-func (m *MediaTransaksiApprovedVideo) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaTransaksiApprovedVideo) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaTransaksiApprovedVideo dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2638,7 +2638,7 @@ func (m *MediaTransaksiApprovedVideo) CreateSotReplicaTable(ctx context.Context,
 	return nil
 }
 
-func (m *MediaPengirimanPickedUpFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPengirimanPickedUpFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPengirimanPickedUpFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2658,7 +2658,7 @@ func (m *MediaPengirimanPickedUpFoto) CreateSotReplicaTable(ctx context.Context,
 	return nil
 }
 
-func (m *MediaPengirimanSampaiFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPengirimanSampaiFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPengirimanSampaiFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2678,7 +2678,7 @@ func (m *MediaPengirimanSampaiFoto) CreateSotReplicaTable(ctx context.Context, s
 	return nil
 }
 
-func (m *MediaPengirimanEkspedisiPickedUpFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPengirimanEkspedisiPickedUpFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPengirimanEkspedisiPickedUpFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -2698,7 +2698,7 @@ func (m *MediaPengirimanEkspedisiPickedUpFoto) CreateSotReplicaTable(ctx context
 	return nil
 }
 
-func (m *MediaPengirimanEkspedisiSampaiAgentFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (m MediaPengirimanEkspedisiSampaiAgentFoto) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct MediaPengirimanEkspedisiSampaiAgentFoto dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (

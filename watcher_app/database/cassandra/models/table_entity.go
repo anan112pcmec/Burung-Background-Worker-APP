@@ -6,7 +6,6 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
-
 )
 
 type Pengguna struct {
@@ -26,7 +25,7 @@ func (p Pengguna) TableNameHistorical() string {
 	return "pengguna_historical"
 }
 
-func (p *Pengguna) CreateHistoricalTable(ctx context.Context, s *gocql.Session) error {
+func (p Pengguna) CreateHistoricalTable(ctx context.Context, s *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct Pengguna dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -59,7 +58,7 @@ func (p Pengguna) TableNameSotReplica() string {
 	return "pengguna_sot_replica"
 }
 
-func (p *Pengguna) CreateSotReplicaTable(ctx context.Context, s *gocql.Session) error {
+func (p Pengguna) CreateSotReplicaTable(ctx context.Context, s *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct Pengguna dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -85,7 +84,7 @@ func (p *Pengguna) CreateSotReplicaTable(ctx context.Context, s *gocql.Session) 
 	return nil
 }
 
-func (p *Pengguna) ParseToCUDType() map[string]interface{} {
+func (p Pengguna) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":              p.ID,
 		"username":        p.Username,
@@ -101,7 +100,7 @@ func (p *Pengguna) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan p.TableName() secara dinamis
-func (p *Pengguna) DropTable(ctx context.Context, s *gocql.Session) error {
+func (p Pengguna) DropTable(ctx context.Context, s *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
 
 	if err := s.Query(query).ExecContext(ctx); err != nil {
@@ -133,7 +132,7 @@ func (s Seller) TableNameHistorical() string {
 	return "seller_historical"
 }
 
-func (s *Seller) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (s Seller) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct Seller dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -170,7 +169,7 @@ func (s Seller) TableNameSotReplica() string {
 	return "seller_sot_replica"
 }
 
-func (s *Seller) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (s Seller) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct Pengguna dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -200,7 +199,7 @@ func (s *Seller) CreateSotReplicaTable(ctx context.Context, session *gocql.Sessi
 	return nil
 }
 
-func (s *Seller) ParseToCUDType() map[string]interface{} {
+func (s Seller) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                s.ID,
 		"username":          s.Username,
@@ -219,7 +218,7 @@ func (s *Seller) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (s *Seller) DropTable(ctx context.Context, session *gocql.Session) error {
+func (s Seller) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, s.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -252,7 +251,7 @@ func (k Kurir) TableNameHistorical() string {
 	return "kurir_historical"
 }
 
-func (k *Kurir) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (k Kurir) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct Kurir dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -290,7 +289,7 @@ func (k Kurir) TableNameSotReplica() string {
 	return "kurir_sot_replica"
 }
 
-func (k *Kurir) CreateSotReplicaTable(ctx context.Context, s *gocql.Session) error {
+func (k Kurir) CreateSotReplicaTable(ctx context.Context, s *gocql.Session) error {
 	// Query CREATE TABLE disesuaikan dengan field di struct Pengguna dan Pencatatan
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -321,7 +320,7 @@ func (k *Kurir) CreateSotReplicaTable(ctx context.Context, s *gocql.Session) err
 	return nil
 }
 
-func (k *Kurir) ParseToCUDType() map[string]interface{} {
+func (k Kurir) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":             k.ID,
 		"nama":           k.Nama,
@@ -342,7 +341,7 @@ func (k *Kurir) ParseToCUDType() map[string]interface{} {
 }
 
 // DropTable disesuaikan menggunakan k.TableName() secara dinamis
-func (k *Kurir) DropTable(ctx context.Context, session *gocql.Session) error {
+func (k Kurir) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, k.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {

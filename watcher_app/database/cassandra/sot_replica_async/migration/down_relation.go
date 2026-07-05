@@ -3,7 +3,6 @@ package sot_replica_migration
 import (
 	"context"
 	"fmt"
-	"sync"
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
@@ -13,26 +12,20 @@ import (
 
 func DownMigration(ctx context.Context, s *gocql.Session) []error {
 	var errs []error = []error{}
-	var wg sync.WaitGroup
-	var rw sync.RWMutex
+
 	for _, v := range model_list {
-		fctx, cancel := context.WithTimeout(ctx, time.Second*6)
-		wg.Add(1)
-		go func(konteks context.Context, batal context.CancelFunc, model interface{}, sesi *gocql.Session) {
-			defer wg.Done()
-			defer batal()
+		fctx, cancel := context.WithTimeout(ctx, time.Second*10)
 
-			if sotReplica, tru := model.(cass_models.Method); tru {
-				if err := sotReplica.DropTable(konteks, sesi); err != nil {
-					rw.Lock()
-					errs = append(errs, err)
-					rw.Unlock()
-				}
-			} else {
-				fmt.Printf("Objek %T tidak mengimplementasikan sot_replica.Method\n", model)
+		if sotReplica, ok := v.(cass_models.Method); ok {
+			if err := sotReplica.DropTable(fctx, s); err != nil {
+				errs = append(errs, err)
 			}
+		} else {
+			fmt.Printf("Objek %T tidak mengimplementasikan sot_replica.Method\n", v)
+		}
 
-		}(fctx, cancel, v, s)
+		cancel()
 	}
+
 	return errs
 }

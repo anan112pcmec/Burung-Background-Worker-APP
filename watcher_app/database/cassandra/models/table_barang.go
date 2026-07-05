@@ -39,7 +39,7 @@ func (b BarangInduk) Validating() string {
 	return b.TableNameHistorical()
 }
 
-func (b *BarangInduk) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (b BarangInduk) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// REVISI: tambah kolom updated_at dan deleted_at
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -69,7 +69,7 @@ func (b *BarangInduk) CreateHistoricalTable(ctx context.Context, session *gocql.
 	return nil
 }
 
-func (b *BarangInduk) ParseToCUDType() map[string]interface{} {
+func (b BarangInduk) ParseToCUDType() map[string]interface{} {
 	// REVISI: tambah updated_at dan deleted_at
 	var deletedAtInterface interface{} = nil
 	if b.DeletedAt.Valid {
@@ -91,7 +91,7 @@ func (b *BarangInduk) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (b *BarangInduk) DropTable(ctx context.Context, session *gocql.Session) error {
+func (b BarangInduk) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, b.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -140,7 +140,7 @@ func (k KategoriBarang) Validating() string {
 	return k.TableNameHistorical()
 }
 
-func (k *KategoriBarang) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (k KategoriBarang) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	// REVISI: tambah kolom updated_at dan deleted_at
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -178,7 +178,7 @@ func (k *KategoriBarang) CreateHistoricalTable(ctx context.Context, session *goc
 	return nil
 }
 
-func (k *KategoriBarang) ParseToCUDType() map[string]interface{} {
+func (k KategoriBarang) ParseToCUDType() map[string]interface{} {
 	// REVISI: tambah updated_at dan deleted_at; gunakan IDRekening
 	var deletedAtInterface interface{} = nil
 	if k.DeletedAt.Valid {
@@ -208,7 +208,7 @@ func (k *KategoriBarang) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (k *KategoriBarang) DropTable(ctx context.Context, session *gocql.Session) error {
+func (k KategoriBarang) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, k.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -241,7 +241,7 @@ func (v VarianBarang) Validating() string {
 	return v.TableNameHistorical()
 }
 
-func (v *VarianBarang) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (v VarianBarang) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -267,7 +267,7 @@ func (v *VarianBarang) CreateHistoricalTable(ctx context.Context, session *gocql
 	return nil
 }
 
-func (v *VarianBarang) ParseToCUDType() map[string]interface{} {
+func (v VarianBarang) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":              v.ID,
 		"id_barang_induk": v.IdBarangInduk,
@@ -280,7 +280,7 @@ func (v *VarianBarang) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (v *VarianBarang) DropTable(ctx context.Context, session *gocql.Session) error {
+func (v VarianBarang) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, v.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -291,7 +291,7 @@ func (v *VarianBarang) DropTable(ctx context.Context, session *gocql.Session) er
 	return nil
 }
 
-func (b *BarangInduk) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (b BarangInduk) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// REVISI: tambah updated_at dan deleted_at
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -318,7 +318,7 @@ func (b *BarangInduk) CreateSotReplicaTable(ctx context.Context, session *gocql.
 	return nil
 }
 
-func (k *KategoriBarang) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (k KategoriBarang) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	// REVISI: tambah updated_at dan deleted_at
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -353,7 +353,7 @@ func (k *KategoriBarang) CreateSotReplicaTable(ctx context.Context, session *goc
 	return nil
 }
 
-func (v *VarianBarang) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (v VarianBarang) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,

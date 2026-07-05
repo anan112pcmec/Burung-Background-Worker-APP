@@ -2,7 +2,9 @@ Set-Location -Path 'c:\Burung_App\Project_Source\Backend-2'
 
 $files = @(
    
-    'C:\Burung_App\Project_Source\Backend-2\watcher_app\service_handle\auth\auth_handle.go'
+    # 'C:\Burung_App\Project_Source\Backend-2\watcher_app\service_handle\auth\auth_handle.go'
+    # 'C:\Burung_App\Project_Source\Backend-2\watcher_app\database\cassandra\models\table_media.go'
+    'C:\Burung_App\Project_Source\Backend-2\watcher_app\database\cassandra\models\engagement_entity.go'
 
 )
 
@@ -18,7 +20,7 @@ foreach ($file in $files) {
         # $content = $content -replace $pattern, 'settings.TimeoutContext'
 
         #  Menggunakan \bse\b agar hanya mencari kata "se" yang ber
-        $content = $content -replace 'environment', 'cache'
+        $content = $content -replace 'gocql.Session', '*gocql.Session'
         # $pattern = '\*Data mb_cud_serializer\.Parsed\*DataMessage'
         # $replacement = 'Data *mb_cud_serializer.ParsedDataMessage'
         

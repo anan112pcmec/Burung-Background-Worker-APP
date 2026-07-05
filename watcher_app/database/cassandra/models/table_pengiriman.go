@@ -43,7 +43,7 @@ func (Pengiriman) TableNameSotReplica() string {
 	return "pengiriman"
 }
 
-func (p *Pengiriman) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (p Pengiriman) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -76,7 +76,7 @@ func (p *Pengiriman) CreateHistoricalTable(ctx context.Context, session *gocql.S
 	return nil
 }
 
-func (p *Pengiriman) ParseToCUDType() map[string]interface{} {
+func (p Pengiriman) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                 p.ID,
 		"id_transaksi":       p.IdTransaksi,
@@ -96,7 +96,7 @@ func (p *Pengiriman) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (p *Pengiriman) DropTable(ctx context.Context, session *gocql.Session) error {
+func (p Pengiriman) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -107,7 +107,7 @@ func (p *Pengiriman) DropTable(ctx context.Context, session *gocql.Session) erro
 	return nil
 }
 
-func (p *Pengiriman) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (p Pengiriman) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -162,7 +162,7 @@ func (JejakPengiriman) TableNameSotReplica() string {
 	return "jejak_pengiriman"
 }
 
-func (j *JejakPengiriman) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (j JejakPengiriman) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -189,7 +189,7 @@ func (j *JejakPengiriman) CreateHistoricalTable(ctx context.Context, session *go
 	return nil
 }
 
-func (j *JejakPengiriman) ParseToCUDType() map[string]interface{} {
+func (j JejakPengiriman) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":            j.ID,
 		"id_pengiriman": j.IdPengiriman,
@@ -203,7 +203,7 @@ func (j *JejakPengiriman) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (j *JejakPengiriman) DropTable(ctx context.Context, session *gocql.Session) error {
+func (j JejakPengiriman) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, j.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -214,7 +214,7 @@ func (j *JejakPengiriman) DropTable(ctx context.Context, session *gocql.Session)
 	return nil
 }
 
-func (j *JejakPengiriman) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (j JejakPengiriman) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -272,7 +272,7 @@ func (PengirimanEkspedisi) TableNameSotReplica() string {
 	return "pengiriman_ekspedisi"
 }
 
-func (p *PengirimanEkspedisi) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (p PengirimanEkspedisi) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -305,7 +305,7 @@ func (p *PengirimanEkspedisi) CreateHistoricalTable(ctx context.Context, session
 	return nil
 }
 
-func (p *PengirimanEkspedisi) ParseToCUDType() map[string]interface{} {
+func (p PengirimanEkspedisi) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                  p.ID,
 		"id_transaksi":        p.IdTransaksi,
@@ -325,7 +325,7 @@ func (p *PengirimanEkspedisi) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (p *PengirimanEkspedisi) DropTable(ctx context.Context, session *gocql.Session) error {
+func (p PengirimanEkspedisi) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -336,7 +336,7 @@ func (p *PengirimanEkspedisi) DropTable(ctx context.Context, session *gocql.Sess
 	return nil
 }
 
-func (p *PengirimanEkspedisi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (p PengirimanEkspedisi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -391,7 +391,7 @@ func (JejakPengirimanEkspedisi) TableNameSotReplica() string {
 	return "jejak_pengiriman_ekspedisi"
 }
 
-func (j *JejakPengirimanEkspedisi) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (j JejakPengirimanEkspedisi) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -418,7 +418,7 @@ func (j *JejakPengirimanEkspedisi) CreateHistoricalTable(ctx context.Context, se
 	return nil
 }
 
-func (j *JejakPengirimanEkspedisi) ParseToCUDType() map[string]interface{} {
+func (j JejakPengirimanEkspedisi) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                      j.ID,
 		"id_pengiriman_ekspedisi": j.IdPengirimanEkspedisi,
@@ -432,7 +432,7 @@ func (j *JejakPengirimanEkspedisi) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (j *JejakPengirimanEkspedisi) DropTable(ctx context.Context, session *gocql.Session) error {
+func (j JejakPengirimanEkspedisi) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, j.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -443,7 +443,7 @@ func (j *JejakPengirimanEkspedisi) DropTable(ctx context.Context, session *gocql
 	return nil
 }
 
-func (j *JejakPengirimanEkspedisi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (j JejakPengirimanEkspedisi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,

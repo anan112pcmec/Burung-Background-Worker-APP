@@ -3,6 +3,7 @@ package environment
 import (
 	"fmt"
 	"log"
+	"net"
 	"sync"
 	"time"
 
@@ -42,8 +43,70 @@ type InternalDBReadWriteSystem struct {
 	Read  *gorm.DB
 }
 
+type connObserver struct {
+	name string
+}
+
+func (o connObserver) ObserveConnect(oc gocql.ObservedConnect) {
+	if oc.Err != nil {
+		fmt.Printf("🔴 [%s] gagal connect ke host %v: %v (durasi: %v)\n",
+			o.name, oc.Host.ConnectAddress(), oc.Err, oc.End.Sub(oc.Start))
+	} else {
+		fmt.Printf("🟢 [%s] berhasil connect ke host %v (durasi: %v)\n",
+			o.name, oc.Host.ConnectAddress(), oc.End.Sub(oc.Start))
+	}
+}
+
+type staticAddressTranslator struct {
+	ip   net.IP
+	port int
+}
+
+func (t staticAddressTranslator) Translate(addr net.IP, port int) (net.IP, int) {
+	return t.ip, t.port
+}
+
+func connectWithRetry(cluster *gocql.ClusterConfig, name string, maxAttempts int) (*gocql.Session, error) {
+	var session *gocql.Session
+	var err error
+
+	fmt.Printf("=== [%s] cluster config ===\n", name)
+	fmt.Printf("Hosts: %v\n", cluster.Hosts)
+	fmt.Printf("Port: %d\n", cluster.Port)
+	fmt.Printf("Keyspace: %s\n", cluster.Keyspace)
+	fmt.Printf("ProtoVersion: %d\n", cluster.ProtoVersion)
+	fmt.Printf("Consistency: %v\n", cluster.Consistency)
+	if auth, ok := cluster.Authenticator.(gocql.PasswordAuthenticator); ok {
+		fmt.Printf("Auth Username: %q\n", auth.Username)
+		fmt.Printf("Auth Password len: %q\n", auth.Password)
+	} else {
+		fmt.Printf("Authenticator: %T (bukan PasswordAuthenticator!)\n", cluster.Authenticator)
+	}
+	fmt.Printf("ConnectTimeout: %v\n", cluster.ConnectTimeout)
+	fmt.Printf("Timeout: %v\n", cluster.Timeout)
+	fmt.Println("===========================")
+
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		session, err = cluster.CreateSession()
+		if err == nil {
+			fmt.Printf("✅ berhasil terhubung ke %s (percobaan ke-%d)\n", name, attempt)
+			return session, nil
+		}
+
+		fmt.Printf("❌ gagal connect ke %s (percobaan %d/%d)\n", name, attempt, maxAttempts)
+		fmt.Printf("   error type: %T\n", err)
+		fmt.Printf("   error detail: %+v\n", err)
+
+		if attempt < maxAttempts {
+			time.Sleep(3 * time.Second)
+		}
+	}
+
+	return nil, err
+}
+
 func (e *Environment) RunConnectionEnvironment() (
-	db *InternalDBReadWriteSystem,
+	db InternalDBReadWriteSystem,
 	redis_authentication *redis.Client,
 	redis_session *redis.Client,
 	search_engine meilisearch.ServiceManager,
@@ -139,7 +202,13 @@ func (e *Environment) RunConnectionEnvironment() (
 		DB:       e.RDSSESSION,
 	})
 
-	connStr := fmt.Sprintf("amqp://%s:%s@%s:%s/", e.RMQ_USER, e.RMQ_PASS, e.RMQ_HOST, e.RMQ_PORT)
+	connStr := fmt.Sprintf(
+		"amqp://%s:%s@%s:%s/internal_system_burung",
+		e.RMQ_USER,
+		e.RMQ_PASS,
+		e.RMQ_HOST,
+		e.RMQ_PORT,
+	)
 	notification, _ := amqp091.Dial(connStr)
 	cud_ch, err := notification.Channel()
 	if err != nil {
@@ -182,42 +251,48 @@ func (e *Environment) RunConnectionEnvironment() (
 
 	search_engine = meilisearch.New(fmt.Sprintf("http://%s:%s", e.MEILIHOST, e.MEILIPORT), meilisearch.WithAPIKey(e.MEILIKEY))
 
-	ch := gocql.NewCluster(fmt.Sprintf("127.0.0.1:%s", e.CASS_HISTORICAL_PORT))
+	ch := gocql.NewCluster("127.0.0.1")
+	ch.Port = 9042
+	ch.DisableInitialHostLookup = true
+	ch.ProtoVersion = 4
 	ch.Keyspace = e.CASS_HISTORICAL_KEYSPACE
+	ch.ConnectObserver = connObserver{name: "Cassandra Historical"}
+	ch.AddressTranslator = staticAddressTranslator{ip: net.ParseIP("127.0.0.1"), port: 9042}
 	ch.ReconnectionPolicy = &gocql.ExponentialReconnectionPolicy{
-		MaxRetries:      8,                // 9 total percobaan (0s, 1s, 2s, 4s, 8s, 16s, 30s, 30s, 30s)
-		InitialInterval: 1 * time.Second,  // Dimulai pada 1 detik
-		MaxInterval:     30 * time.Second, // Membatasi pertumbuhan eksponensial hingga 30 detik
+		MaxRetries:      8,
+		InitialInterval: 1 * time.Second,
+		MaxInterval:     30 * time.Second,
 	}
 	ch.Authenticator = gocql.PasswordAuthenticator{
 		Username: e.CASS_HISTORICAL_USER,
 		Password: e.CASS_HISTORICAL_PASS,
 	}
 
-	cass_historical_session, err = ch.CreateSession()
+	cass_historical_session, err = connectWithRetry(ch, "Cassandra Historical", 10)
 	if err != nil {
-		log.Fatal("gagal membuat session dengan cassandra", err)
-	} else {
-		fmt.Println("berhasil terhubung ke cassandra")
+		log.Fatal("gagal membuat session dengan cassandra historical: ", err)
 	}
 
-	csr := gocql.NewCluster(fmt.Sprintf("127.0.0.1:%s", e.CASS_SOT_REPLICA_PORT))
+	csr := gocql.NewCluster("127.0.0.1")
+	csr.Port = 9043
+	csr.DisableInitialHostLookup = true
+	csr.ProtoVersion = 4
 	csr.Keyspace = e.CASS_SOT_REPLICA_KEYSPACE
+	csr.ConnectObserver = connObserver{name: "Cassandra SOT"}
+	csr.AddressTranslator = staticAddressTranslator{ip: net.ParseIP("127.0.0.1"), port: 9043}
 	csr.ReconnectionPolicy = &gocql.ExponentialReconnectionPolicy{
-		MaxRetries:      8,                // 9 total percobaan (0s, 1s, 2s, 4s, 8s, 16s, 30s, 30s, 30s)
-		InitialInterval: 1 * time.Second,  // Dimulai pada 1 detik
-		MaxInterval:     30 * time.Second, // Membatasi pertumbuhan eksponensial hingga 30 detik
+		MaxRetries:      8,
+		InitialInterval: 1 * time.Second,
+		MaxInterval:     30 * time.Second,
 	}
 	csr.Authenticator = gocql.PasswordAuthenticator{
 		Username: e.CASS_SOT_REPLICA_USER,
 		Password: e.CASS_SOT_REPLICA_PASS,
 	}
 
-	cass_sot_replica_session, err = csr.CreateSession()
+	cass_sot_replica_session, err = connectWithRetry(csr, "Cassandra SOT Replica", 10)
 	if err != nil {
-		log.Fatal("gagal membuat session dengan cassandra", err)
-	} else {
-		fmt.Println("berhasil terhubung ke cassandra")
+		log.Fatal("gagal membuat session dengan cassandra sot replica: ", err)
 	}
 
 	return

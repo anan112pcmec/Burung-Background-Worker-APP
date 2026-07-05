@@ -34,7 +34,7 @@ func (AlamatEkspedisi) TableNameSotReplica() string {
 	return "alamat_ekspedisi"
 }
 
-func (a *AlamatEkspedisi) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (a AlamatEkspedisi) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -61,7 +61,7 @@ func (a *AlamatEkspedisi) CreateHistoricalTable(ctx context.Context, session *go
 	return nil
 }
 
-func (a *AlamatEkspedisi) ParseToCUDType() map[string]interface{} {
+func (a AlamatEkspedisi) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":               a.ID,
 		"kota":             a.Kota,
@@ -76,7 +76,7 @@ func (a *AlamatEkspedisi) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (a *AlamatEkspedisi) DropTable(ctx context.Context, session *gocql.Session) error {
+func (a AlamatEkspedisi) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, a.TableNameHistorical())
 	if err := session.Query(query).ExecContext(ctx); err != nil {
 		return fmt.Errorf("gagal drop tabel %s: %w", a.TableNameHistorical(), err)
@@ -85,7 +85,7 @@ func (a *AlamatEkspedisi) DropTable(ctx context.Context, session *gocql.Session)
 	return nil
 }
 
-func (a *AlamatEkspedisi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (a AlamatEkspedisi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -133,7 +133,7 @@ func (RekeningSistem) TableNameSotReplica() string {
 	return "rekening_sistem"
 }
 
-func (r *RekeningSistem) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (r RekeningSistem) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -159,7 +159,7 @@ func (r *RekeningSistem) CreateHistoricalTable(ctx context.Context, session *goc
 	return nil
 }
 
-func (r *RekeningSistem) ParseToCUDType() map[string]interface{} {
+func (r RekeningSistem) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":               r.ID,
 		"nama_bank":        r.NamaBank,
@@ -173,7 +173,7 @@ func (r *RekeningSistem) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (r *RekeningSistem) DropTable(ctx context.Context, session *gocql.Session) error {
+func (r RekeningSistem) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, r.TableNameHistorical())
 	if err := session.Query(query).ExecContext(ctx); err != nil {
 		return fmt.Errorf("gagal drop tabel %s: %w", r.TableNameHistorical(), err)
@@ -182,7 +182,7 @@ func (r *RekeningSistem) DropTable(ctx context.Context, session *gocql.Session) 
 	return nil
 }
 
-func (r *RekeningSistem) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (r RekeningSistem) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -247,7 +247,7 @@ func (PayOutSistem) TableNameSotReplica() string {
 	return "payout_sistem"
 }
 
-func (p *PayOutSistem) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (p PayOutSistem) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -290,7 +290,7 @@ func (p *PayOutSistem) CreateHistoricalTable(ctx context.Context, session *gocql
 	return nil
 }
 
-func (p *PayOutSistem) ParseToCUDType() map[string]interface{} {
+func (p PayOutSistem) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                 p.ID,
 		"id_disburstment":    p.IdDisburstment,
@@ -321,7 +321,7 @@ func (p *PayOutSistem) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (p *PayOutSistem) DropTable(ctx context.Context, session *gocql.Session) error {
+func (p PayOutSistem) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
 	if err := session.Query(query).ExecContext(ctx); err != nil {
 		return fmt.Errorf("gagal drop tabel %s: %w", p.TableNameHistorical(), err)
@@ -330,7 +330,7 @@ func (p *PayOutSistem) DropTable(ctx context.Context, session *gocql.Session) er
 	return nil
 }
 
-func (p *PayOutSistem) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (p PayOutSistem) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -414,7 +414,7 @@ func (KebijakanSistem) TableNameSotReplica() string {
 	return "kebijakan_sistem"
 }
 
-func (k *KebijakanSistem) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (k KebijakanSistem) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -460,7 +460,7 @@ func (k *KebijakanSistem) CreateHistoricalTable(ctx context.Context, session *go
 	return nil
 }
 
-func (k *KebijakanSistem) ParseToCUDType() map[string]interface{} {
+func (k KebijakanSistem) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":                               k.ID,
 		"ditetapkan_oleh":                  k.DitetapkanOleh,
@@ -494,7 +494,7 @@ func (k *KebijakanSistem) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (k *KebijakanSistem) DropTable(ctx context.Context, session *gocql.Session) error {
+func (k KebijakanSistem) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, k.TableNameHistorical())
 	if err := session.Query(query).ExecContext(ctx); err != nil {
 		return fmt.Errorf("gagal drop tabel %s: %w", k.TableNameHistorical(), err)
@@ -503,7 +503,7 @@ func (k *KebijakanSistem) DropTable(ctx context.Context, session *gocql.Session)
 	return nil
 }
 
-func (k *KebijakanSistem) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (k KebijakanSistem) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   meilisearch:
     image: getmeili/meilisearch:latest
@@ -8,29 +6,6 @@ services:
       MEILI_MASTER_KEY: "SuperSecureKey123456"
     ports:
       - "7700:7700"
-    restart: unless-stopped
-    networks:
-      - watcher_net
-
-  # =========================================================================
-  # CLICKHOUSE: Database Analitik & Log Terpusat
-  # =========================================================================
-  clickhouse:
-    image: clickhouse/clickhouse-server:latest
-    container_name: clickhouse_burung_analytics
-    ports:
-      - "8123:8123"
-      - "9000:9000"
-    environment:
-      CLICKHOUSE_USER: burung_watcher
-      CLICKHOUSE_PASSWORD: watcher_secure_pass
-      CLICKHOUSE_DB: burung_analytics
-    ulimits:
-      nofile:
-        soft: 262144
-        hard: 262144
-    volumes:
-      - clickhouse_data:/var/lib/clickhouse
     restart: unless-stopped
     networks:
       - watcher_net
@@ -72,7 +47,6 @@ services:
       - watcher_net
 
 volumes:
-  clickhouse_data:
   cassandra_historical_data: # Volume untuk cluster historical
   cassandra_sot_data:        # Volume untuk cluster sot_replica
 

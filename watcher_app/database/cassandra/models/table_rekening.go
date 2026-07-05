@@ -34,7 +34,7 @@ func (RekeningSeller) TableNameSotReplica() string {
 	return "rekening_seller"
 }
 
-func (r *RekeningSeller) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (r RekeningSeller) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -61,7 +61,7 @@ func (r *RekeningSeller) CreateHistoricalTable(ctx context.Context, session *goc
 	return nil
 }
 
-func (r *RekeningSeller) ParseToCUDType() map[string]interface{} {
+func (r RekeningSeller) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":               r.ID,
 		"id_seller":        r.IDSeller,
@@ -75,7 +75,7 @@ func (r *RekeningSeller) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (r *RekeningSeller) DropTable(ctx context.Context, session *gocql.Session) error {
+func (r RekeningSeller) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, r.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -86,7 +86,7 @@ func (r *RekeningSeller) DropTable(ctx context.Context, session *gocql.Session) 
 	return nil
 }
 
-func (r *RekeningSeller) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (r RekeningSeller) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -134,7 +134,7 @@ func (RekeningKurir) TableNameSotReplica() string {
 	return "rekening_kurir"
 }
 
-func (r *RekeningKurir) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
+func (r RekeningKurir) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
@@ -160,7 +160,7 @@ func (r *RekeningKurir) CreateHistoricalTable(ctx context.Context, session *gocq
 	return nil
 }
 
-func (r *RekeningKurir) ParseToCUDType() map[string]interface{} {
+func (r RekeningKurir) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
 		"id":               r.ID,
 		"id_kurir":         r.IdKurir,
@@ -173,7 +173,7 @@ func (r *RekeningKurir) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (r *RekeningKurir) DropTable(ctx context.Context, session *gocql.Session) error {
+func (r RekeningKurir) DropTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, r.TableNameHistorical())
 
 	if err := session.Query(query).ExecContext(ctx); err != nil {
@@ -184,7 +184,7 @@ func (r *RekeningKurir) DropTable(ctx context.Context, session *gocql.Session) e
 	return nil
 }
 
-func (r *RekeningKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+func (r RekeningKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
