@@ -142,6 +142,9 @@ func CreateTambahMediaInformasiKendaraanKurirKendaraanFoto(Data mb_cud_serialize
 		Pop:       2.5, // Pop-up muncul 2.5 detik
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Simpan 7 hari
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		Data: struct {
 			Metadata map[string]interface{} `json:"metadata"`
 			Special  interface{}            `json:"special"`
@@ -219,6 +222,9 @@ func UpdateTambahMediaInformasiKendaraanKurirKendaraanFoto(Data mb_cud_serialize
 		Pop:       0, // Sesuai request: 0 biar ga usah muncul pop-up, langsung masuk inbox
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 5).Format(time.RFC3339), // Disimpan 5 hari di inbox
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		Data: struct {
 			Metadata map[string]interface{} `json:"metadata"`
 			Special  interface{}            `json:"special"`
@@ -327,6 +333,9 @@ func CreateTambahInformasiKendaraanKurirBPKBFoto(Data mb_cud_serializer.ParsedDa
 		Judul:     "ðŸ“‘ Dokumen BPKB Sukses Diunggah",
 		Pesan:     fmt.Sprintf("Halo %s, berkas foto BPKB kendaraan lu udah masuk ke sistem internal. Dokumen aman dan siap direview oleh tim verifikasi data.", NamaKurir),
 		Pop:       3.0, // Alert dokumen penting kasih 3 detik
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Eksis 7 hari di inbox
 		Data: struct {
@@ -406,6 +415,9 @@ func UpdateTambahInformasiKendaraanKurirBPKBFoto(Data mb_cud_serializer.ParsedDa
 		Judul:     "ðŸ”„ Berkas BPKB Diperbarui",
 		Pesan:     fmt.Sprintf("Halo %s, lu baru saja memperbarui file foto BPKB kendaraan. Sistem akan memperbarui berkas antrean verifikasi lu.", NamaKurir),
 		Pop:       0, // Langsung masuk inbox tanpa memunculkan pop-up di layar
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 5).Format(time.RFC3339), // Disimpan 5 hari di inbox
 		Data: struct {
@@ -515,6 +527,9 @@ func CreateTambahInformasiKendaraanKurirSTNKFoto(Data mb_cud_serializer.ParsedDa
 		Judul:     "ðŸ“„ Berkas STNK Berhasil Diunggah",
 		Pesan:     fmt.Sprintf("Halo %s, berkas foto STNK kendaraan lu udah aman masuk ke sistem. Tim verifikator bakal segera mengecek validitasnya ya!", NamaKurir),
 		Pop:       3.0, // Pop-up muncul 3 detik
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Eksis 7 hari di inbox
 		Data: struct {
@@ -594,6 +609,9 @@ func UpdateTambahInformasiKendaraanKurirSTNKFoto(Data mb_cud_serializer.ParsedDa
 		Judul:     "ðŸ”„ Foto STNK Diperbarui",
 		Pesan:     fmt.Sprintf("Halo %s, file foto STNK kendaraan lu berhasil diperbarui ke sistem internal.", NamaKurir),
 		Pop:       0, // Sesuai request: 0 biar silent, gak ganggu layar, langsung ngendap di inbox
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 5).Format(time.RFC3339), // Simpan 5 hari di inbox
 		Data: struct {
@@ -704,6 +722,9 @@ func CreateTambahMediaInformasiKurirKTPFoto(Data mb_cud_serializer.ParsedDataMes
 		Judul:     "ðŸªª Foto KTP Sukses Terunggah",
 		Pesan:     fmt.Sprintf("Halo %s, foto KTP lu udah aman tersimpan di sistem. Berkas ini akan langsung diproses untuk kebutuhan verifikasi akun lu.", NamaKurir),
 		Pop:       3.0, // Pop-up muncul selama 3 detik
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Simpan 7 hari
 		Data: struct {
@@ -783,6 +804,9 @@ func UpdateTambahMediaInformasiKurirKTPFoto(Data mb_cud_serializer.ParsedDataMes
 		Judul:     "ðŸ”„ Foto KTP Diperbarui",
 		Pesan:     fmt.Sprintf("Halo %s, perubahan berkas foto KTP lu berhasil disimpan ke dalam sistem.", NamaKurir),
 		Pop:       0, // Silent update, langsung masuk inbox tanpa ganggu screen kurir
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 5).Format(time.RFC3339), // Simpan 5 hari di inbox
 		Data: struct {
@@ -890,6 +914,9 @@ func CreateTambahMediaPengirimanPickedUpFoto(Data mb_cud_serializer.ParsedDataMe
 		Judul:      "ðŸ“¦ Paketmu Mulai Jalan!",
 		Pesan:      "Hore! Paketmu sudah di-pickup oleh kurir dari toko seller dan sedang dalam perjalanan menuju lokasimu.",
 		Pop:        3.0,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 		Data: struct {
@@ -909,6 +936,9 @@ func CreateTambahMediaPengirimanPickedUpFoto(Data mb_cud_serializer.ParsedDataMe
 		Judul:     "ðŸšš Paket Berhasil Diserahkan",
 		Pesan:     "Mantap! Kurir sudah melakukan pickup berkas paket pesanan pembeli dari tokomu.",
 		Pop:       3.0,
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 		Data: struct {
@@ -980,6 +1010,9 @@ func CreateTambahMediaPengirimanSampaiFoto(Data mb_cud_serializer.ParsedDataMess
 		Judul:      "ðŸŽ‰ Paketmu Sudah Sampai!",
 		Pesan:      "Kurir telah menyerahkan paket di lokasi tujuan. Silakan cek bukti foto penyerahan dan pastikan kondisi barang aman ya!",
 		Pop:        3.0,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 		Data: struct {
@@ -999,6 +1032,9 @@ func CreateTambahMediaPengirimanSampaiFoto(Data mb_cud_serializer.ParsedDataMess
 		Judul:     "ðŸ Pesanan Selesai Diantar",
 		Pesan:     "Paket kirimanmu telah sukses diserahkan ke tangan pembeli oleh pihak kurir.",
 		Pop:       3.0,
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 		Data: struct {
@@ -1072,6 +1108,9 @@ func CreateTambahMediaPengirimanEkspedisiPickedUpFoto(Data mb_cud_serializer.Par
 		Judul:      "ðŸ“¦ Paket Diserahkan ke Ekspedisi",
 		Pesan:      "Paket pesananmu kini sudah di-pickup oleh armada logistik ekspedisi rekanan dan segera bergerak menuju kota tujuan.",
 		Pop:        3.0,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 		Data: struct {
@@ -1091,6 +1130,9 @@ func CreateTambahMediaPengirimanEkspedisiPickedUpFoto(Data mb_cud_serializer.Par
 		Judul:     "ðŸšš Serah Terima Ekspedisi Berhasil",
 		Pesan:     "Bukti serah terima unit paket pesanan pembeli ke kurir ekspedisi sudah terdata valid di sistem.",
 		Pop:       3.0,
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 		Data: struct {
@@ -1164,6 +1206,9 @@ func CreateTambahMediaPengirimanEkspedisiSampaiAgentFoto(Data mb_cud_serializer.
 		Judul:      "ðŸ¢ Paket Tiba di Agen Transit",
 		Pesan:      "Paket kirimanmu sudah mendarat di gudang/agen ekspedisi terdekat dari lokasimu dan segera dijadwalkan untuk pengantaran kurir lokal.",
 		Pop:        3.0,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 		Data: struct {
@@ -1183,6 +1228,9 @@ func CreateTambahMediaPengirimanEkspedisiSampaiAgentFoto(Data mb_cud_serializer.
 		Judul:     "ðŸ“ Paket Memasuki Hub Tujuan",
 		Pesan:     "Paket pesanan pembeli yang kamu kirim via ekspedisi terpantau sudah sampai di gudang agen transit kota tujuan.",
 		Pop:       3.0,
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 		Data: struct {
@@ -1198,4 +1246,3 @@ func CreateTambahMediaPengirimanEkspedisiSampaiAgentFoto(Data mb_cud_serializer.
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
-

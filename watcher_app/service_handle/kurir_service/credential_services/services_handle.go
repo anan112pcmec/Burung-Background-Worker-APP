@@ -102,6 +102,9 @@ func UpdateValidateUbahPasswordKurir(Data mb_cud_serializer.ParsedDataMessage, c
 		Pesan:     pesanKeamanan,
 		Pop:       5.0, // Munculin pop-up/toast selama 5 detik biar kurir langsung ngeh demi keamanan
 		CreatedAt: time.Now().Format(time.RFC3339),
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		ExpiredAt: time.Now().AddDate(0, 1, 0).Format(time.RFC3339), // Log keamanan disimpan selama 1 bulan di inbox
 		Data: struct {
 			Metadata map[string]interface{} `json:"metadata"`
@@ -126,4 +129,3 @@ func UpdateValidateUbahPasswordKurir(Data mb_cud_serializer.ParsedDataMessage, c
 	return nil
 
 }
-

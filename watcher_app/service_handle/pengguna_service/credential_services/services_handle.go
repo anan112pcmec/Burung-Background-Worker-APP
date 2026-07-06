@@ -10,6 +10,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	"gorm.io/gorm"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cache_db_function "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/function"
 	cache_db_session "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cache_db/session"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
@@ -17,7 +18,6 @@ import (
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -89,6 +89,9 @@ func UpdateValidateUbahPasswordPenggunaViaOtp(Data mb_cud_serializer.ParsedDataM
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      judulSecurity,
 		Pesan:      pesanSecurity,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 30).Format(time.RFC3339), // Simpan 30 hari di inbox karena info krusial
 		Pop:        5.0,                                               // 5 detik, biar user sadar ada aktivitas keamanan di akunnya
@@ -164,7 +167,7 @@ func UpdateValidateUbahPasswordPenggunaViaPin(Data mb_cud_serializer.ParsedDataM
 	}); err != nil {
 		return fmt.Errorf("gagal memasukan data ke dalam search engine %s dalam %s", err, handle_services)
 	} else {
-		fmt.Println("berhasil memasukan data ke dalam search engine dengan UID %s", task_info.IndexUID)
+		fmt.Printf("berhasil memasukan data ke dalam search engine dengan UID %s", task_info.IndexUID)
 	}
 
 	if err := cache_db_function.UpdateSessionData[sot_models.Pengguna](ctx, *rds_session, cache_db_session.GetSessionKey[*sot_models.Pengguna](&Objek), Objek); err != nil {
@@ -179,7 +182,10 @@ func UpdateValidateUbahPasswordPenggunaViaPin(Data mb_cud_serializer.ParsedDataM
 		Pesan:      "Kata sandi akun Anda telah berhasil diperbarui melalui verifikasi PIN keamanan. Jika Anda tidak merasa melakukan perubahan ini, segera amankan akun Anda.",
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 30).Format(time.RFC3339), // Log keamanan disimpan 30 hari
-		Pop:        5.0,                                               // 5 detik biar terbaca jelas
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
+		Pop:        5.0, // 5 detik biar terbaca jelas
 		Data: struct {
 			Metadata map[string]interface{} `json:"metadata"`
 			Special  interface{}            `json:"special"`
@@ -267,7 +273,10 @@ func CreateMembuatSecretPinPengguna(Data mb_cud_serializer.ParsedDataMessage, ct
 		Pesan:      "PIN keamanan akun Anda telah berhasil didaftarkan. Gunakan PIN ini untuk menjaga keamanan transaksi dan perubahan data penting Anda.",
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 14).Format(time.RFC3339), // Simpan log 14 hari
-		Pop:        4.0,                                               // 4 detik dirasa cukup untuk info registrasi sukses
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
+		Pop:        4.0, // 4 detik dirasa cukup untuk info registrasi sukses
 		Data: struct {
 			Metadata map[string]interface{} `json:"metadata"`
 			Special  interface{}            `json:"special"`
@@ -339,7 +348,7 @@ func UpdateSecretPinPengguna(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 	}); err != nil {
 		return fmt.Errorf("gagal memasukan data ke dalam search engine %s dalam %s", err, handle_services)
 	} else {
-		fmt.Println("berhasil memasukan data ke dalam search engine dengan UID %s", task_info.IndexUID)
+		fmt.Printf("berhasil memasukan data ke dalam search engine dengan UID %s", task_info.IndexUID)
 	}
 
 	if err := cache_db_function.UpdateSessionData[sot_models.Pengguna](ctx, *rds_session, cache_db_session.GetSessionKey[*sot_models.Pengguna](&Objek), Objek); err != nil {
@@ -348,5 +357,3 @@ func UpdateSecretPinPengguna(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 
 	return nil
 }
-
-

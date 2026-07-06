@@ -63,9 +63,9 @@ func CreateEngageSocialMediaSeller(Data mb_cud_serializer.ParsedDataMessage, ctx
 			Judul:     "ðŸŒ Media Sosial Ditautkan",
 			Pesan:     "Akun media sosial baru berhasil dihubungkan ke profil toko Anda.",
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -124,9 +124,9 @@ func UpdateEngageSocialMediaSeller(Data mb_cud_serializer.ParsedDataMessage, ctx
 			Judul:     "âœï¸ Media Sosial Diperbarui",
 			Pesan:     "Perubahan tautan atau informasi saluran media sosial toko telah berhasil disimpan.",
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -142,5 +142,3 @@ func UpdateEngageSocialMediaSeller(Data mb_cud_serializer.ParsedDataMessage, ctx
 
 	return nil
 }
-
-

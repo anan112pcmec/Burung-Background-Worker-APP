@@ -88,6 +88,9 @@ func UpdateUbahPersonalProfilingPengguna(Data mb_cud_serializer.ParsedDataMessag
 			Judul:      "ðŸ”„ Profil Diperbarui",
 			Pesan:      "Data profil dan sesi akun Anda berhasil diperbarui.",
 			Pop:        0, // Silent sync background
+			Activity:   true,
+			Inbox:      false,
+			Archive:    true,
 			CreatedAt:  time.Now().Format(time.RFC3339),
 			ExpiredAt:  time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 			Data: struct {
@@ -103,4 +106,3 @@ func UpdateUbahPersonalProfilingPengguna(Data mb_cud_serializer.ParsedDataMessag
 
 	return nil
 }
-

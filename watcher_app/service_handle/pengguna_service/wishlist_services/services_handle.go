@@ -8,11 +8,11 @@ import (
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 	"gorm.io/gorm"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -57,7 +57,10 @@ func CreateTambahBarangKeWishlist(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		Pesan:      "Produk incaranmu sukses masuk daftar favorit. Kami akan kabari kalau ada diskon atau promo menarik untuk produk ini ya!",
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Keep seminggu di tab notif
-		Pop:        2.0,                                              // Cukup 2 detik, biar gak ganggu user yang lagi asyik nyari barang lain
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
+		Pop:        2.0, // Cukup 2 detik, biar gak ganggu user yang lagi asyik nyari barang lain
 		Data: struct {
 			Metadata map[string]interface{} `json:"metadata"`
 			Special  interface{}            `json:"special"`
@@ -112,5 +115,3 @@ func DeleteHapusBarangDariWishlist(Data mb_cud_serializer.ParsedDataMessage, ctx
 
 	return nil
 }
-
-

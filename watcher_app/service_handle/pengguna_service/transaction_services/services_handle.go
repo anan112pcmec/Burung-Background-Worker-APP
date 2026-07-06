@@ -9,12 +9,12 @@ import (
 	"github.com/meilisearch/meilisearch-go"
 	"gorm.io/gorm"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -160,6 +160,9 @@ func CreateLockTransaksiVa(Data mb_cud_serializer.ParsedDataMessage, ctx context
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      judulVA,
 		Pesan:      pesanVA,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 		Pop:        4.5, // Muncul di layar pembeli 4.5 detik
@@ -194,6 +197,9 @@ func CreateLockTransaksiVa(Data mb_cud_serializer.ParsedDataMessage, ctx context
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      judulSeller,
 		Pesan:      pesanSeller,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 3).Format(time.RFC3339), // Log info keep 3 hari aja cukup
 		Pop:        0.0,                                              // ðŸ”¥ Request lu: Pop 0 biar FE tau ini silent, masuk inbox doang!
@@ -318,6 +324,9 @@ func CreateLockTransaksiWallet(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      "ðŸ‘› Konfirmasi Pembayaran Dompet",
 		Pesan:      fmt.Sprintf("Pesanan %s menunggu konfirmasi saldo digitalmu. Yuk selesaikan pembayaran sekarang agar pesanan langsung diproses!", Objek.KodeOrderSistem),
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 		Pop:        3.0, // 3 detik cukup buat trigger bayar instan
@@ -345,6 +354,9 @@ func CreateLockTransaksiWallet(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      "ðŸ“¦ Calon Pesanan Baru (Wallet)",
 		Pesan:      fmt.Sprintf("Pembeli sedang menyelesaikan pembayaran transaksi %s menggunakan dompet digital.", Objek.KodeOrderSistem),
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 3).Format(time.RFC3339),
 		Pop:        0.0, // Silent inbox
@@ -468,6 +480,9 @@ func CreateLockTransaksiGerai(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Judul:      "ðŸª Kode Bayar Gerai Ritel Keluar",
 		Pesan:      fmt.Sprintf("Transaksi %s berhasil dibuat. Tunjukkan kode pembayaran di gerai ritel terdekat pilihanmu sebelum batas waktu habis ya!", Objek.KodeOrderSistem),
 		CreatedAt:  time.Now().Format(time.RFC3339),
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		ExpiredAt:  time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 		Pop:        5.0, // 5 detik, biar user sadar kode bayarnya udah siap
 		Data: struct {
@@ -495,6 +510,9 @@ func CreateLockTransaksiGerai(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Judul:      "ðŸ“¦ Calon Pesanan Baru (Gerai)",
 		Pesan:      fmt.Sprintf("Pembeli telah mengambil kode bayar gerai untuk pesanan %s. Menunggu pembayaran lunas.", Objek.KodeOrderSistem),
 		CreatedAt:  time.Now().Format(time.RFC3339),
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		ExpiredAt:  time.Now().AddDate(0, 0, 3).Format(time.RFC3339),
 		Pop:        0.0, // Silent inbox
 		Data: struct {
@@ -519,5 +537,3 @@ func CreateLockTransaksiGerai(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 
 	return nil
 }
-
-

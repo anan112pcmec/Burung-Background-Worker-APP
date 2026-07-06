@@ -60,6 +60,9 @@ func UpdateUbahFotoProfilPengguna(Data mb_cud_serializer.ParsedDataMessage, ctx 
 			Pengirim:   notification_seeders.Sistem,
 			Judul:      "ðŸ”„ Foto Profil Diperbarui",
 			Pesan:      "Foto profil Anda berhasil disinkronisasi.",
+			Activity:   true,
+			Inbox:      false,
+			Archive:    true,
 			Pop:        0, // Silent sync
 			CreatedAt:  time.Now().Format(time.RFC3339),
 			ExpiredAt:  time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
@@ -115,6 +118,9 @@ func DeleteHapusFotoProfilPengguna(Data mb_cud_serializer.ParsedDataMessage, ctx
 			Judul:      "ðŸ—‘ï¸ Foto Profil Dihapus",
 			Pesan:      "Foto profil Anda telah dihapus.",
 			Pop:        0, // Silent sync
+			Activity:   true,
+			Inbox:      false,
+			Archive:    true,
 			CreatedAt:  time.Now().Format(time.RFC3339),
 			ExpiredAt:  time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 			Data: struct {
@@ -192,4 +198,3 @@ func CreateTambahMediaReviewVideo(Data mb_cud_serializer.ParsedDataMessage, ctx 
 
 	return nil
 }
-

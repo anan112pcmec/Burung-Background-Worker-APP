@@ -59,6 +59,9 @@ func CreateTambahFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage, ctx 
 			Judul:     "ðŸ“¸ Foto Profil Toko Berhasil Diunggah!",
 			Pesan:     "Foto profil toko kamu udah aktif dan tampil di halaman toko. Tampilan makin meyakinkan buat calon pembeli, nih!",
 			Pop:       3.0,
+			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 3).Format(time.RFC3339),
 			Data: struct {
@@ -113,6 +116,9 @@ func UpdateUbahFotoProfilSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 			Judul:     "ðŸ”„ Foto Profil Toko Diperbarui!",
 			Pesan:     "Foto profil toko kamu berhasil diganti dengan yang baru. Update kece, biar makin dikenal pembeli!",
 			Pop:       3.0,
+			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 3).Format(time.RFC3339),
 			Data: struct {

@@ -62,9 +62,9 @@ func CreateTambahDiskonProduk(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 			Judul:     "ðŸ·ï¸ Diskon Baru Dibuat",
 			Pesan:     fmt.Sprintf("Promo diskon '%s' sebesar %d%% berhasil dibuat.", Objek.Nama, Objek.DiskonPersen),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -125,9 +125,9 @@ func UpdateEditDiskonProduk(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 			Judul:     "âœï¸ Promo Diskon Diubah",
 			Pesan:     fmt.Sprintf("Informasi promo diskon '%s' telah berhasil diperbarui.", Objek.Nama),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -188,9 +188,9 @@ func DeleteHapusDiskonProduk(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 			Judul:     "ðŸ—‘ï¸ Promo Diskon Dihapus",
 			Pesan:     fmt.Sprintf("Promo diskon '%s' telah berhasil dihapus.", Objek.Nama),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -247,9 +247,9 @@ func CreateTetapkanDiskonPadaBarang(Data mb_cud_serializer.ParsedDataMessage, ct
 			Judul:     "ðŸ”„ Promo Diterapkan pada Produk",
 			Pesan:     "Diskon baru telah sukses diterapkan ke item produk pilihan.",
 			Pop:       0,
-			Archive:   true,
-			Inbox:     false,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 			Data: struct {
@@ -325,4 +325,3 @@ func DeleteHapusDiskonPadaBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 
 	return nil
 }
-

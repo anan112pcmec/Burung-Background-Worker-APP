@@ -80,6 +80,9 @@ func CreateValidatePenggunaRegistration(Data mb_cud_serializer.ParsedDataMessage
 			Judul:      "ðŸŽ‰ Registrasi Berhasil!",
 			Pesan:      fmt.Sprintf("Halo %s, selamat datang di platform kami!", Objek.Nama),
 			Pop:        1,
+			Activity:   true,
+			Inbox:      false,
+			Archive:    true,
 			CreatedAt:  time.Now().Format(time.RFC3339),
 			ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 		}
@@ -134,9 +137,9 @@ func CreateValidateSellerRegistration(Data mb_cud_serializer.ParsedDataMessage, 
 			Judul:     "ðŸª Toko Anda Berhasil Terdaftar",
 			Pesan:     fmt.Sprintf("Selamat, Toko %s sekarang sudah aktif. Yuk mulai upload produk pertamamu!", Objek.Nama),
 			Pop:       1,
-			Archive:   true,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 		}
@@ -251,6 +254,9 @@ func UpdatePenggunaLogin(Data mb_cud_serializer.ParsedDataMessage, ctx context.C
 			Judul:      "ðŸ” Login Berhasil",
 			Pesan:      "Sesi login Anda telah diperbarui.",
 			Pop:        0,
+			Activity:   true,
+			Inbox:      false,
+			Archive:    true,
 			CreatedAt:  time.Now().Format(time.RFC3339),
 			ExpiredAt:  time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 			Data: struct {
@@ -312,6 +318,9 @@ func UpdateSellerLogin(Data mb_cud_serializer.ParsedDataMessage, ctx context.Con
 			Judul:     "ðŸ” Seller Login",
 			Pesan:     "Sinkronisasi dashboard penjual.",
 			Pop:       0,
+			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 		}
@@ -359,7 +368,6 @@ func UpdateKurirLogin(Data mb_cud_serializer.ParsedDataMessage, ctx context.Cont
 		return fmt.Errorf("gagal mencatat login kurir ke historical %s dalam %s", err, handle_services)
 	}
 
-	// ðŸ”” Silent Sync GPS Tracker & Status Online Driver/Kurir
 	if Objek.ID != 0 {
 		var Notif = notification_models.NotificationKurir{
 			IDKurir:   Objek.ID,
@@ -367,6 +375,9 @@ func UpdateKurirLogin(Data mb_cud_serializer.ParsedDataMessage, ctx context.Cont
 			Judul:     "ðŸ” Kurir Login",
 			Pesan:     "Mengaktifkan pelacakan background.",
 			Pop:       0,
+			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 		}

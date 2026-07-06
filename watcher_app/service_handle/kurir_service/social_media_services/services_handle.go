@@ -7,11 +7,11 @@ import (
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -60,6 +60,9 @@ func CreateEngagementSocialMediaKurir(Data mb_cud_serializer.ParsedDataMessage, 
 			Judul:     "ðŸ”„ Media Sosial Ditautkan",
 			Pesan:     "Akun media sosial Anda berhasil diintegrasikan ke dalam sistem.",
 			Pop:       0, // Silent sync background
+			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 			Data: struct {
@@ -118,6 +121,9 @@ func UpdateEngagementSocialMediaKurir(Data mb_cud_serializer.ParsedDataMessage, 
 			Judul:     "ðŸ”„ Kontak Media Sosial Diperbarui",
 			Pesan:     "Perubahan data akun media sosial Anda berhasil disinkronisasi.",
 			Pop:       0, // Silent sync background
+			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 			Data: struct {
@@ -134,5 +140,3 @@ func UpdateEngagementSocialMediaKurir(Data mb_cud_serializer.ParsedDataMessage, 
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
-
-

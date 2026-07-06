@@ -75,6 +75,9 @@ func CreateAjukanInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage, ct
 		Judul:     JudulNotif,
 		Pesan:     fmt.Sprintf("Halo %s, Terimakasih telah mengisi informasi, kendaraanmu %s dengan no rangka %s akan secepatnya kami proses, supaya kamu bisa mulai narik", NamaKurir, Objek.NamaKendaraan, Objek.NoRangka),
 		Pop:       0.8,
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 3).Format(time.RFC3339),
 		Data: struct {
@@ -168,6 +171,9 @@ func UpdateEditInformasiKendaraan(Data mb_cud_serializer.ParsedDataMessage, ctx 
 		Judul:     judulUpdate,
 		Pesan:     pesanUpdate,
 		Pop:       3.5,
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 1, 0).Format(time.RFC3339), // Simpan 1 bulan jika disetujui/ditolak
 		Data: struct {
@@ -242,6 +248,9 @@ func CreateAjukanInformasiKurir(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Judul:     "ðŸªª Pengajuan Data Profil Kurir",
 		Pesan:     fmt.Sprintf("Halo %s, data KTP dan SIM lu berhasil kami terima. Tim legal kami bakal nge-validasi data lu secepatnya ya!", NamaKurir),
 		Pop:       3.0,
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 		Data: struct {
@@ -332,6 +341,9 @@ func UpdateEditInformasiKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Judul:     judulDiri,
 		Pesan:     pesanDiri,
 		Pop:       4.5, // Pop-up agak lamaan dikit biar dibaca seksama kalo urusan status akun
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 1, 0).Format(time.RFC3339),
 		Data: struct {
@@ -356,4 +368,3 @@ func UpdateEditInformasiKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
-

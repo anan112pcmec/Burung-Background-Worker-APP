@@ -59,9 +59,9 @@ func CreateMasukanDataDistributor(Data mb_cud_serializer.ParsedDataMessage, ctx 
 			Judul:     "ðŸ“„ Data Distributor Diajukan",
 			Pesan:     fmt.Sprintf("Dokumen formalitas untuk perusahaan %s berhasil dikirim. Menunggu proses verifikasi.", Objek.NamaPerusahaan),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -118,9 +118,9 @@ func UpdateEditDataDistributor(Data mb_cud_serializer.ParsedDataMessage, ctx con
 			Judul:     "âœï¸ Data Distributor Diperbarui",
 			Pesan:     fmt.Sprintf("Perubahan data formalitas untuk perusahaan %s telah disimpan dan akan diperiksa kembali.", Objek.NamaPerusahaan),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -177,9 +177,9 @@ func DeleteHapusDataDistributor(Data mb_cud_serializer.ParsedDataMessage, ctx co
 			Judul:     "ðŸ—‘ï¸ Data Distributor Dihapus",
 			Pesan:     fmt.Sprintf("Data pengajuan formalitas distributor untuk %s telah dihapus.", Objek.NamaPerusahaan),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -240,9 +240,9 @@ func CreateMasukanDataBrand(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 			Judul:     "ðŸ“œ Data Merek/Brand Diajukan",
 			Pesan:     fmt.Sprintf("Dokumen kepemilikan hak merek untuk %s berhasil dikirim. Menunggu proses verifikasi.", Objek.NamaPerusahaan),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -303,9 +303,9 @@ func UpdateEditDataBrand(Data mb_cud_serializer.ParsedDataMessage, ctx context.C
 			Judul:     "âœï¸ Data Merek/Brand Diperbarui",
 			Pesan:     fmt.Sprintf("Perubahan berkas merek/brand untuk %s telah disimpan dan masuk antrean pengecekan.", Objek.NamaPerusahaan),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -366,9 +366,9 @@ func DeleteHapusDataBrand(Data mb_cud_serializer.ParsedDataMessage, ctx context.
 			Judul:     "ðŸ—‘ï¸ Data Merek/Brand Dihapus",
 			Pesan:     fmt.Sprintf("Data pengajuan registrasi merek untuk %s telah dihapus.", Objek.NamaPerusahaan),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -384,4 +384,3 @@ func DeleteHapusDataBrand(Data mb_cud_serializer.ParsedDataMessage, ctx context.
 
 	return nil
 }
-

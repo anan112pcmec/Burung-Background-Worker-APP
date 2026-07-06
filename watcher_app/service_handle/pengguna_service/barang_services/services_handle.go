@@ -10,12 +10,12 @@ import (
 	"github.com/meilisearch/meilisearch-go"
 	"gorm.io/gorm"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	cass_cud "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/cud"
 	historical_format "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/format"
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
 	se_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/models"
 	sot_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/sot_database/models"
-	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	"github.com/anan112pcmec/Burung-backend-2/watcher_app/helper"
 	mb_cud_serializer "github.com/anan112pcmec/Burung-backend-2/watcher_app/message_broker/serializer"
 	notification_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/notification/models"
@@ -147,13 +147,13 @@ func CreateMasukanKomentarBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 	// 2. Tentukan arah notifikasi berdasarkan siapa yang berkomentar
 	if Objek.IsSeller {
 		// Kasus: Seller menjawab pertanyaan pembeli
-		targetUserID = Objek.IdEntity                        // Notif dikirim ke pembeli asli
+		targetUserID = Objek.IdEntity                  // Notif dikirim ke pembeli asli
 		targetPath = cache.PenggunaPathNotifikasiMasuk // Path khusus pengguna/pembeli
 		judulNotif = "ðŸ’¬ Pertanyaanmu Dijawab Seller!"
 		pesanNotif = fmt.Sprintf("Toko baru saja membalas diskusimu: \"%s\". Cek jawabannya sekarang!", cuplikanKomentar)
 	} else {
 		// Kasus: Pembeli bertanya di produk seller
-		targetUserID = int64(idSeller)                     // Notif dikirim ke seller
+		targetUserID = int64(idSeller)               // Notif dikirim ke seller
 		targetPath = cache.SellerPathNotifikasiMasuk // Path khusus seller sesuai request lu
 		judulNotif = "ðŸ›’ Ada Pertanyaan Baru Produk!"
 		pesanNotif = fmt.Sprintf("Calon pembeli nanyain produk lu nih: \"%s\". Yuk bales biar makin laris!", cuplikanKomentar)
@@ -165,6 +165,9 @@ func CreateMasukanKomentarBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      judulNotif,
 		Pesan:      pesanNotif,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		Pop:        1,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 14).Format(time.RFC3339), // Notif diskusi produk keep 2 minggu aja cukup
@@ -345,6 +348,9 @@ func CreateMasukanChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      judulNotif,
 		Pesan:      pesanNotif,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		Pop:        1,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Notif child comment simpan 7 hari aja biar gak numpuk
@@ -431,6 +437,9 @@ func CreateMentionChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      judulNotif,
 		Pesan:      pesanNotif,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		Pop:        1,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Simpan seminggu aja
@@ -568,6 +577,9 @@ func CreateTambahKeranjangBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      judulTambahKeranjang,
 		Pesan:      pesanTambahKeranjang,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		Pop:        1.2,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Simpan seminggu aja
@@ -728,6 +740,9 @@ func CreateBerikanReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      "ðŸŽ‰ Ulasan Lu Berhasil Dikirim!",
 		Pesan:      pesanPengguna,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 1, 0).Format(time.RFC3339),
 		Data: struct {
@@ -760,6 +775,9 @@ func CreateBerikanReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      "ðŸ“ˆ Ada Ulasan Produk Baru!",
 		Pesan:      pesanSeller,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		Pop:        4.3,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 1, 0).Format(time.RFC3339),
@@ -928,6 +946,9 @@ func CreateLikeReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		Judul:      judulLike,
 		Pesan:      pesanLike,
 		CreatedAt:  time.Now().Format(time.RFC3339),
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Simpan seminggu aja di tab notif
 		Pop:        2.3,                                              // 3.5 detik, pas buat baca pesan apresiasi ringan
 		Data: struct {
@@ -983,5 +1004,3 @@ func DeleteUnlikeReviewBarang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 	}
 	return nil
 }
-
-

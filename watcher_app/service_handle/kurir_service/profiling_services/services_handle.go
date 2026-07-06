@@ -98,6 +98,9 @@ func UpdatePersonalProfilingKurir(Data mb_cud_serializer.ParsedDataMessage, ctx 
 			Judul:     "ðŸ”„ Profil Personal Diperbarui",
 			Pesan:     "Data personal profil kurir Anda berhasil diperbarui di sistem.",
 			Pop:       0, // Background sync tanpa mengganggu kurir
+			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 			Data: struct {
@@ -189,6 +192,9 @@ func UpdateGeneralProfilingKurir(Data mb_cud_serializer.ParsedDataMessage, ctx c
 			Judul:     "ðŸ”„ Profil Umum Diperbarui",
 			Pesan:     "Data umum profil kurir Anda berhasil diperbarui di sistem.",
 			Pop:       0, // Background sync tanpa mengganggu kurir
+			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 			Data: struct {
@@ -205,4 +211,3 @@ func UpdateGeneralProfilingKurir(Data mb_cud_serializer.ParsedDataMessage, ctx c
 	fmt.Println("Berhasil mendapatkan data", Objek.ID)
 	return nil
 }
-

@@ -3643,6 +3643,9 @@ func DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(Data mb_cud_serializer
 			Pengirim:  notification_seeders.Sistem,
 			Judul:     "ðŸ—‘ï¸ Alokasi Penjadwalan Ditutup",
 			Pesan:     "Slot operasional pengiriman ekspedisi untuk periode ini resmi dinonaktifkan.",
+			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			Pop:       0, // Silent hapus di aplikasi klien
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
@@ -3735,6 +3738,9 @@ func UpdateNonaktifkanBidKurirIIkurirNonaktifkanBidUpdatedPublish(Data mb_cud_se
 			Judul:     "ðŸ“´ Sesi Bidding Ditutup",
 			Pesan:     "Status pencarian penawaran (bid) Anda saat ini telah dinonaktifkan oleh sistem.",
 			Pop:       0, // Jalur background sync, merubah state UI aplikasi kurir tanpa pop up
+			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 1).Format(time.RFC3339),
 			Data: struct {

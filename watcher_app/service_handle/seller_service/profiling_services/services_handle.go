@@ -95,9 +95,9 @@ func UpdateUpdatePersonalSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 			Judul:     "ðŸ”’ Data Personal Diperbarui",
 			Pesan:     "Informasi kredensial dan data personal akun toko Anda telah berhasil diperbarui.",
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -185,9 +185,9 @@ func UpdateUpdateInfoGeneralPublic(Data mb_cud_serializer.ParsedDataMessage, ctx
 			Judul:     "ðŸª Profil Toko Diperbarui",
 			Pesan:     fmt.Sprintf("Informasi umum toko Anda yang terlihat oleh publik resmi diubah."),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -203,4 +203,3 @@ func UpdateUpdateInfoGeneralPublic(Data mb_cud_serializer.ParsedDataMessage, ctx
 
 	return nil
 }
-

@@ -109,6 +109,9 @@ func CreateMasukanAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Judul:     "ðŸš€ Alamat Operasional Kurir Disimpan!",
 		Pesan:     pesanNotifikasi,
 		Pop:       5.0, // Muncul sebagai pop-up selama 5 detik di aplikasi kurir
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 1, 0).Format(time.RFC3339), // Expired 1 bulan
 		Data: struct {
@@ -213,6 +216,9 @@ func UpdatedEditAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		Pengirim:  notification_seeders.Sistem,
 		Judul:     JudulNotif,
 		Pesan:     KataKataNotif,
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		Pop:       0.8,
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 2).Format(time.RFC3339),
@@ -294,6 +300,9 @@ func DeleteHapusAlamatKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		// Pop sengaja dikosongin (default 0) -> Artinya gak bakal muncul pop-up/toast mengganggu di layar kurir, tapi diem-diem langsung masuk inbox tab.
 		CreatedAt: time.Now().Format(time.RFC3339),
 		ExpiredAt: time.Now().AddDate(0, 0, 3).Format(time.RFC3339), // Cukup 3 hari aja buat history delete kurir
+		Activity:  true,
+		Inbox:     false,
+		Archive:   true,
 		Data: struct {
 			Metadata map[string]interface{} `json:"metadata"`
 			Special  interface{}            `json:"special"`

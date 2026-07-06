@@ -56,9 +56,9 @@ func CreateTambahEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx con
 			Judul:     "ðŸ“¦ Etalase Baru Dibuat",
 			Pesan:     fmt.Sprintf("Etalase '%s' telah berhasil dibuat.", Objek.Nama),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -113,9 +113,9 @@ func UpdateEditEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 			Judul:     "âœï¸ Etalase Diperbarui",
 			Pesan:     fmt.Sprintf("Informasi etalase '%s' berhasil diubah.", Objek.Nama),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -170,9 +170,9 @@ func DeleteHapusEtalaseSeller(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 			Judul:     "ðŸ—‘ï¸ Etalase Dihapus",
 			Pesan:     fmt.Sprintf("Etalase '%s' telah berhasil dihapus.", Objek.Nama),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -293,4 +293,3 @@ func DeleteHapusBarangDariEtalase(Data mb_cud_serializer.ParsedDataMessage, ctx 
 
 	return nil
 }
-

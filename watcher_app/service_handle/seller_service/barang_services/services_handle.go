@@ -375,9 +375,9 @@ func CreateMasukanKategoriBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 			Judul:     "âœ¨ Varian Baru Ditambahkan",
 			Pesan:     fmt.Sprintf("Varian baru '%s' dengan stok %d berhasil ditambahkan.", Objek.Nama, Objek.Stok),
 			Pop:       0.5,
-			Archive:   true,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 3).Format(time.RFC3339),
 			Data: struct {
@@ -978,4 +978,3 @@ func DeleteHapusChildKomentar(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 
 	return nil
 }
-

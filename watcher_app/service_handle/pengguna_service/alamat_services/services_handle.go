@@ -104,6 +104,9 @@ func CreateAlamatPub(Data mb_cud_serializer.ParsedDataMessage, ctx context.Conte
 		IDPengguna: Objek.IDPengguna, // ðŸ‘€ NOTE: Tadi lu pake Objek.ID (ID Alamat), kudunya IDPengguna kan?
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      "ðŸ“ Alamat Baru Berhasil Disimpan!",
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		Pesan:      pesanNotifikasi,
 		CreatedAt:  time.Now().Format(time.RFC3339),                  // Pake RFC3339 biar standar ISO & gampang di-parse front-end, jangan .GoString()
 		ExpiredAt:  time.Now().AddDate(0, 1, 0).Format(time.RFC3339), // Expired otomatis 1 bulan ke depan (jangan hardcode nama bulan wkwk)
@@ -207,6 +210,9 @@ func UpdateAlamatPub(Data mb_cud_serializer.ParsedDataMessage, ctx context.Conte
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      "âš™ï¸ Perubahan Alamat Disimpan",
 		Pesan:      pesanUpdate,
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 1, 0).Format(time.RFC3339), // Expired 1 bulan ke depan
 		Data: struct {
@@ -304,6 +310,9 @@ func DeleteAlamatPub(Data mb_cud_serializer.ParsedDataMessage, ctx context.Conte
 		IDPengguna: Objek.IDPengguna,
 		Pengirim:   notification_seeders.Sistem,
 		Judul:      "ðŸ—‘ï¸ Alamat Berhasil Dihapus",
+		Activity:   true,
+		Inbox:      false,
+		Archive:    true,
 		Pesan:      pesanDelete,
 		CreatedAt:  time.Now().Format(time.RFC3339),
 		ExpiredAt:  time.Now().AddDate(0, 0, 7).Format(time.RFC3339), // Khusus delete, simpan historinya 7 hari aja di notif tab

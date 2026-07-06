@@ -95,9 +95,9 @@ func UpdateValidateUbahPasswordSeller(Data mb_cud_serializer.ParsedDataMessage, 
 			Judul:     "ðŸ”’ Keamanan: Password Diubah",
 			Pesan:     "Password akun Toko Anda berhasil diperbarui. Jika ini bukan Anda, segera hubungi bantuan.",
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -154,9 +154,9 @@ func CreateTambahRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx co
 			Judul:     "ðŸ’³ Rekening Baru Ditambahkan",
 			Pesan:     fmt.Sprintf("Rekening Bank %s berhasil ditambahkan ke profil Toko Anda.", Objek.NamaBank),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -213,9 +213,9 @@ func UpdateEditRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 			Judul:     "âœï¸ Informasi Rekening Diubah",
 			Pesan:     fmt.Sprintf("Data pada rekening Bank %s Anda telah berhasil diperbarui.", Objek.NamaBank),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -272,9 +272,9 @@ func UpdateSetDefaultRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ct
 			Judul:     "ðŸ“Œ Rekening Utama Diatur",
 			Pesan:     fmt.Sprintf("Rekening Bank %s sekarang telah diatur sebagai rekening utama pencairan dana Toko Anda.", Objek.NamaBank),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -331,9 +331,9 @@ func DeleteHapusRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx con
 			Judul:     "ðŸ—‘ï¸ Rekening Dihapus",
 			Pesan:     fmt.Sprintf("Rekening Bank %s Anda telah berhasil dihapus dari sistem.", Objek.NamaBank),
 			Pop:       1,
-			Archive:   false,
-			Inbox:     true,
 			Activity:  true,
+			Inbox:     false,
+			Archive:   true,
 			CreatedAt: time.Now().Format(time.RFC3339),
 			ExpiredAt: time.Now().AddDate(0, 0, 7).Format(time.RFC3339),
 			Data: struct {
@@ -349,4 +349,3 @@ func DeleteHapusRekeningSeller(Data mb_cud_serializer.ParsedDataMessage, ctx con
 
 	return nil
 }
-
