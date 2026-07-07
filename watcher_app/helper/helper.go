@@ -42,28 +42,22 @@ func DecodeDeliveryBody(data amqp091.Delivery, dst interface{}) error {
 }
 
 func DecodeJSONBody(data mb_cud_serializer.ParsedDataMessage, dst interface{}) error {
-
-	var payloadBytes []byte
-
-	switch v := data.Data.(type) {
-	case []byte:
-		payloadBytes = v
-
-	case string:
-		payloadBytes = []byte(v)
-
-	default:
-		return fmt.Errorf("unsupported payload type: %T", data.Data)
+	// 1. Ubah data.Data (apapun bentuknya: map, struct lain) menjadi JSON bytes dulu
+	// Go akan otomatis membaca tag JSON dari struct asal (jika ada) atau key dari map
+	payloadBytes, err := json.Marshal(data.Data)
+	if err != nil {
+		return fmt.Errorf("gagal encoding data asal ke JSON: %w", err)
 	}
 
+	// 2. Decode JSON bytes tadi ke dst berdasarkan tag JSON-nya
 	dec := json.NewDecoder(bytes.NewReader(payloadBytes))
-	dec.DisallowUnknownFields()
+	dec.DisallowUnknownFields() // Ini opsional, hapus kalau gak mau ketat banget
 
 	if err := dec.Decode(dst); err != nil {
 		if errors.Is(err, io.EOF) {
 			return nil
 		}
-		return err
+		return fmt.Errorf("gagal mencocokkan tag JSON ke dst: %w", err)
 	}
 
 	return nil

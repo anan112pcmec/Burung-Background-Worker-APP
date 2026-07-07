@@ -35,7 +35,7 @@ func (c *Consumer) WatchPublish(ctx context.Context, read *gorm.DB, redis_authen
 	createConsume, err := c.Ch.Consume(
 		c.QueueCreate.QueueName,
 		"",
-		true,
+		false,
 		false,
 		false,
 		false,
@@ -48,7 +48,7 @@ func (c *Consumer) WatchPublish(ctx context.Context, read *gorm.DB, redis_authen
 	updateConsume, err := c.Ch.Consume(
 		c.QueueUpdate.QueueName,
 		"",
-		true,
+		false,
 		false,
 		false,
 		false,
@@ -61,7 +61,7 @@ func (c *Consumer) WatchPublish(ctx context.Context, read *gorm.DB, redis_authen
 	deleteConsume, err := c.Ch.Consume(
 		c.QueueDelete.QueueName,
 		"",
-		true,
+		false,
 		false,
 		false,
 		false,
