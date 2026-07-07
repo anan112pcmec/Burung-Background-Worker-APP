@@ -5,17 +5,18 @@ type ParseDelveryData interface {
 }
 
 type ConsumeDataJson struct {
-	TableName string `json:"table_name"`
-	Protocol  string `json:"protocol"`
-	Role      string `json:"role"`
-	Data      interface{}
+	TableName string      `json:"table_name"`
+	Protocol  string      `json:"protocol"`
+	Role      string      `json:"role"`
+	Payload   interface{} `json:"payload"`
 }
 
 func (c *ConsumeDataJson) Parse() ParsedDataMessage {
 	return ParsedDataMessage{
 		TableName: c.TableName,
 		Protocol:  c.Protocol,
-		Data:      c.Data,
+		Role:      c.Role,
+		Data:      c.Payload,
 	}
 }
 
@@ -35,7 +36,8 @@ func (c *ConsumeDataProto) Parse() ParsedDataMessage {
 }
 
 type ParsedDataMessage struct {
-	TableName string `json:"table_name"`
-	Protocol  string `json:"protocol"`
-	Data      interface{}
+	TableName string      `json:"table_name"`
+	Protocol  string      `json:"protocol"`
+	Role      string      `json:"role"`
+	Data      interface{} `json:"payload"`
 }

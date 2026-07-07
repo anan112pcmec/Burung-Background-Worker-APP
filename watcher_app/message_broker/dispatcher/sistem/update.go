@@ -18,9 +18,9 @@ func SistemUpdateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud
 
 	var d mb_cud_serializer.ParsedDataMessage
 	switch v := any(data).(type) {
-	case mb_cud_serializer.ConsumeDataJson:
+	case *mb_cud_serializer.ConsumeDataJson:
 		d = v.Parse()
-	case mb_cud_serializer.ConsumeDataProto:
+	case *mb_cud_serializer.ConsumeDataProto:
 		d = v.Parse()
 	default:
 		return fmt.Errorf("unsupported data type")

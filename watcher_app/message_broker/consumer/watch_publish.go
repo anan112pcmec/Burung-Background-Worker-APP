@@ -2,6 +2,7 @@ package mb_cud_consumer
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
@@ -22,7 +23,7 @@ type Consumer struct {
 }
 
 func (c *Consumer) WatchPublish(ctx context.Context, read *gorm.DB, redis_authentication, redis_session *redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
-
+	fmt.Println("mulai watch publish queue")
 	c.Mu.Lock()
 	err := c.Ch.Qos(10, 0, false)
 	c.Mu.Unlock()
@@ -34,7 +35,7 @@ func (c *Consumer) WatchPublish(ctx context.Context, read *gorm.DB, redis_authen
 	createConsume, err := c.Ch.Consume(
 		c.QueueCreate.QueueName,
 		"",
-		false,
+		true,
 		false,
 		false,
 		false,
@@ -47,7 +48,7 @@ func (c *Consumer) WatchPublish(ctx context.Context, read *gorm.DB, redis_authen
 	updateConsume, err := c.Ch.Consume(
 		c.QueueUpdate.QueueName,
 		"",
-		false,
+		true,
 		false,
 		false,
 		false,
@@ -60,7 +61,7 @@ func (c *Consumer) WatchPublish(ctx context.Context, read *gorm.DB, redis_authen
 	deleteConsume, err := c.Ch.Consume(
 		c.QueueDelete.QueueName,
 		"",
-		false,
+		true,
 		false,
 		false,
 		false,

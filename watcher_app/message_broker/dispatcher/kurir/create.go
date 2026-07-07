@@ -23,9 +23,9 @@ import (
 func KurirCreateServicesDispatcher[T mb_cud_serializer.ConsumeDataJson | mb_cud_serializer.ConsumeDataProto](ctx context.Context, data *T, read *gorm.DB, redis_authentication, redis_session *redis.Client, cass_historcal, cass_sot_replica *gocql.Session, se_index se_models.IndexWrapper) error {
 	var d mb_cud_serializer.ParsedDataMessage
 	switch v := any(data).(type) {
-	case mb_cud_serializer.ConsumeDataJson:
+	case *mb_cud_serializer.ConsumeDataJson:
 		d = v.Parse()
-	case mb_cud_serializer.ConsumeDataProto:
+	case *mb_cud_serializer.ConsumeDataProto:
 		d = v.Parse()
 	default:
 		return fmt.Errorf("unsupported data type")

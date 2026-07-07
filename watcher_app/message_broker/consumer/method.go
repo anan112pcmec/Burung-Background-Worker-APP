@@ -33,6 +33,7 @@ func (c *Consumer) HandleCreate(ctx context.Context, msgs <-chan amqp091.Deliver
 			// 1. Coba hajar pakai JSON dulu
 			if dataJson, ok := helper.ParseDataMessage[mb_cud_serializer.ConsumeDataJson](msg); ok {
 				fmt.Println("JSON detected")
+				fmt.Println("[DATAJSON TRACE: ]", dataJson)
 
 				switch dataJson.Role {
 				case mb_cud_seeders.Pengguna:

@@ -90,18 +90,18 @@ func Run() {
 	// init connection
 	conn.db, conn.redis_authentication, conn.redis_session, conn.search_engine, conn.cud_consumer, conn.cass_historical_session, conn.cass_sot_replica_session = env.RunConnectionEnvironment()
 
-	if err := historical_migrations.DownRelation(ctx, conn.cass_historical_session); len(err) > 0 {
-		fmt.Println("gagal")
-	}
+	// if err := historical_migrations.DownRelation(ctx, conn.cass_historical_session); len(err) > 0 {
+	// 	fmt.Println("gagal")
+	// }
 	if err := historical_migrations.UpRelation(ctx, conn.cass_historical_session); len(err) > 0 {
 		for _, e := range err {
 			fmt.Println(e)
 		}
 	}
 
-	if err := sot_replica_migration.DownMigration(ctx, conn.cass_sot_replica_session); len(err) > 0 {
-		fmt.Println("gagal")
-	}
+	// if err := sot_replica_migration.DownMigration(ctx, conn.cass_sot_replica_session); len(err) > 0 {
+	// 	fmt.Println("gagal")
+	// }
 
 	if err := sot_replica_migration.UpRelation(ctx, conn.cass_sot_replica_session); len(err) > 0 {
 		for _, e := range err {
