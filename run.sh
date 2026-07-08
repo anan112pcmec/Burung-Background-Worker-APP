@@ -374,7 +374,7 @@ echo ""
 print_info "Menjalankan backend Go application..."
 echo ""
 
-go run main.go
+go run main.go --rebootcass=true
 EXIT_CODE=$?
 
 # 14. Exit message

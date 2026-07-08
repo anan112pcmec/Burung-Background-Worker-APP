@@ -12,6 +12,20 @@ import (
 
 const timeout = 6
 
+type PartitionKey map[string]bool
+
+// id, tahun_update, bulan_update), event_time
+var PartitionKeyHistorical PartitionKey = PartitionKey{
+	"id":           true,
+	"tahun_update": true,
+	"bulan_update": true,
+	"event_time":   true,
+}
+
+var PartitionKeySotReplica PartitionKey = PartitionKey{
+	"id": true,
+}
+
 func InsertData(ctx context.Context, session *gocql.Session, tablename string, append_data ...map[string]interface{}) error {
 	if len(append_data) == 0 {
 		return nil
@@ -101,6 +115,13 @@ func UpdateData(ctx context.Context, session *gocql.Session, tablename string, i
 
 			// Membangun SET klausa dari data asli murni
 			for col, val := range d {
+				if PartitionKeyHistorical[col] {
+					continue
+				}
+
+				if PartitionKeySotReplica[col] {
+					continue
+				}
 				setClauses = append(setClauses, fmt.Sprintf("%s = ?", col))
 				values = append(values, val)
 			}

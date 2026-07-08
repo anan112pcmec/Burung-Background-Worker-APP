@@ -91,17 +91,6 @@ func (b BarangInduk) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (b BarangInduk) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, b.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", b.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", b.TableNameHistorical())
-	return nil
-}
-
 type KategoriBarang struct {
 	ID int64
 	// REVISI: tipe SellerID dari int → int32 sesuai sot_models
@@ -208,17 +197,6 @@ func (k KategoriBarang) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (k KategoriBarang) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, k.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", k.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", k.TableNameHistorical())
-	return nil
-}
-
 type VarianBarang struct {
 	ID            int64
 	IdBarangInduk int32
@@ -278,17 +256,6 @@ func (v VarianBarang) ParseToCUDType() map[string]interface{} {
 		"hold_by":         v.HoldBy,
 		"holder_entity":   v.HolderEntity,
 	}
-}
-
-func (v VarianBarang) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, v.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", v.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", v.TableNameHistorical())
-	return nil
 }
 
 func (b BarangInduk) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {

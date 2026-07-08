@@ -84,7 +84,7 @@ func StructToJSONMap(v interface{}) map[string]interface{} {
 
 		// buang opsi omitempty, dll
 		jsonKey := strings.Split(jsonTag, ",")[0]
-		if jsonKey == "" {
+		if jsonKey == "" || jsonKey == "deleted_at" {
 			continue
 		}
 

@@ -15,6 +15,7 @@ import (
 	"github.com/meilisearch/meilisearch-go"
 	"github.com/redis/go-redis/v9"
 
+	"github.com/anan112pcmec/Burung-backend-2/watcher_app/cache"
 	historical_migrations "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/hystorical_db/migrations"
 	sot_replica_migration "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/sot_replica_async/migration"
 	se_initialize "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/search_engine/initialize"
@@ -40,7 +41,7 @@ func Getenvi(key, fallback string) string {
 	return fallback
 }
 
-func Run() {
+func Run(rebootcass bool) {
 	var conn Connection
 
 	if err := godotenv.Load(); err != nil {
@@ -87,21 +88,31 @@ func Run() {
 		CASS_SOT_REPLICA_PORT:     Getenvi("CASS_SOT_REPLICA_PORT", "NIL"),
 	}
 
+	cache.PenggunaPathNotifikasiMasuk = Getenvi("PENGGUNAPATHNOTIFIKASIMASUK", "NIL")
+	cache.SellerPathNotifikasiMasuk = Getenvi("SELLERPATHNOTIFIKASIMASUK", "NIL")
+	cache.KurirPathNotifikasiMasuk = Getenvi("KURIRPATHNOTIFIKASIMASUK", "NIL")
+	cache.PortRunningAPIInNotifikasi = Getenvi("APIINNOTIFIKASIPORT", "NIL")
+	cache.HostRunningAPIInNotifikasi = Getenvi("APIINNOTIFIKASIHOST", "NIL")
+
 	// init connection
 	conn.db, conn.redis_authentication, conn.redis_session, conn.search_engine, conn.cud_consumer, conn.cass_historical_session, conn.cass_sot_replica_session = env.RunConnectionEnvironment()
 
-	// if err := historical_migrations.DownRelation(ctx, conn.cass_historical_session); len(err) > 0 {
-	// 	fmt.Println("gagal")
-	// }
+	if rebootcass {
+		if err := historical_migrations.DownRelation(ctx, conn.cass_historical_session); len(err) > 0 {
+			fmt.Println("gagal")
+		}
+	}
 	if err := historical_migrations.UpRelation(ctx, conn.cass_historical_session); len(err) > 0 {
 		for _, e := range err {
 			fmt.Println(e)
 		}
 	}
 
-	// if err := sot_replica_migration.DownMigration(ctx, conn.cass_sot_replica_session); len(err) > 0 {
-	// 	fmt.Println("gagal")
-	// }
+	if rebootcass {
+		if err := sot_replica_migration.DownRelation(ctx, conn.cass_sot_replica_session); len(err) > 0 {
+			fmt.Println("gagal")
+		}
+	}
 
 	if err := sot_replica_migration.UpRelation(ctx, conn.cass_sot_replica_session); len(err) > 0 {
 		for _, e := range err {

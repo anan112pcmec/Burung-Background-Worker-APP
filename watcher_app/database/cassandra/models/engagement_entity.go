@@ -72,17 +72,6 @@ func (e EntitySocialMedia) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (e EntitySocialMedia) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, e.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", e.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", e.TableNameHistorical())
-	return nil
-}
-
 type Komentar struct {
 	ID            int64
 	IdBarangInduk int32
@@ -144,17 +133,6 @@ func (k Komentar) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (k Komentar) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, k.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", k.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", k.TableNameHistorical())
-	return nil
-}
-
 type KomentarChild struct {
 	ID          int64
 	IdKomentar  int64
@@ -214,17 +192,6 @@ func (k KomentarChild) ParseToCUDType() map[string]interface{} {
 		"updated_at":   k.UpdatedAt,
 		"deleted_at":   k.DeletedAt,
 	}
-}
-
-func (k KomentarChild) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, k.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", k.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", k.TableNameHistorical())
-	return nil
 }
 
 // ///////////////////////////////////////////////////////////////////////////////////////////
@@ -295,17 +262,6 @@ func (k Keranjang) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (k Keranjang) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, k.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", k.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", k.TableNameHistorical())
-	return nil
-}
-
 type BarangDisukai struct {
 	ID            int64
 	IdPengguna    int64
@@ -356,17 +312,6 @@ func (b BarangDisukai) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (b BarangDisukai) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, b.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", b.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", b.TableNameHistorical())
-	return nil
-}
-
 type BarangWishlist struct {
 	ID            int64
 	IdPengguna    int64
@@ -415,17 +360,6 @@ func (b BarangWishlist) ParseToCUDType() map[string]interface{} {
 		"updated_at":      b.UpdatedAt,
 		"deleted_at":      b.DeletedAt,
 	}
-}
-
-func (b BarangWishlist) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, b.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", b.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", b.TableNameHistorical())
-	return nil
 }
 
 type AlamatPengguna struct {
@@ -510,17 +444,6 @@ func (a AlamatPengguna) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (a AlamatPengguna) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, a.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", a.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", a.TableNameHistorical())
-	return nil
-}
-
 type Wishlist struct {
 	ID            int64
 	IdPengguna    int64
@@ -569,17 +492,6 @@ func (w Wishlist) ParseToCUDType() map[string]interface{} {
 		"updated_at":      w.UpdatedAt,
 		"deleted_at":      w.DeletedAt,
 	}
-}
-
-func (w Wishlist) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, w.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", w.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", w.TableNameHistorical())
-	return nil
 }
 
 type Review struct {
@@ -638,17 +550,6 @@ func (r Review) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (r Review) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, r.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", r.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", r.TableNameHistorical())
-	return nil
-}
-
 type ReviewLike struct {
 	ID         int64
 	IdPengguna int64
@@ -699,17 +600,6 @@ func (r ReviewLike) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (r ReviewLike) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, r.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", r.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", r.TableNameHistorical())
-	return nil
-}
-
 type ReviewDislike struct {
 	ID         int64
 	IdPengguna int64
@@ -758,17 +648,6 @@ func (r ReviewDislike) ParseToCUDType() map[string]interface{} {
 		"updated_at":  r.UpdatedAt,
 		"deleted_at":  r.DeletedAt,
 	}
-}
-
-func (r ReviewDislike) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, r.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", r.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", r.TableNameHistorical())
-	return nil
 }
 
 // ///////////////////////////////////////////////////////////////////////////////////////////
@@ -833,17 +712,6 @@ func (j Jenis_Seller) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (j Jenis_Seller) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, j.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", j.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", j.TableNameHistorical())
-	return nil
-}
-
 type BatalTransaksi struct {
 	ID             int64
 	IdTransaksi    int64
@@ -896,17 +764,6 @@ func (b BatalTransaksi) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (b BatalTransaksi) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, b.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", b.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", b.TableNameHistorical())
-	return nil
-}
-
 type Follower struct {
 	ID         int64
 	IdFollower int64
@@ -955,17 +812,6 @@ func (f Follower) ParseToCUDType() map[string]interface{} {
 		"updated_at":  f.UpdatedAt,
 		"deleted_at":  f.DeletedAt,
 	}
-}
-
-func (f Follower) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, f.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", f.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", f.TableNameHistorical())
-	return nil
 }
 
 type AlamatGudang struct {
@@ -1049,17 +895,6 @@ func (a AlamatGudang) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (a AlamatGudang) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, a.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", a.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", a.TableNameHistorical())
-	return nil
-}
-
 type DistributorData struct {
 	ID                        int64
 	SellerId                  int32
@@ -1130,17 +965,6 @@ func (d DistributorData) ParseToCUDType() map[string]interface{} {
 		"updated_at":                   d.UpdatedAt,
 		"deleted_at":                   deletedAtInterface,
 	}
-}
-
-func (d DistributorData) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, d.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", d.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", d.TableNameHistorical())
-	return nil
 }
 
 type BrandData struct {
@@ -1231,17 +1055,6 @@ func (b BrandData) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (b BrandData) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, b.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", b.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", b.TableNameHistorical())
-	return nil
-}
-
 type Etalase struct {
 	ID           int64
 	SellerID     int64
@@ -1309,17 +1122,6 @@ func (e Etalase) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (e Etalase) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, e.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", e.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", e.TableNameHistorical())
-	return nil
-}
-
 type BarangKeEtalase struct {
 	ID            int64
 	IdEtalase     int64
@@ -1359,17 +1161,6 @@ func (b BarangKeEtalase) ParseToCUDType() map[string]interface{} {
 		"id_etalase":      b.IdEtalase,
 		"id_barang_induk": b.IdBarangInduk,
 	}
-}
-
-func (b BarangKeEtalase) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, b.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", b.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", b.TableNameHistorical())
-	return nil
 }
 
 type DiskonProduk struct {
@@ -1441,17 +1232,6 @@ func (d DiskonProduk) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (d DiskonProduk) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, d.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", d.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", d.TableNameHistorical())
-	return nil
-}
-
 type BarangDiDiskon struct {
 	ID               int64
 	SellerId         int32
@@ -1511,17 +1291,6 @@ func (b BarangDiDiskon) ParseToCUDType() map[string]interface{} {
 		"created_at":         b.CreatedAt,
 		"updated_at":         b.UpdatedAt,
 	}
-}
-
-func (b BarangDiDiskon) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, b.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", b.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", b.TableNameHistorical())
-	return nil
 }
 
 // ///////////////////////////////////////////////////////////////////////////////////////////
@@ -1587,17 +1356,6 @@ func (i InformasiKurir) ParseToCUDType() map[string]interface{} {
 		"updated_at":    i.UpdatedAt,
 		"deleted_at":    i.DeletedAt,
 	}
-}
-
-func (i InformasiKurir) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, i.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", i.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", i.TableNameHistorical())
-	return nil
 }
 
 type InformasiKendaraanKurir struct {
@@ -1668,17 +1426,6 @@ func (i InformasiKendaraanKurir) ParseToCUDType() map[string]interface{} {
 		"updated_at":      i.UpdatedAt,
 		"deleted_at":      i.DeletedAt,
 	}
-}
-
-func (i InformasiKendaraanKurir) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, i.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", i.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", i.TableNameHistorical())
-	return nil
 }
 
 type AlamatKurir struct {
@@ -1755,17 +1502,6 @@ func (a AlamatKurir) ParseToCUDType() map[string]interface{} {
 		"updated_at":       a.UpdatedAt,
 		"deleted_at":       a.DeletedAt,
 	}
-}
-
-func (a AlamatKurir) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, a.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", a.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", a.TableNameHistorical())
-	return nil
 }
 
 type BidKurirData struct {
@@ -1861,17 +1597,6 @@ func (b BidKurirData) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (b BidKurirData) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, b.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", b.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", b.TableNameHistorical())
-	return nil
-}
-
 type BidKurirNonEksScheduler struct {
 	ID           int64
 	IdBid        int64
@@ -1937,17 +1662,6 @@ func (b BidKurirNonEksScheduler) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (b BidKurirNonEksScheduler) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, b.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", b.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", b.TableNameHistorical())
-	return nil
-}
-
 type BidKurirEksScheduler struct {
 	ID                  int64
 	IdBid               int64
@@ -2011,17 +1725,6 @@ func (b BidKurirEksScheduler) ParseToCUDType() map[string]interface{} {
 		"updated_at":        b.UpdatedAt,
 		"deleted_at":        deletedAtInterface,
 	}
-}
-
-func (b BidKurirEksScheduler) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, b.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", b.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", b.TableNameHistorical())
-	return nil
 }
 
 // ///////////////////////////////////////////////////////////////////////////////////////////

@@ -121,17 +121,6 @@ func (p PayOutKurir) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (p PayOutKurir) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", p.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", p.TableNameHistorical())
-	return nil
-}
-
 func (p PayOutKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -285,17 +274,6 @@ func (p PayOutSeller) ParseToCUDType() map[string]interface{} {
 		"idempotency_key":    p.IdempotencyKey,
 		"is_virtual_account": p.IsVirtualAccount,
 	}
-}
-
-func (p PayOutSeller) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", p.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", p.TableNameHistorical())
-	return nil
 }
 
 func (p PayOutSeller) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {

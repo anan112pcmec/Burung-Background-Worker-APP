@@ -251,7 +251,7 @@ func UpdatePenggunaLogin(Data mb_cud_serializer.ParsedDataMessage, ctx context.C
 		var Notif = notification_models.NotificationPengguna{
 			IDPengguna: Pengguna.ID,
 			Pengirim:   notification_seeders.Sistem,
-			Judul:      "ðŸ” Login Berhasil",
+			Judul:      "Halo Login Berhasil",
 			Pesan:      "Sesi login Anda telah diperbarui.",
 			Pop:        0,
 			Activity:   true,
@@ -267,7 +267,11 @@ func UpdatePenggunaLogin(Data mb_cud_serializer.ParsedDataMessage, ctx context.C
 				Special:  map[string]interface{}{"click_action": "SILENT_REFRESH_SESSION"},
 			},
 		}
-		_ = notification_request.PostToNotification(ctx, Notif, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk)
+		if err := notification_request.PostToNotification(ctx, Notif, cache.HostRunningAPIInNotifikasi, cache.PortRunningAPIInNotifikasi, cache.PenggunaPathNotifikasiMasuk); err != nil {
+			fmt.Println("[TRACE ERROR NOTIFICATION POST]", err)
+		} else {
+			fmt.Println("[TRACE SUCESS NOTIFICATION POST]", err)
+		}
 	}
 
 	fmt.Println("Berhasil memperbarui data login pengguna", Pengguna.ID)

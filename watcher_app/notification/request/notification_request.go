@@ -14,43 +14,60 @@ import (
 )
 
 func PostToNotification[T notification_models.NotificationPengguna | notification_models.NotificationSeller | notification_models.NotificationKurir](ctx context.Context, data T, host, port, path string) error {
+	// 1. Marshalling data
 	marshallData, err := notification_contract.NotificationManager[T]{}.MarshallNotification(data)
 	if err != nil {
+		// TRACE: Log error saat marshalling gagal
+		fmt.Printf("[TRACE][ERROR] Gagal marshalling data: %v\n", err)
 		return notification_error.ErrorDataTidakCocok
 	}
 
 	bodyReader := bytes.NewBuffer(marshallData)
 
+	// Buat full URL untuk bahan tracing & request
+	fullURL := fmt.Sprintf("http://%s:%s%s", host, port, path)
+
+	// TRACE: Log sebelum request dikirim (Sangat berguna untuk debugging payload)
+	fmt.Printf("[TRACE][START] Mengirim notifikasi ke %s | Payload Size: %d bytes\n", fullURL, len(marshallData))
+
 	req := &http.Request{
 		Method: http.MethodPost,
 		URL: &url.URL{
-			Scheme: "http",                           // Jangan lupa skemanya (http/https) biar gak error pas dikirim
-			Host:   fmt.Sprintf("%s:%s", host, port), // Tambahkan port service notification-mu jika ada
+			Scheme: "http",
+			Host:   fmt.Sprintf("%s:%s", host, port),
 			Path:   path,
 		},
 		Header: make(http.Header),
-		Body:   io.NopCloser(bodyReader), // Membungkus bytes buffer jadi io.ReadCloser
+		Body:   io.NopCloser(bodyReader),
 	}
 
-	// 2. Bagus urusannya kalau ditambahin Header Content-Type JSON
 	req.Header.Set("Content-Type", "application/json")
 
-	// 3. Selalu biasakan pakai Context bawaan minimal context.Background()
-	// supaya request-nya bisa di-trace atau di-cancel jika timeout
+	// Pastikan ctx tidak nil sebelum dipasang, jika nil gunakan context.Background()
+	if ctx == nil {
+		ctx = context.Background()
+	}
 	req = req.WithContext(ctx)
 
-	// 4. Kirim request menggunakan http.Client
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		return notification_error.ErrorGagalKirim // Kembalikan error jika koneksi/server tujuan gagal dihubungi
+		// TRACE: Log error koneksi / HTTP client
+		fmt.Printf("[TRACE][ERROR] Gagal mengirim HTTP request ke %s. Error: %v\n", fullURL, err)
+		return notification_error.ErrorGagalKirim
 	}
-	defer resp.Body.Close() // Wajib di-close biar gak memory leak!
+	defer resp.Body.Close()
 
-	// 5. Cek status code dari server notification
+	// TRACE: Log status code yang diterima dari server
+	fmt.Printf("[TRACE][RESPONSE] Menerima respon dari %s | Status: %s (%d)\n", fullURL, resp.Status, resp.StatusCode)
+
 	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
-		return notification_error.ErrorGagalKirim // Sesuaikan dengan struct error-mu
+		// TRACE: Log jika status code bukan 200/201
+		fmt.Printf("[TRACE][WARN] Server merespon dengan status tidak sukses: %d\n", resp.StatusCode)
+		return notification_error.ErrorGagalKirim
 	}
 
+	// TRACE: Log sukses akhir
+	fmt.Printf("[TRACE][SUCCESS] Notifikasi berhasil dikirim ke %s\n", fullURL)
 	return nil
 }

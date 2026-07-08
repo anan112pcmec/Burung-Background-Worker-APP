@@ -76,15 +76,6 @@ func (a AlamatEkspedisi) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (a AlamatEkspedisi) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, a.TableNameHistorical())
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", a.TableNameHistorical(), err)
-	}
-	fmt.Printf("Berhasil drop tabel %s\n", a.TableNameHistorical())
-	return nil
-}
-
 func (a AlamatEkspedisi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -171,15 +162,6 @@ func (r RekeningSistem) ParseToCUDType() map[string]interface{} {
 		"updated_at":       r.UpdatedAt,
 		"deleted_at":       r.DeletedAt,
 	}
-}
-
-func (r RekeningSistem) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, r.TableNameHistorical())
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", r.TableNameHistorical(), err)
-	}
-	fmt.Printf("Berhasil drop tabel %s\n", r.TableNameHistorical())
-	return nil
 }
 
 func (r RekeningSistem) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
@@ -319,15 +301,6 @@ func (p PayOutSistem) ParseToCUDType() map[string]interface{} {
 		"is_virtual_account": p.IsVirtualAccount,
 		"deleted_at":         p.DeletedAt,
 	}
-}
-
-func (p PayOutSistem) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", p.TableNameHistorical(), err)
-	}
-	fmt.Printf("Berhasil drop tabel %s\n", p.TableNameHistorical())
-	return nil
 }
 
 func (p PayOutSistem) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
@@ -492,15 +465,6 @@ func (k KebijakanSistem) ParseToCUDType() map[string]interface{} {
 		"updated_at":                       k.UpdatedAt,
 		"deleted_at":                       k.DeletedAt,
 	}
-}
-
-func (k KebijakanSistem) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, k.TableNameHistorical())
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", k.TableNameHistorical(), err)
-	}
-	fmt.Printf("Berhasil drop tabel %s\n", k.TableNameHistorical())
-	return nil
 }
 
 func (k KebijakanSistem) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {

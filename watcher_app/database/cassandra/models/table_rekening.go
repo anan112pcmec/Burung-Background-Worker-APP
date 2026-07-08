@@ -75,17 +75,6 @@ func (r RekeningSeller) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-func (r RekeningSeller) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, r.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", r.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", r.TableNameHistorical())
-	return nil
-}
-
 func (r RekeningSeller) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
@@ -171,17 +160,6 @@ func (r RekeningKurir) ParseToCUDType() map[string]interface{} {
 		"updated_at":       r.UpdatedAt,
 		"deleted_at":       r.DeletedAt,
 	}
-}
-
-func (r RekeningKurir) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, r.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", r.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", r.TableNameHistorical())
-	return nil
 }
 
 func (r RekeningKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {

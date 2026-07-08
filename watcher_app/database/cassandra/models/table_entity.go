@@ -99,18 +99,6 @@ func (p Pengguna) ParseToCUDType() map[string]interface{} {
 	}
 }
 
-// DropTable disesuaikan menggunakan p.TableName() secara dinamis
-func (p Pengguna) DropTable(ctx context.Context, s *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, p.TableNameHistorical())
-
-	if err := s.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", p.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", p.TableNameHistorical())
-	return nil
-}
-
 type Seller struct {
 	ID               int
 	Username         string
@@ -145,7 +133,7 @@ func (s Seller) CreateHistoricalTable(ctx context.Context, session *gocql.Sessio
 		jam_operasional text,
 		punchline text,
 		password text,
-		deskrisi text,
+		deskripsi text,
 		status_seller text,
 		created_at timestamp,
 		updated_at timestamp,
@@ -182,7 +170,7 @@ func (s Seller) CreateSotReplicaTable(ctx context.Context, session *gocql.Sessio
 		jam_operasional text,
 		punchline text,
 		password text,
-		deskrisi text,
+		deskripsi text,
 		status_seller text,
 		created_at timestamp,
 		updated_at timestamp,
@@ -210,23 +198,12 @@ func (s Seller) ParseToCUDType() map[string]interface{} {
 		"jam_operasional":   s.JamOperasional,
 		"punchline":         s.Punchline,
 		"password":          s.Password,
-		"deskrispi":         s.Deskripsi,
+		"deskripsi":         s.Deskripsi,
 		"status_seller":     s.StatusSeller,
 		"created_at":        s.CreatedAt,
 		"updated_at":        s.UpdatedAt,
 		"deleted_at":        s.DeletedAt,
 	}
-}
-
-func (s Seller) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, s.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", s.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", s.TableNameHistorical())
-	return nil
 }
 
 type Kurir struct {
@@ -338,16 +315,4 @@ func (k Kurir) ParseToCUDType() map[string]interface{} {
 		"updated_at":     k.UpdatedAt,
 		"deleted_at":     k.DeletedAt,
 	}
-}
-
-// DropTable disesuaikan menggunakan k.TableName() secara dinamis
-func (k Kurir) DropTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`DROP TABLE IF EXISTS %s`, k.TableNameHistorical())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		return fmt.Errorf("gagal drop tabel %s: %w", k.TableNameHistorical(), err)
-	}
-
-	fmt.Printf("Berhasil drop tabel %s\n", k.TableNameHistorical())
-	return nil
 }

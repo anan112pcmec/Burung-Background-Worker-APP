@@ -8,17 +8,16 @@ import (
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
 
 	cass_models "github.com/anan112pcmec/Burung-backend-2/watcher_app/database/cassandra/models"
-
 )
 
-func DownRelation(ctx context.Context, session *gocql.Session) []error {
+func DownRelation(ctx context.Context, s *gocql.Session) []error {
 	var errs []error = []error{}
 
 	for _, model := range model_list {
 		fctx, cancel := context.WithTimeout(ctx, time.Second*10)
 
-		if historicalModel, ok := model.(cass_models.Method); ok {
-			if err := historicalModel.DropTable(fctx, session); err != nil {
+		if historicalModel, ok := model.(cass_models.TableName); ok {
+			if err := cass_models.DropTable(fctx, s, historicalModel.TableNameHistorical()); err != nil {
 				errs = append(errs, err)
 			}
 		} else {
