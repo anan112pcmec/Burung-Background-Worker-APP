@@ -59,7 +59,7 @@ func UpdateApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage, ctx c
 		Reviewed:            Objek.Reviewed,
 		CreatedAt:           Objek.CreatedAt,
 		UpdatedAt:           Objek.UpdatedAt,
-		DeletedAt:           Objek.DeletedAt,
+		DeletedAt:           Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -165,7 +165,7 @@ func CreateKirimOrderTransaksiEkspedisi(Data mb_cud_serializer.ParsedDataMessage
 		Status:            Objek.Status,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
+		DeletedAt:         Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -231,7 +231,7 @@ func CreateKirimOrderTransaksiBiasa(Data mb_cud_serializer.ParsedDataMessage, ct
 		Status:            Objek.Status,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
+		DeletedAt:         Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -311,7 +311,7 @@ func UpdateUnApproveOrderTransaksi(Data mb_cud_serializer.ParsedDataMessage, ctx
 		Reviewed:            Objek.Reviewed,
 		CreatedAt:           Objek.CreatedAt,
 		UpdatedAt:           Objek.UpdatedAt,
-		DeletedAt:           Objek.DeletedAt,
+		DeletedAt:           Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

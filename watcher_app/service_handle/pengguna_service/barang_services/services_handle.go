@@ -840,7 +840,7 @@ func UpdateBerikanReviewBarangIIUpdateTransaksi(Data mb_cud_serializer.ParsedDat
 		Reviewed:            Objek.Reviewed,
 		CreatedAt:           Objek.CreatedAt,
 		UpdatedAt:           Objek.UpdatedAt,
-		DeletedAt:           Objek.DeletedAt,
+		DeletedAt:           Objek.DeletedAt.Time,
 	}
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
 

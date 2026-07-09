@@ -6,7 +6,6 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
-	"gorm.io/gorm"
 )
 
 type EntitySocialMedia struct {
@@ -503,7 +502,7 @@ type AlamatPengguna struct {
 	Latitude        float64
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	DeletedAt       gorm.DeletedAt // REVISI: dari time.Time → gorm.DeletedAt (soft delete, sesuai sot_models)
+	DeletedAt       time.Time // REVISI: dari time.Time → gorm.DeletedAt (soft delete, sesuai sot_models)
 }
 
 func (a AlamatPengguna) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
@@ -575,10 +574,6 @@ func (a AlamatPengguna) CreateHistoricalTable(ctx context.Context, session *gocq
 
 func (a AlamatPengguna) ParseToCUDType() map[string]interface{} {
 	// REVISI: handle gorm.DeletedAt dengan benar
-	var deletedAtInterface interface{} = nil
-	if a.DeletedAt.Valid {
-		deletedAtInterface = a.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":               a.ID,
@@ -595,7 +590,7 @@ func (a AlamatPengguna) ParseToCUDType() map[string]interface{} {
 		"latitude":         a.Latitude,
 		"created_at":       a.CreatedAt,
 		"updated_at":       a.UpdatedAt,
-		"deleted_at":       deletedAtInterface,
+		"deleted_at":       a.DeletedAt,
 	}
 }
 
@@ -1135,7 +1130,7 @@ type AlamatGudang struct {
 	Latitude        float64
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	DeletedAt       gorm.DeletedAt
+	DeletedAt       time.Time
 }
 
 func (j AlamatGudang) TableNameSotReplica() string {
@@ -1210,10 +1205,6 @@ func (a AlamatGudang) CreateHistoricalTable(ctx context.Context, session *gocql.
 }
 
 func (a AlamatGudang) ParseToCUDType() map[string]interface{} {
-	var deletedAtInterface interface{} = nil
-	if a.DeletedAt.Valid {
-		deletedAtInterface = a.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":               a.ID,
@@ -1230,7 +1221,7 @@ func (a AlamatGudang) ParseToCUDType() map[string]interface{} {
 		"latitude":         a.Latitude,
 		"created_at":       a.CreatedAt,
 		"updated_at":       a.UpdatedAt,
-		"deleted_at":       deletedAtInterface,
+		"deleted_at":       a.DeletedAt,
 	}
 }
 
@@ -1247,7 +1238,7 @@ type DistributorData struct {
 	// REVISI: tambah CreatedAt, UpdatedAt, DeletedAt sesuai sot_models
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
+	DeletedAt time.Time
 }
 
 func (j DistributorData) TableNameSotReplica() string {
@@ -1317,10 +1308,6 @@ func (d DistributorData) CreateHistoricalTable(ctx context.Context, session *goc
 
 func (d DistributorData) ParseToCUDType() map[string]interface{} {
 	// REVISI: tambah created_at, updated_at, deleted_at
-	var deletedAtInterface interface{} = nil
-	if d.DeletedAt.Valid {
-		deletedAtInterface = d.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":                           d.ID,
@@ -1333,7 +1320,7 @@ func (d DistributorData) ParseToCUDType() map[string]interface{} {
 		"status":                       d.Status,
 		"created_at":                   d.CreatedAt,
 		"updated_at":                   d.UpdatedAt,
-		"deleted_at":                   deletedAtInterface,
+		"deleted_at":                   d.DeletedAt,
 	}
 }
 
@@ -1354,7 +1341,7 @@ type BrandData struct {
 	// REVISI: tambah CreatedAt, UpdatedAt, DeletedAt sesuai sot_models
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
+	DeletedAt time.Time
 }
 
 // REVISI: CreateSotReplicaTable untuk BrandData sebelumnya tidak ada, sekarang ditambahkan
@@ -1432,10 +1419,6 @@ func (b BrandData) CreateHistoricalTable(ctx context.Context, session *gocql.Ses
 
 func (b BrandData) ParseToCUDType() map[string]interface{} {
 	// REVISI: tambah created_at, updated_at, deleted_at
-	var deletedAtInterface interface{} = nil
-	if b.DeletedAt.Valid {
-		deletedAtInterface = b.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":                      b.ID,
@@ -1452,7 +1435,7 @@ func (b BrandData) ParseToCUDType() map[string]interface{} {
 		"status":                  b.Status,
 		"created_at":              b.CreatedAt,
 		"updated_at":              b.UpdatedAt,
-		"deleted_at":              deletedAtInterface,
+		"deleted_at":              b.DeletedAt,
 	}
 }
 
@@ -1466,7 +1449,7 @@ type Etalase struct {
 	// REVISI: tambah CreatedAt, UpdatedAt, DeletedAt sesuai sot_models
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
+	DeletedAt time.Time
 }
 
 func (e Etalase) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
@@ -1529,10 +1512,6 @@ func (e Etalase) CreateHistoricalTable(ctx context.Context, session *gocql.Sessi
 
 func (e Etalase) ParseToCUDType() map[string]interface{} {
 	// REVISI: tambah created_at, updated_at, deleted_at; hapus kolom yang tidak relevan
-	var deletedAtInterface interface{} = nil
-	if e.DeletedAt.Valid {
-		deletedAtInterface = e.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":            e.ID,
@@ -1542,7 +1521,7 @@ func (e Etalase) ParseToCUDType() map[string]interface{} {
 		"jumlah_barang": e.JumlahBarang,
 		"created_at":    e.CreatedAt,
 		"updated_at":    e.UpdatedAt,
-		"deleted_at":    deletedAtInterface,
+		"deleted_at":    e.DeletedAt,
 	}
 }
 
@@ -1621,7 +1600,7 @@ type DiskonProduk struct {
 	Status        string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
-	DeletedAt     gorm.DeletedAt
+	DeletedAt     time.Time
 }
 
 func (j DiskonProduk) TableNameSotReplica() string {
@@ -1688,10 +1667,6 @@ func (d DiskonProduk) CreateHistoricalTable(ctx context.Context, session *gocql.
 }
 
 func (d DiskonProduk) ParseToCUDType() map[string]interface{} {
-	var deletedAtInterface interface{} = nil
-	if d.DeletedAt.Valid {
-		deletedAtInterface = d.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":             d.ID,
@@ -1704,7 +1679,7 @@ func (d DiskonProduk) ParseToCUDType() map[string]interface{} {
 		"status":         d.Status,
 		"created_at":     d.CreatedAt,
 		"updated_at":     d.UpdatedAt,
-		"deleted_at":     deletedAtInterface,
+		"deleted_at":     d.DeletedAt,
 	}
 }
 
@@ -2119,7 +2094,7 @@ type BidKurirData struct {
 	Status          string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	DeletedAt       gorm.DeletedAt
+	DeletedAt       time.Time
 }
 
 func (j BidKurirData) TableNameSotReplica() string {
@@ -2202,10 +2177,6 @@ func (b BidKurirData) CreateHistoricalTable(ctx context.Context, session *gocql.
 }
 
 func (b BidKurirData) ParseToCUDType() map[string]interface{} {
-	var deletedAtInterface interface{} = nil
-	if b.DeletedAt.Valid {
-		deletedAtInterface = b.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":               b.ID,
@@ -2226,7 +2197,7 @@ func (b BidKurirData) ParseToCUDType() map[string]interface{} {
 		"status":           b.Status,
 		"created_at":       b.CreatedAt,
 		"updated_at":       b.UpdatedAt,
-		"deleted_at":       deletedAtInterface,
+		"deleted_at":       b.DeletedAt,
 	}
 }
 
@@ -2242,7 +2213,7 @@ type BidKurirNonEksScheduler struct {
 	Status       string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
-	DeletedAt    gorm.DeletedAt
+	DeletedAt    time.Time
 }
 
 func (j BidKurirNonEksScheduler) TableNameSotReplica() string {
@@ -2305,10 +2276,6 @@ func (b BidKurirNonEksScheduler) CreateHistoricalTable(ctx context.Context, sess
 }
 
 func (b BidKurirNonEksScheduler) ParseToCUDType() map[string]interface{} {
-	var deletedAtInterface interface{} = nil
-	if b.DeletedAt.Valid {
-		deletedAtInterface = b.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":            b.ID,
@@ -2319,7 +2286,7 @@ func (b BidKurirNonEksScheduler) ParseToCUDType() map[string]interface{} {
 		"status":        b.Status,
 		"created_at":    b.CreatedAt,
 		"updated_at":    b.UpdatedAt,
-		"deleted_at":    deletedAtInterface,
+		"deleted_at":    b.DeletedAt,
 	}
 }
 
@@ -2335,7 +2302,7 @@ type BidKurirEksScheduler struct {
 	Status              string
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
-	DeletedAt           gorm.DeletedAt
+	DeletedAt           time.Time
 }
 
 func (j BidKurirEksScheduler) TableNameSotReplica() string {
@@ -2398,10 +2365,6 @@ func (b BidKurirEksScheduler) CreateHistoricalTable(ctx context.Context, session
 }
 
 func (b BidKurirEksScheduler) ParseToCUDType() map[string]interface{} {
-	var deletedAtInterface interface{} = nil
-	if b.DeletedAt.Valid {
-		deletedAtInterface = b.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":                      b.ID,
@@ -2412,7 +2375,7 @@ func (b BidKurirEksScheduler) ParseToCUDType() map[string]interface{} {
 		"status":                  b.Status,
 		"created_at":              b.CreatedAt,
 		"updated_at":              b.UpdatedAt,
-		"deleted_at":              deletedAtInterface,
+		"deleted_at":              b.DeletedAt,
 	}
 }
 

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
-	"gorm.io/gorm"
 )
 
 // REVISI: tambah interface BarangContract sesuai sot_models
@@ -27,7 +26,7 @@ type BarangInduk struct {
 	CreatedAt        time.Time
 	// REVISI: tambah UpdatedAt dan DeletedAt sesuai sot_models
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
+	DeletedAt time.Time
 }
 
 func (b BarangInduk) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
@@ -98,10 +97,6 @@ func (b BarangInduk) CreateHistoricalTable(ctx context.Context, session *gocql.S
 
 func (b BarangInduk) ParseToCUDType() map[string]interface{} {
 	// REVISI: tambah updated_at dan deleted_at
-	var deletedAtInterface interface{} = nil
-	if b.DeletedAt.Valid {
-		deletedAtInterface = b.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":                    b.ID,
@@ -114,7 +109,7 @@ func (b BarangInduk) ParseToCUDType() map[string]interface{} {
 		"harga_kategori_barang": b.HargaKategoris,
 		"created_at":            b.CreatedAt,
 		"updated_at":            b.UpdatedAt,
-		"deleted_at":            deletedAtInterface,
+		"deleted_at":            b.DeletedAt,
 	}
 }
 
@@ -137,7 +132,7 @@ type KategoriBarang struct {
 	IsOriginal     bool
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
-	DeletedAt      gorm.DeletedAt
+	DeletedAt      time.Time
 }
 
 func (k KategoriBarang) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
@@ -224,10 +219,6 @@ func (k KategoriBarang) CreateHistoricalTable(ctx context.Context, session *gocq
 
 func (k KategoriBarang) ParseToCUDType() map[string]interface{} {
 	// REVISI: tambah updated_at dan deleted_at; gunakan IDRekening
-	var deletedAtInterface interface{} = nil
-	if k.DeletedAt.Valid {
-		deletedAtInterface = k.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":                 k.ID,
@@ -248,7 +239,7 @@ func (k KategoriBarang) ParseToCUDType() map[string]interface{} {
 		"is_original":        k.IsOriginal,
 		"created_at":         k.CreatedAt,
 		"updated_at":         k.UpdatedAt,
-		"deleted_at":         deletedAtInterface,
+		"deleted_at":         k.DeletedAt,
 	}
 }
 

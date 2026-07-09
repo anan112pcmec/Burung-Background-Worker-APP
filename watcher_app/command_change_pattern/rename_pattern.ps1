@@ -4,7 +4,12 @@ $files = @(
    
     # 'C:\Burung_App\Project_Source\Backend-2\watcher_app\service_handle\auth\auth_handle.go'
     # 'C:\Burung_App\Project_Source\Backend-2\watcher_app\database\cassandra\models\table_media.go'
-    'C:\Burung_App\Project_Source\Backend-2\watcher_app\database\cassandra\models\engagement_entity.go'
+    # 'C:\Burung_App\Project_Source\Backend-2\watcher_app\database\cassandra\models\engagement_entity.go'
+    'C:\Burung_App\Project_Source\Backend-2\watcher_app\service_handle\kurir_service\pengiriman_services\services_handle.go',
+    'C:\Burung_App\Project_Source\Backend-2\watcher_app\service_handle\seller_service\alamat_services\services_handle.go',
+    'C:\Burung_App\Project_Source\Backend-2\watcher_app\service_handle\seller_service\diskon_services\services_handle.go',
+    'C:\Burung_App\Project_Source\Backend-2\watcher_app\service_handle\seller_service\transaksi_services\services_handle.go'
+
 
 )
 
@@ -20,7 +25,7 @@ foreach ($file in $files) {
         # $content = $content -replace $pattern, 'settings.TimeoutContext'
 
         #  Menggunakan \bse\b agar hanya mencari kata "se" yang ber
-        $content = $content -replace 'gocql.Session', '*gocql.Session'
+        $content = $content -replace 'Objek.DeletedAt', 'Objek.DeletedAt.Time'
         # $pattern = '\*Data mb_cud_serializer\.Parsed\*DataMessage'
         # $replacement = 'Data *mb_cud_serializer.ParsedDataMessage'
         

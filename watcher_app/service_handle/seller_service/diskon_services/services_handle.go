@@ -39,7 +39,7 @@ func CreateTambahDiskonProduk(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Status:        Objek.Status,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt, // Mengambil nilai Time dari gorm.DeletedAt jika tipenya gorm
+		DeletedAt:     Objek.DeletedAt.Time, // Mengambil nilai Time dari gorm.DeletedAt jika tipenya gorm
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -101,7 +101,7 @@ func UpdateEditDiskonProduk(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		Status:        Objek.Status,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
+		DeletedAt:     Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -164,7 +164,7 @@ func DeleteHapusDiskonProduk(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 		Status:        Objek.Status,
 		CreatedAt:     Objek.CreatedAt,
 		UpdatedAt:     Objek.UpdatedAt,
-		DeletedAt:     Objek.DeletedAt,
+		DeletedAt:     Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -325,3 +325,4 @@ func DeleteHapusDiskonPadaBarang(Data mb_cud_serializer.ParsedDataMessage, ctx c
 
 	return nil
 }
+

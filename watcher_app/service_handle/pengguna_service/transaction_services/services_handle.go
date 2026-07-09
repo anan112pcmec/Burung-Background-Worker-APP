@@ -94,7 +94,7 @@ func CreateLockTransaksiVa(Data mb_cud_serializer.ParsedDataMessage, ctx context
 		Reviewed:            Objek.Reviewed,
 		CreatedAt:           Objek.CreatedAt,
 		UpdatedAt:           Objek.UpdatedAt,
-		DeletedAt:           Objek.DeletedAt,
+		DeletedAt:           Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -264,7 +264,7 @@ func CreateLockTransaksiWallet(Data mb_cud_serializer.ParsedDataMessage, ctx con
 		Reviewed:            Objek.Reviewed,
 		CreatedAt:           Objek.CreatedAt,
 		UpdatedAt:           Objek.UpdatedAt,
-		DeletedAt:           Objek.DeletedAt,
+		DeletedAt:           Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -420,7 +420,7 @@ func CreateLockTransaksiGerai(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Reviewed:            Objek.Reviewed,
 		CreatedAt:           Objek.CreatedAt,
 		UpdatedAt:           Objek.UpdatedAt,
-		DeletedAt:           Objek.DeletedAt,
+		DeletedAt:           Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

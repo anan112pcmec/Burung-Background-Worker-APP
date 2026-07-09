@@ -46,7 +46,7 @@ func CreateTambahAlamatGudang(Data mb_cud_serializer.ParsedDataMessage, ctx cont
 		Latitude:        Objek.Latitude,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -139,7 +139,7 @@ func UpdateEditAlamatGudang(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		Latitude:        Objek.Latitude,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -231,7 +231,7 @@ func DeleteHapusAlamatGudang(Data mb_cud_serializer.ParsedDataMessage, ctx conte
 		Latitude:        Objek.Latitude,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

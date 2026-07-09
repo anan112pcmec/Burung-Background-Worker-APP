@@ -6,6 +6,7 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
+
 )
 
 type Pengguna struct {

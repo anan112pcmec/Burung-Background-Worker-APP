@@ -6,7 +6,6 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
-	"gorm.io/gorm"
 )
 
 // =========================================================================
@@ -25,7 +24,7 @@ type Pembayaran struct {
 	PaidAt          string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	DeletedAt       gorm.DeletedAt
+	DeletedAt       time.Time
 }
 
 func (Pembayaran) TableNameHistorical() string {
@@ -143,7 +142,7 @@ type Transaksi struct {
 	Reviewed            bool
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
-	DeletedAt           gorm.DeletedAt
+	DeletedAt           time.Time
 }
 
 func (Transaksi) TableNameHistorical() string {
@@ -308,7 +307,7 @@ type TransaksiFailed struct {
 	Reviewed            bool
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
-	DeletedAt           gorm.DeletedAt
+	DeletedAt           time.Time
 }
 
 func (TransaksiFailed) TableNameHistorical() string {

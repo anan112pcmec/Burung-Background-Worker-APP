@@ -6,7 +6,6 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
-	"gorm.io/gorm"
 )
 
 // =========================================================================
@@ -23,7 +22,7 @@ type RekeningSeller struct {
 	IsDefault       bool
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	DeletedAt       gorm.DeletedAt // 🔵 Diselaraskan dengan sot_models
+	DeletedAt       time.Time // 🔵 Diselaraskan dengan sot_models
 }
 
 func (RekeningSeller) TableNameHistorical() string {
@@ -112,7 +111,7 @@ type RekeningKurir struct {
 	PemilikRekening string
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	DeletedAt       gorm.DeletedAt // 🔵 Diselaraskan dengan sot_models
+	DeletedAt       time.Time // 🔵 Diselaraskan dengan sot_models
 }
 
 func (RekeningKurir) TableNameHistorical() string {

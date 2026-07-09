@@ -52,7 +52,7 @@ func CreateAktifkanBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx contex
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -232,7 +232,7 @@ func UpdateUbahBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx context.Co
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -278,7 +278,7 @@ func UpdateUpdatePosisiBidKurir(Data mb_cud_serializer.ParsedDataMessage, ctx co
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -356,7 +356,7 @@ func CreateAmbilPengirimanNonEksManualRegulerIIBidKurirNonEksSchedulerCreatePubl
 		Status:       Objek.Status,
 		CreatedAt:    Objek.CreatedAt,
 		UpdatedAt:    Objek.UpdatedAt,
-		DeletedAt:    Objek.DeletedAt,
+		DeletedAt:    Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -454,7 +454,7 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIpengirimanUpdatedPublish(Data mb_
 		Status:            Objek.Status,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
+		DeletedAt:         Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -556,7 +556,7 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataAmbilPengirimanUpdate
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -632,7 +632,7 @@ func UpdateAmbilPengirimanNonEksManualRegulerIIbidKurirDataStatusUpdatedPublish(
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -695,7 +695,7 @@ func CreateAmbilPengirimanEksManualRegulerIIbidKurirEksSchedulerCreatePublish(Da
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -799,7 +799,7 @@ func UpdateAmbilPengirimanEksManualRegulerIIpengirimanEksUpdatedPublish(Data mb_
 		Status:            Objek.Status,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
+		DeletedAt:         Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -920,7 +920,7 @@ func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataUpdatedPublish(Data mb_c
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -996,7 +996,7 @@ func UpdateAmbilPengirimanEksManualRegulerIIbidKurirDataAmbilPengirimanEksStatus
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1062,7 +1062,7 @@ func UpdateLockSiapAntarBidKurirIIEksScheduler(Data mb_cud_serializer.ParsedData
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1127,7 +1127,7 @@ func UpdateLockSiapAntarBidKurirIINonEksScheduler(Data mb_cud_serializer.ParsedD
 		Status:       Objek.Status,
 		CreatedAt:    Objek.CreatedAt,
 		UpdatedAt:    Objek.UpdatedAt,
-		DeletedAt:    Objek.DeletedAt,
+		DeletedAt:    Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1205,7 +1205,7 @@ func UpdateLockSiapAntarBidKurirIIbidKurirDataLockSiapAntarUpdatedPublish(Data m
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1359,7 +1359,7 @@ func CreatePickedUpPengirimanNonEksIIjejakPengirimanCreatePublish(Data mb_cud_se
 		Longtitude:   Objek.Longtitude,
 		CreatedAt:    Objek.CreatedAt,
 		UpdatedAt:    Objek.UpdatedAt,
-		DeletedAt:    Objek.DeletedAt,
+		DeletedAt:    Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1449,7 +1449,7 @@ func UpdatePickedUpPengirimanNonEksIIschedulerPickedUpNonEksUpdatedPublish(Data 
 		Status:       Objek.Status,
 		CreatedAt:    Objek.CreatedAt,
 		UpdatedAt:    Objek.UpdatedAt,
-		DeletedAt:    Objek.DeletedAt,
+		DeletedAt:    Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1512,7 +1512,7 @@ func UpdatePickedUpPengirimanNonEksIIpengirimanPickedUpNonEksUpdatedPublish(Data
 		Status:            Objek.Status,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
+		DeletedAt:         Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1591,7 +1591,7 @@ func UpdatePickedUpPengirimanNonEksIItransaksiPickedUpNonEksUpdatedPublish(Data 
 		Reviewed:            Objek.Reviewed,
 		CreatedAt:           Objek.CreatedAt,
 		UpdatedAt:           Objek.UpdatedAt,
-		DeletedAt:           Objek.DeletedAt,
+		DeletedAt:           Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1705,7 +1705,7 @@ func UpdateKirimPengirimanNonEksIIbidKurirPengirimanNonEksSchedulerUpdatedPublis
 		Status:       Objek.Status,
 		CreatedAt:    Objek.CreatedAt,
 		UpdatedAt:    Objek.UpdatedAt,
-		DeletedAt:    Objek.DeletedAt,
+		DeletedAt:    Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1747,7 +1747,7 @@ func UpdateKirimPengirimanNonEksIIpengirimanPengirimanUpdatedPublish(Data mb_cud
 		Status:            Objek.Status,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
+		DeletedAt:         Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1807,7 +1807,7 @@ func UpdateKirimPengirimanNonEksIIjejakpengirimanPengirimanUpdatedPublish(Data m
 		Longtitude:   Objek.Longtitude,
 		CreatedAt:    Objek.CreatedAt,
 		UpdatedAt:    Objek.UpdatedAt,
-		DeletedAt:    Objek.DeletedAt,
+		DeletedAt:    Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1843,7 +1843,7 @@ func UpdateUpdateInformasiPerjalananPengirimanNonEks(Data mb_cud_serializer.Pars
 		Longtitude:   Objek.Longtitude,
 		CreatedAt:    Objek.CreatedAt,
 		UpdatedAt:    Objek.UpdatedAt,
-		DeletedAt:    Objek.DeletedAt,
+		DeletedAt:    Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1906,7 +1906,7 @@ func DeleteSampaiPengirimanNonEksIIbidKurirNonEksDeletePublish(Data mb_cud_seria
 		Status:       Objek.Status,
 		CreatedAt:    Objek.CreatedAt,
 		UpdatedAt:    Objek.UpdatedAt,
-		DeletedAt:    Objek.DeletedAt,
+		DeletedAt:    Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -1969,7 +1969,7 @@ func UpdateSampaiPengirimanNonEksIIpengirimanSampaiUpdatedPublish(Data mb_cud_se
 		Status:            Objek.Status,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
+		DeletedAt:         Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -2061,7 +2061,7 @@ func UpdateSampaiPengirimanNonEksIIbidKurirDataSampaiUpdatedPublish(Data mb_cud_
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -2118,7 +2118,7 @@ func UpdateSampaiPengirimanNonEksIIjejakPengirimanSampaiUpdatedPublish(Data mb_c
 		Longtitude:   Objek.Longtitude,
 		CreatedAt:    Objek.CreatedAt,
 		UpdatedAt:    Objek.UpdatedAt,
-		DeletedAt:    Objek.DeletedAt,
+		DeletedAt:    Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -2228,7 +2228,7 @@ func UpdateSampaiPengirimanNonEksIItransaksiSampaiUpdatedPublish(Data mb_cud_ser
 		Reviewed:            Objek.Reviewed,
 		CreatedAt:           Objek.CreatedAt,
 		UpdatedAt:           Objek.UpdatedAt,
-		DeletedAt:           Objek.DeletedAt,
+		DeletedAt:           Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -2490,7 +2490,7 @@ func CreatePickedUpPengirimanEksIIjejakPengirimanEksCreatePublish(Data mb_cud_se
 		Longitude:             Objek.Longitude,
 		CreatedAt:             Objek.CreatedAt,
 		UpdatedAt:             Objek.UpdatedAt,
-		DeletedAt:             Objek.DeletedAt,
+		DeletedAt:             Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -2554,7 +2554,7 @@ func UpdatePickedUpPengirimanEksIIschedulerEksPickedUpUpdatedPublish(Data mb_cud
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -2617,7 +2617,7 @@ func UpdatePickedUpPengirimanEksIIpengirimanEksPickedUpUpdatedPublish(Data mb_cu
 		Status:            Objek.Status,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
+		DeletedAt:         Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -2718,7 +2718,7 @@ func UpdatePickedUpPengirimanEksIItransaksiPickedUpUpdatedPublish(Data mb_cud_se
 		Reviewed:            Objek.Reviewed,
 		CreatedAt:           Objek.CreatedAt,
 		UpdatedAt:           Objek.UpdatedAt,
-		DeletedAt:           Objek.DeletedAt,
+		DeletedAt:           Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -2811,7 +2811,7 @@ func UpdateKirimPengirimanEksIIschedulerPengirimanUpdatedPublish(Data mb_cud_ser
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -2874,7 +2874,7 @@ func UpdateKirimPengirimanEksIIpengirimanEksUpdatedPublish(Data mb_cud_serialize
 		Status:            Objek.Status,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
+		DeletedAt:         Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -2935,7 +2935,7 @@ func UpdateKirimPengirimanEksIIpengirimanPengirimanEksUpdatedPublish(Data mb_cud
 		Longitude:             Objek.Longitude,
 		CreatedAt:             Objek.CreatedAt,
 		UpdatedAt:             Objek.UpdatedAt,
-		DeletedAt:             Objek.DeletedAt,
+		DeletedAt:             Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -2998,7 +2998,7 @@ func UpdateInformasiPerjalananPengirimanEks(Data mb_cud_serializer.ParsedDataMes
 		Longitude:             Objek.Longitude,
 		CreatedAt:             Objek.CreatedAt,
 		UpdatedAt:             Objek.UpdatedAt,
-		DeletedAt:             Objek.DeletedAt,
+		DeletedAt:             Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -3062,7 +3062,7 @@ func DeleteSampaipengirimanEksIIbidKurirEksDeletePublish(Data mb_cud_serializer.
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -3125,7 +3125,7 @@ func UpdateSampaiPengirimanEksIIpengirimanSampaiEksUpdatedPublish(Data mb_cud_se
 		Status:            Objek.Status,
 		CreatedAt:         Objek.CreatedAt,
 		UpdatedAt:         Objek.UpdatedAt,
-		DeletedAt:         Objek.DeletedAt,
+		DeletedAt:         Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -3217,7 +3217,7 @@ func UpdateSampaiPengirimanEksIIbidKurirDataEksSampaiUpdatedPublish(Data mb_cud_
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -3274,7 +3274,7 @@ func UpdateSampaiPengirimanEksIIjejakPengirimanEksSampaiUpdatedPublish(Data mb_c
 		Longitude:             Objek.Longitude,
 		CreatedAt:             Objek.CreatedAt,
 		UpdatedAt:             Objek.UpdatedAt,
-		DeletedAt:             Objek.DeletedAt,
+		DeletedAt:             Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -3357,7 +3357,7 @@ func UpdateSampaiPengirimanEksIItransaksiSampaiEksUpdatedPublish(Data mb_cud_ser
 		Reviewed:            Objek.Reviewed,
 		CreatedAt:           Objek.CreatedAt,
 		UpdatedAt:           Objek.UpdatedAt,
-		DeletedAt:           Objek.DeletedAt,
+		DeletedAt:           Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()
@@ -3621,7 +3621,7 @@ func DeleteNonaktifkanBidKurirIIbidKurirDataDeletePublish(Data mb_cud_serializer
 		Status:          Objek.Status,
 		CreatedAt:       Objek.CreatedAt,
 		UpdatedAt:       Objek.UpdatedAt,
-		DeletedAt:       Objek.DeletedAt,
+		DeletedAt:       Objek.DeletedAt.Time,
 	}
 
 	var parsedData map[string]interface{} = ObjekCass.ParseToCUDType()

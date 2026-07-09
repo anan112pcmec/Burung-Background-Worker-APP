@@ -6,7 +6,6 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
-	"gorm.io/gorm"
 )
 
 // =========================================================================
@@ -32,7 +31,7 @@ type Pengiriman struct {
 	Status            string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
-	DeletedAt         gorm.DeletedAt
+	DeletedAt         time.Time
 }
 
 func (Pengiriman) TableNameHistorical() string {
@@ -140,7 +139,7 @@ type JejakPengiriman struct {
 	Longtitude   float64 // 🔵 Tetap dipertahankan sesuai struktur sot_models
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
-	DeletedAt    gorm.DeletedAt
+	DeletedAt    time.Time
 }
 
 func (JejakPengiriman) TableNameHistorical() string {
@@ -239,7 +238,7 @@ type PengirimanEkspedisi struct {
 	Status            string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
-	DeletedAt         gorm.DeletedAt
+	DeletedAt         time.Time
 }
 
 func (PengirimanEkspedisi) TableNameHistorical() string {
@@ -347,7 +346,7 @@ type JejakPengirimanEkspedisi struct {
 	Longitude             float64
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
-	DeletedAt             gorm.DeletedAt
+	DeletedAt             time.Time
 }
 
 func (JejakPengirimanEkspedisi) TableNameHistorical() string {
