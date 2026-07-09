@@ -137,6 +137,7 @@ type Transaksi struct {
 	IsEkspedisi         bool
 	SellerPaid          int64
 	KurirPaid           int64
+	SistemPaid          int64
 	EkspedisiPaid       int64
 	Total               int64
 	Reviewed            bool
@@ -174,6 +175,7 @@ func (t Transaksi) CreateHistoricalTable(ctx context.Context, session *gocql.Ses
 		is_ekspedisi boolean,
 		seller_paid bigint,
 		kurir_paid bigint,
+		sistem_paid bigint,
 		ekspedisi_paid bigint,
 		total bigint,
 		reviewed boolean,
@@ -219,6 +221,7 @@ func (t Transaksi) ParseToCUDType() map[string]interface{} {
 		"is_ekspedisi":         t.IsEkspedisi,
 		"seller_paid":          t.SellerPaid,
 		"kurir_paid":           t.KurirPaid,
+		"sistem_paid":          t.SistemPaid,
 		"ekspedisi_paid":       t.EkspedisiPaid,
 		"total":                t.Total,
 		"reviewed":             t.Reviewed,
@@ -253,6 +256,7 @@ func (t Transaksi) CreateSotReplicaTable(ctx context.Context, session *gocql.Ses
 		is_ekspedisi boolean,
 		seller_paid bigint,
 		kurir_paid bigint,
+		sistem_paid bigint,
 		ekspedisi_paid bigint,
 		total bigint,
 		reviewed boolean,
@@ -298,6 +302,7 @@ type TransaksiFailed struct {
 	IsEkspedisi         bool
 	SellerPaid          int64
 	KurirPaid           int64
+	SistemPaid          int64
 	EkspedisiPaid       int64
 	Total               int64
 	Reviewed            bool
@@ -335,6 +340,7 @@ func (t TransaksiFailed) CreateHistoricalTable(ctx context.Context, session *goc
 		is_ekspedisi boolean,
 		seller_paid bigint,
 		kurir_paid bigint,
+		sistem_paid bigint,
 		ekspedisi_paid bigint,
 		total bigint,
 		reviewed boolean,
@@ -380,6 +386,7 @@ func (t TransaksiFailed) ParseToCUDType() map[string]interface{} {
 		"is_ekspedisi":         t.IsEkspedisi,
 		"seller_paid":          t.SellerPaid,
 		"kurir_paid":           t.KurirPaid,
+		"sistem_paid":          t.SistemPaid,
 		"ekspedisi_paid":       t.EkspedisiPaid,
 		"total":                t.Total,
 		"reviewed":             t.Reviewed,
@@ -414,6 +421,7 @@ func (t TransaksiFailed) CreateSotReplicaTable(ctx context.Context, session *goc
 		is_ekspedisi boolean,
 		seller_paid bigint,
 		kurir_paid bigint,
+		sistem_paid bigint,
 		ekspedisi_paid bigint,
 		total bigint,
 		reviewed boolean,

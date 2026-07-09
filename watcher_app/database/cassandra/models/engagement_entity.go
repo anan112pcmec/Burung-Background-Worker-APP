@@ -20,11 +20,35 @@ type EntitySocialMedia struct {
 	EntityType string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	DeletedAt  time.Time
 }
 
 func (EntitySocialMedia) TableNameHistorical() string {
 	return "entity_social_media_historical"
+}
+
+func (e EntitySocialMedia) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		entity_id bigint,
+		whatsapp text,
+		facebook text,
+		tiktok text,
+		instagram text,
+		metadata blob,
+		entity_type text,
+		created_at timestamp,
+		updated_at timestamp,
+		PRIMARY KEY (id)
+	)`, e.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", e.TableNameSotReplica())
+	return nil
 }
 
 func (e EntitySocialMedia) CreateHistoricalTable(ctx context.Context, session *gocql.Session) error {
@@ -34,13 +58,12 @@ func (e EntitySocialMedia) CreateHistoricalTable(ctx context.Context, session *g
 		entity_id bigint,
 		whatsapp text,
 		facebook text,
-		tik_tok text,
+		tiktok text,
 		instagram text,
 		metadata blob,
 		entity_type text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -62,13 +85,12 @@ func (e EntitySocialMedia) ParseToCUDType() map[string]interface{} {
 		"entity_id":   e.EntityId,
 		"whatsapp":    e.Whatsapp,
 		"facebook":    e.Facebook,
-		"tik_tok":     e.TikTok,
+		"tiktok":      e.TikTok,
 		"instagram":   e.Instagram,
 		"metadata":    e.Metadata,
 		"entity_type": e.EntityType,
 		"created_at":  e.CreatedAt,
 		"updated_at":  e.UpdatedAt,
-		"deleted_at":  e.DeletedAt,
 	}
 }
 
@@ -84,6 +106,31 @@ type Komentar struct {
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     time.Time
+}
+
+func (k Komentar) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_barang_induk int,
+		id_entity bigint,
+		jenis_entity text,
+		komentar text,
+		is_seller boolean,
+		dibalas bigint,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, k.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", k.TableNameSotReplica())
+	return nil
 }
 
 func (Komentar) TableNameHistorical() string {
@@ -147,6 +194,30 @@ type KomentarChild struct {
 	DeletedAt   time.Time
 }
 
+func (k KomentarChild) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_komentar bigint,
+		id_entity bigint,
+		jenis_entity text,
+		komentar text,
+		is_seller boolean,
+		mention text,
+		created_at timestamp,
+		updated_at timestamp,
+		PRIMARY KEY (id)
+	)`, k.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", k.TableNameSotReplica())
+	return nil
+}
+
 func (KomentarChild) TableNameHistorical() string {
 	return "komentar_child_historical"
 }
@@ -158,12 +229,11 @@ func (k KomentarChild) CreateHistoricalTable(ctx context.Context, session *gocql
 		id_komentar bigint,
 		id_entity bigint,
 		jenis_entity text,
-		isi_komentar text,
+		komentar text,
 		is_seller boolean,
 		mention text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -185,12 +255,11 @@ func (k KomentarChild) ParseToCUDType() map[string]interface{} {
 		"id_komentar":  k.IdKomentar,
 		"id_entity":    k.IdEntity,
 		"jenis_entity": k.JenisEntity,
-		"isi_komentar": k.IsiKomentar,
+		"komentar":     k.IsiKomentar,
 		"is_seller":    k.IsSeller,
 		"mention":      k.Mention,
 		"created_at":   k.CreatedAt,
 		"updated_at":   k.UpdatedAt,
-		"deleted_at":   k.DeletedAt,
 	}
 }
 
@@ -212,7 +281,30 @@ type Keranjang struct {
 	Status         string
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
-	DeletedAt      time.Time
+}
+
+func (k Keranjang) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		id_seller int,
+		id_barang_induk int,
+		id_kategori_barang bigint,
+		jumlah smallint,
+		status text,
+		created_at timestamp,
+		updated_at timestamp,
+		PRIMARY KEY (id)
+	)`, k.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", k.TableNameSotReplica())
+	return nil
 }
 
 func (Keranjang) TableNameHistorical() string {
@@ -226,12 +318,11 @@ func (k Keranjang) CreateHistoricalTable(ctx context.Context, session *gocql.Ses
 		id_pengguna bigint,
 		id_seller int,
 		id_barang_induk int,
-		id_kategori bigint,
+		id_kategori_barang bigint,
 		jumlah smallint,
 		status text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -249,16 +340,15 @@ func (k Keranjang) CreateHistoricalTable(ctx context.Context, session *gocql.Ses
 
 func (k Keranjang) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
-		"id":              k.ID,
-		"id_pengguna":     k.IdPengguna,
-		"id_seller":       k.IdSeller,
-		"id_barang_induk": k.IdBarangInduk,
-		"id_kategori":     k.IdKategori,
-		"jumlah":          k.Jumlah,
-		"status":          k.Status,
-		"created_at":      k.CreatedAt,
-		"updated_at":      k.UpdatedAt,
-		"deleted_at":      k.DeletedAt,
+		"id":                 k.ID,
+		"id_pengguna":        k.IdPengguna,
+		"id_seller":          k.IdSeller,
+		"id_barang_induk":    k.IdBarangInduk,
+		"id_kategori_barang": k.IdKategori,
+		"jumlah":             k.Jumlah,
+		"status":             k.Status,
+		"created_at":         k.CreatedAt,
+		"updated_at":         k.UpdatedAt,
 	}
 }
 
@@ -270,7 +360,26 @@ type BarangDisukai struct {
 	BarangInduk   BarangInduk
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
-	DeletedAt     time.Time
+}
+
+func (b BarangDisukai) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		id_barang_induk int,
+		created_at timestamp,
+		updated_at timestamp,
+		PRIMARY KEY (id)
+	)`, b.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
+	return nil
 }
 
 func (BarangDisukai) TableNameHistorical() string {
@@ -285,7 +394,6 @@ func (b BarangDisukai) CreateHistoricalTable(ctx context.Context, session *gocql
 		id_barang_induk int,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -308,7 +416,6 @@ func (b BarangDisukai) ParseToCUDType() map[string]interface{} {
 		"id_barang_induk": b.IdBarangInduk,
 		"created_at":      b.CreatedAt,
 		"updated_at":      b.UpdatedAt,
-		"deleted_at":      b.DeletedAt,
 	}
 }
 
@@ -320,7 +427,26 @@ type BarangWishlist struct {
 	BarangInduk   BarangInduk
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
-	DeletedAt     time.Time
+}
+
+func (b BarangWishlist) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		id_barang_induk int,
+		created_at timestamp,
+		updated_at timestamp,
+		PRIMARY KEY (id)
+	)`, b.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
+	return nil
 }
 
 func (b BarangWishlist) TableNameHistorical() string {
@@ -358,7 +484,6 @@ func (b BarangWishlist) ParseToCUDType() map[string]interface{} {
 		"id_barang_induk": b.IdBarangInduk,
 		"created_at":      b.CreatedAt,
 		"updated_at":      b.UpdatedAt,
-		"deleted_at":      b.DeletedAt,
 	}
 }
 
@@ -381,6 +506,36 @@ type AlamatPengguna struct {
 	DeletedAt       gorm.DeletedAt // REVISI: dari time.Time → gorm.DeletedAt (soft delete, sesuai sot_models)
 }
 
+func (a AlamatPengguna) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		panggilan_alamat text,
+		nomor_telefon text,
+		nama_alamat text,
+		provinsi text,
+		kota text,
+		kode_pos text,
+		kode_negara text,
+		deskripsi text,
+		longitude double,
+		latitude double,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, a.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", a.TableNameSotReplica())
+	return nil
+}
+
 func (AlamatPengguna) TableNameHistorical() string {
 	return "alamat_pengguna_historical"
 }
@@ -391,7 +546,7 @@ func (a AlamatPengguna) CreateHistoricalTable(ctx context.Context, session *gocq
 		id bigint,
 		id_pengguna bigint,
 		panggilan_alamat text,
-		nomor_telephone text,
+		nomor_telefon text,
 		nama_alamat text,
 		provinsi text,
 		kota text,
@@ -429,7 +584,7 @@ func (a AlamatPengguna) ParseToCUDType() map[string]interface{} {
 		"id":               a.ID,
 		"id_pengguna":      a.IDPengguna,
 		"panggilan_alamat": a.PanggilanAlamat,
-		"nomor_telephone":  a.NomorTelephone,
+		"nomor_telefon":    a.NomorTelephone,
 		"nama_alamat":      a.NamaAlamat,
 		"provinsi":         a.Provinsi,
 		"kota":             a.Kota,
@@ -452,7 +607,26 @@ type Wishlist struct {
 	BarangInduk   BarangInduk
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
-	DeletedAt     time.Time
+}
+
+func (w Wishlist) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		id_barang_induk int,
+		created_at timestamp,
+		updated_at timestamp,
+		PRIMARY KEY (id)
+	)`, w.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", w.TableNameSotReplica())
+	return nil
 }
 
 func (Wishlist) TableNameHistorical() string {
@@ -467,7 +641,6 @@ func (w Wishlist) CreateHistoricalTable(ctx context.Context, session *gocql.Sess
 		id_barang_induk int,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -490,7 +663,6 @@ func (w Wishlist) ParseToCUDType() map[string]interface{} {
 		"id_barang_induk": w.IdBarangInduk,
 		"created_at":      w.CreatedAt,
 		"updated_at":      w.UpdatedAt,
-		"deleted_at":      w.DeletedAt,
 	}
 }
 
@@ -505,6 +677,29 @@ type Review struct {
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     time.Time
+}
+
+func (r Review) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		id_barang_induk int,
+		rating float,
+		ulasan text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, r.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", r.TableNameSotReplica())
+	return nil
 }
 
 func (Review) TableNameHistorical() string {
@@ -558,7 +753,26 @@ type ReviewLike struct {
 	Review     Review
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	DeletedAt  time.Time
+}
+
+func (r ReviewLike) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		id_review bigint,
+		created_at timestamp,
+		updated_at timestamp,
+		PRIMARY KEY (id)
+	)`, r.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", r.TableNameSotReplica())
+	return nil
 }
 
 func (ReviewLike) TableNameHistorical() string {
@@ -573,7 +787,6 @@ func (r ReviewLike) CreateHistoricalTable(ctx context.Context, session *gocql.Se
 		id_review bigint,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -596,7 +809,6 @@ func (r ReviewLike) ParseToCUDType() map[string]interface{} {
 		"id_review":   r.IdReview,
 		"created_at":  r.CreatedAt,
 		"updated_at":  r.UpdatedAt,
-		"deleted_at":  r.DeletedAt,
 	}
 }
 
@@ -608,7 +820,26 @@ type ReviewDislike struct {
 	Review     Review
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	DeletedAt  time.Time
+}
+
+func (r ReviewDislike) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_pengguna bigint,
+		id_review bigint,
+		created_at timestamp,
+		updated_at timestamp,
+		PRIMARY KEY (id)
+	)`, r.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", r.TableNameSotReplica())
+	return nil
 }
 
 func (ReviewDislike) TableNameHistorical() string {
@@ -623,7 +854,6 @@ func (r ReviewDislike) CreateHistoricalTable(ctx context.Context, session *gocql
 		id_review bigint,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -646,7 +876,6 @@ func (r ReviewDislike) ParseToCUDType() map[string]interface{} {
 		"id_review":   r.IdReview,
 		"created_at":  r.CreatedAt,
 		"updated_at":  r.UpdatedAt,
-		"deleted_at":  r.DeletedAt,
 	}
 }
 
@@ -667,6 +896,34 @@ type Jenis_Seller struct {
 	DeletedAt        time.Time
 }
 
+func (j Jenis_Seller) TableNameSotReplica() string {
+	return "jenis_seller_sot_replica"
+}
+
+func (j Jenis_Seller) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_seller int,
+		validation_status text,
+		alasan_seller text,
+		alasan_admin text,
+		target_jenis text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, j.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", j.TableNameSotReplica())
+	return nil
+}
+
 func (Jenis_Seller) TableNameHistorical() string {
 	return "jenis_seller_validation_historical"
 }
@@ -677,7 +934,7 @@ func (j Jenis_Seller) CreateHistoricalTable(ctx context.Context, session *gocql.
 		id bigint,
 		id_seller int,
 		validation_status text,
-		alasan text,
+		alasan_seller text,
 		alasan_admin text,
 		target_jenis text,
 		created_at timestamp,
@@ -703,7 +960,7 @@ func (j Jenis_Seller) ParseToCUDType() map[string]interface{} {
 		"id":                j.ID,
 		"id_seller":         j.IdSeller,
 		"validation_status": j.ValidationStatus,
-		"alasan":            j.Alasan,
+		"alasan_seller":     j.Alasan,
 		"alasan_admin":      j.AlasanAdmin,
 		"target_jenis":      j.TargetJenis,
 		"created_at":        j.CreatedAt,
@@ -721,6 +978,32 @@ type BatalTransaksi struct {
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	DeletedAt      time.Time
+}
+
+func (j BatalTransaksi) TableNameSotReplica() string {
+	return "batal_transaksi_sot_replica"
+}
+
+func (b BatalTransaksi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_transaksi bigint,
+		dibatalkan_oleh text,
+		alasan text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, b.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
+	return nil
 }
 
 func (BatalTransaksi) TableNameHistorical() string {
@@ -772,7 +1055,31 @@ type Follower struct {
 	Seller     Seller
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	DeletedAt  time.Time
+	// DeletedAt  time.Time
+}
+
+func (j Follower) TableNameSotReplica() string {
+	return "follower_sot_replica"
+}
+
+func (f Follower) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_follower bigint,
+		id_followed bigint,
+		created_at timestamp,
+		updated_at timestamp,
+		PRIMARY KEY (id)
+	)`, f.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", f.TableNameSotReplica())
+	return nil
 }
 
 func (Follower) TableNameHistorical() string {
@@ -787,7 +1094,6 @@ func (f Follower) CreateHistoricalTable(ctx context.Context, session *gocql.Sess
 		id_followed bigint,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -810,7 +1116,6 @@ func (f Follower) ParseToCUDType() map[string]interface{} {
 		"id_followed": f.IdFollowed,
 		"created_at":  f.CreatedAt,
 		"updated_at":  f.UpdatedAt,
-		"deleted_at":  f.DeletedAt,
 	}
 }
 
@@ -833,6 +1138,40 @@ type AlamatGudang struct {
 	DeletedAt       gorm.DeletedAt
 }
 
+func (j AlamatGudang) TableNameSotReplica() string {
+	return "alamat_gudang_sot_replica"
+}
+
+func (a AlamatGudang) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_seller int,
+		panggilan_alamat text,
+		nomor_telefon text,
+		nama_alamat text,
+		provinsi text,
+		kota text,
+		kode_pos text,
+		kode_negara text,
+		deskripsi text,
+		longitude double,
+		latitude double,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, a.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", a.TableNameSotReplica())
+	return nil
+}
+
 func (AlamatGudang) TableNameHistorical() string {
 	return "alamat_gudang_historical"
 }
@@ -843,7 +1182,7 @@ func (a AlamatGudang) CreateHistoricalTable(ctx context.Context, session *gocql.
 		id bigint,
 		id_seller int,
 		panggilan_alamat text,
-		nomor_telephone text,
+		nomor_telefon text,
 		nama_alamat text,
 		provinsi text,
 		kota text,
@@ -880,7 +1219,7 @@ func (a AlamatGudang) ParseToCUDType() map[string]interface{} {
 		"id":               a.ID,
 		"id_seller":        a.IDSeller,
 		"panggilan_alamat": a.PanggilanAlamat,
-		"nomor_telephone":  a.NomorTelephone,
+		"nomor_telefon":    a.NomorTelephone,
 		"nama_alamat":      a.NamaAlamat,
 		"provinsi":         a.Provinsi,
 		"kota":             a.Kota,
@@ -909,6 +1248,37 @@ type DistributorData struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
+}
+
+func (j DistributorData) TableNameSotReplica() string {
+	return "distributor_data_sot_replica"
+}
+
+func (d DistributorData) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	// REVISI: tambah created_at, updated_at, deleted_at sesuai sot_models
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		seller_id int,
+		nama_perusahaan text,
+		nib text,
+		npwp text,
+		dokumen_izin_distributor_url text,
+		alasan text,
+		status text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, d.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", d.TableNameSotReplica())
+	return nil
 }
 
 func (DistributorData) TableNameHistorical() string {
@@ -985,6 +1355,37 @@ type BrandData struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt
+}
+
+// REVISI: CreateSotReplicaTable untuk BrandData sebelumnya tidak ada, sekarang ditambahkan
+func (b BrandData) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		seller_id int,
+		nama_perusahaan text,
+		negara_asal text,
+		lembaga_pendaftaran text,
+		nomor_pendaftaran_merek text,
+		sertifikat_merek_url text,
+		dokumen_perwakilan_url text,
+		nib text,
+		npwp text,
+		alasan text,
+		status text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, b.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
+	return nil
 }
 
 func (BrandData) TableNameHistorical() string {
@@ -1068,6 +1469,29 @@ type Etalase struct {
 	DeletedAt gorm.DeletedAt
 }
 
+func (e Etalase) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_seller int,
+		nama text,
+		deskripsi text,
+		jumlah_barang int,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, e.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", e.TableNameSotReplica())
+	return nil
+}
+
 func (Etalase) TableNameHistorical() string {
 	return "etalase_historical"
 }
@@ -1081,7 +1505,7 @@ func (e Etalase) CreateHistoricalTable(ctx context.Context, session *gocql.Sessi
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
-		seller_id int,
+		id_seller int,
 		nama text,
 		deskripsi text,
 		jumlah_barang int,
@@ -1112,7 +1536,7 @@ func (e Etalase) ParseToCUDType() map[string]interface{} {
 
 	return map[string]interface{}{
 		"id":            e.ID,
-		"seller_id":     e.SellerID,
+		"id_seller":     e.SellerID,
 		"nama":          e.Nama,
 		"deskripsi":     e.Deskripsi,
 		"jumlah_barang": e.JumlahBarang,
@@ -1128,6 +1552,28 @@ type BarangKeEtalase struct {
 	Etalase       Etalase
 	IdBarangInduk int64
 	BarangInduk   BarangInduk
+}
+
+func (j BarangKeEtalase) TableNameSotReplica() string {
+	return "barang_ke_etalase_sot_replica"
+}
+
+func (b BarangKeEtalase) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_etalase bigint,
+		id_barang_induk bigint,
+		PRIMARY KEY (id)
+	)`, b.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
+	return nil
 }
 
 func (BarangKeEtalase) TableNameHistorical() string {
@@ -1178,6 +1624,36 @@ type DiskonProduk struct {
 	DeletedAt     gorm.DeletedAt
 }
 
+func (j DiskonProduk) TableNameSotReplica() string {
+	return "diskon_produk_sot_replica"
+}
+
+func (d DiskonProduk) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_seller int,
+		nama text,
+		deskripsi text,
+		diskon_persen double,
+		berlaku_mulai timestamp,
+		berlaku_sampai timestamp,
+		status text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, d.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", d.TableNameSotReplica())
+	return nil
+}
+
 func (DiskonProduk) TableNameHistorical() string {
 	return "diskon_produk_historical"
 }
@@ -1186,7 +1662,7 @@ func (d DiskonProduk) CreateHistoricalTable(ctx context.Context, session *gocql.
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
-		seller_id int,
+		id_seller int,
 		nama text,
 		deskripsi text,
 		diskon_persen double,
@@ -1219,7 +1695,7 @@ func (d DiskonProduk) ParseToCUDType() map[string]interface{} {
 
 	return map[string]interface{}{
 		"id":             d.ID,
-		"seller_id":      d.SellerId,
+		"id_seller":      d.SellerId,
 		"nama":           d.Nama,
 		"deskripsi":      d.Deskripsi,
 		"diskon_persen":  d.DiskonPersen,
@@ -1248,6 +1724,34 @@ type BarangDiDiskon struct {
 	// REVISI: hapus DeletedAt (hard delete sesuai sot_models)
 }
 
+func (j BarangDiDiskon) TableNameSotReplica() string {
+	return "barang_di_diskon_sot_replica"
+}
+
+func (b BarangDiDiskon) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	// REVISI: hapus deleted_at (hard delete sesuai sot_models)
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_seller int,
+		id_diskon bigint,
+		id_barang_induk int,
+		id_kategori_barang bigint,
+		status text,
+		created_at timestamp,
+		updated_at timestamp,
+		PRIMARY KEY (id)
+	)`, b.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
+	return nil
+}
+
 func (BarangDiDiskon) TableNameHistorical() string {
 	return "barang_di_diskon_historical"
 }
@@ -1257,7 +1761,7 @@ func (b BarangDiDiskon) CreateHistoricalTable(ctx context.Context, session *gocq
 	query := fmt.Sprintf(`
 	CREATE TABLE IF NOT EXISTS %s (
 		id bigint,
-		seller_id int,
+		id_seller int,
 		id_diskon bigint,
 		id_barang_induk int,
 		id_kategori_barang bigint,
@@ -1283,7 +1787,7 @@ func (b BarangDiDiskon) ParseToCUDType() map[string]interface{} {
 	// REVISI: hapus deleted_at (hard delete)
 	return map[string]interface{}{
 		"id":                 b.ID,
-		"seller_id":          b.SellerId,
+		"id_seller":          b.SellerId,
 		"id_diskon":          b.IdDiskon,
 		"id_barang_induk":    b.IdBarangInduk,
 		"id_kategori_barang": b.IdKategoriBarang,
@@ -1311,6 +1815,35 @@ type InformasiKurir struct {
 	DeletedAt    time.Time
 }
 
+func (j InformasiKurir) TableNameSotReplica() string {
+	return "informasi_kurir_sot_replica"
+}
+
+func (i InformasiKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_kurir bigint,
+		tanggal_lahir text,
+		alasan text,
+		informasi_ktp boolean,
+		informasi_sim boolean,
+		status text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, i.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", i.TableNameSotReplica())
+	return nil
+}
+
 func (InformasiKurir) TableNameHistorical() string {
 	return "informasi_kurir_historical"
 }
@@ -1322,7 +1855,7 @@ func (i InformasiKurir) CreateHistoricalTable(ctx context.Context, session *gocq
 		id_kurir bigint,
 		tanggal_lahir text,
 		alasan text,
-		ktp boolean,
+		informasi_ktp boolean,
 		informasi_sim boolean,
 		status text,
 		created_at timestamp,
@@ -1349,7 +1882,7 @@ func (i InformasiKurir) ParseToCUDType() map[string]interface{} {
 		"id_kurir":      i.IDkurir,
 		"tanggal_lahir": i.TanggalLahir,
 		"alasan":        i.Alasan,
-		"ktp":           i.Ktp,
+		"informasi_ktp": i.Ktp,
 		"informasi_sim": i.InformasiSim,
 		"status":        i.Status,
 		"created_at":    i.CreatedAt,
@@ -1375,6 +1908,38 @@ type InformasiKendaraanKurir struct {
 	DeletedAt      time.Time
 }
 
+func (j InformasiKendaraanKurir) TableNameSotReplica() string {
+	return "informasi_kendaraan_kurir_sot_replica"
+}
+
+func (i InformasiKendaraanKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_kurir bigint,
+		jenis_kendaraan text,
+		nama_kendaraan text,
+		roda_kendaraan text,
+		informasi_stnk boolean,
+		informasi_bpkb boolean,
+		nomor_rangka text,
+		nomor_mesin text,
+		status text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, i.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", i.TableNameSotReplica())
+	return nil
+}
+
 func (InformasiKendaraanKurir) TableNameHistorical() string {
 	return "informasi_kendaraan_kurir_historical"
 }
@@ -1387,10 +1952,10 @@ func (i InformasiKendaraanKurir) CreateHistoricalTable(ctx context.Context, sess
 		jenis_kendaraan text,
 		nama_kendaraan text,
 		roda_kendaraan text,
-		stnk boolean,
-		bpkb boolean,
-		no_rangka text,
-		no_mesin text,
+		informasi_stnk boolean,
+		informasi_bpkb boolean,
+		nomor_rangka text,
+		nomor_mesin text,
 		status text,
 		created_at timestamp,
 		updated_at timestamp,
@@ -1417,10 +1982,10 @@ func (i InformasiKendaraanKurir) ParseToCUDType() map[string]interface{} {
 		"jenis_kendaraan": i.JenisKendaraan,
 		"nama_kendaraan":  i.NamaKendaraan,
 		"roda_kendaraan":  i.RodaKendaraan,
-		"stnk":            i.STNK,
-		"bpkb":            i.BPKB,
-		"no_rangka":       i.NoRangka,
-		"no_mesin":        i.NoMesin,
+		"informasi_stnk":  i.STNK,
+		"informasi_bpkb":  i.BPKB,
+		"nomor_rangka":    i.NoRangka,
+		"nomor_mesin":     i.NoMesin,
 		"status":          i.Status,
 		"created_at":      i.CreatedAt,
 		"updated_at":      i.UpdatedAt,
@@ -1444,7 +2009,39 @@ type AlamatKurir struct {
 	Latitude        float64
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	DeletedAt       time.Time
+}
+
+func (j AlamatKurir) TableNameSotReplica() string {
+	return "alamat_kurir_sot_replica"
+}
+
+func (a AlamatKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_kurir bigint,
+		panggilan_alamat text,
+		nomor_telefon text,
+		nama_alamat text,
+		provinsi text,
+		kota text,
+		kode_negara text,
+		kode_pos text,
+		deskripsi text,
+		longitude double,
+		latitude double,
+		created_at timestamp,
+		updated_at timestamp,
+		PRIMARY KEY (id)
+	)`, a.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", a.TableNameSotReplica())
+	return nil
 }
 
 func (AlamatKurir) TableNameHistorical() string {
@@ -1457,7 +2054,7 @@ func (a AlamatKurir) CreateHistoricalTable(ctx context.Context, session *gocql.S
 		id bigint,
 		id_kurir bigint,
 		panggilan_alamat text,
-		nomor_telephone text,
+		nomor_telefon text,
 		nama_alamat text,
 		provinsi text,
 		kota text,
@@ -1468,7 +2065,6 @@ func (a AlamatKurir) CreateHistoricalTable(ctx context.Context, session *gocql.S
 		latitude double,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1489,7 +2085,7 @@ func (a AlamatKurir) ParseToCUDType() map[string]interface{} {
 		"id":               a.ID,
 		"id_kurir":         a.IdKurir,
 		"panggilan_alamat": a.PanggilanAlamat,
-		"nomor_telephone":  a.NomorTelephone,
+		"nomor_telefon":    a.NomorTelephone,
 		"nama_alamat":      a.NamaAlamat,
 		"provinsi":         a.Provinsi,
 		"kota":             a.Kota,
@@ -1500,7 +2096,6 @@ func (a AlamatKurir) ParseToCUDType() map[string]interface{} {
 		"latitude":         a.Latitude,
 		"created_at":       a.CreatedAt,
 		"updated_at":       a.UpdatedAt,
-		"deleted_at":       a.DeletedAt,
 	}
 }
 
@@ -1525,6 +2120,44 @@ type BidKurirData struct {
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 	DeletedAt       gorm.DeletedAt
+}
+
+func (j BidKurirData) TableNameSotReplica() string {
+	return "bid_kurir_data_sot_replica"
+}
+
+func (b BidKurirData) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_kurir bigint,
+		jenis_pengiriman text,
+		mode text,
+		provinsi text,
+		kota text,
+		is_ekspedisi boolean,
+		alamat text,
+		longitude double,
+		latitude double,
+		max_kg smallint,
+		slot_tersisa int,
+		dimulai timestamp,
+		selesai timestamp,
+		jenis_kendaraan text,
+		status text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, b.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
+	return nil
 }
 
 func (BidKurirData) TableNameHistorical() string {
@@ -1612,6 +2245,34 @@ type BidKurirNonEksScheduler struct {
 	DeletedAt    gorm.DeletedAt
 }
 
+func (j BidKurirNonEksScheduler) TableNameSotReplica() string {
+	return "bid_kurir_non_eks_scheduler_sot_replica"
+}
+
+func (b BidKurirNonEksScheduler) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_bid bigint,
+		id_kurir bigint,
+		urutan tinyint,
+		id_pengiriman bigint,
+		status text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, b.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
+	return nil
+}
+
 func (BidKurirNonEksScheduler) TableNameHistorical() string {
 	return "bid_kurir_non_eks_scheduler_historical"
 }
@@ -1677,6 +2338,34 @@ type BidKurirEksScheduler struct {
 	DeletedAt           gorm.DeletedAt
 }
 
+func (j BidKurirEksScheduler) TableNameSotReplica() string {
+	return "bid_kurir_eks_scheduler_sot_replica"
+}
+
+func (b BidKurirEksScheduler) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
+	query := fmt.Sprintf(`
+	CREATE TABLE IF NOT EXISTS %s (
+		id bigint,
+		id_bid bigint,
+		id_kurir bigint,
+		urutan tinyint,
+		id_pengiriman_ekspedisi bigint,
+		status text,
+		created_at timestamp,
+		updated_at timestamp,
+		deleted_at timestamp,
+		PRIMARY KEY (id)
+	)`, b.TableNameSotReplica())
+
+	if err := session.Query(query).ExecContext(ctx); err != nil {
+		fmt.Println("Gagal eksekusi query:", err)
+		return err
+	}
+
+	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
+	return nil
+}
+
 func (BidKurirEksScheduler) TableNameHistorical() string {
 	return "bid_kurir_eks_scheduler_historical"
 }
@@ -1688,7 +2377,7 @@ func (b BidKurirEksScheduler) CreateHistoricalTable(ctx context.Context, session
 		id_bid bigint,
 		id_kurir bigint,
 		urutan tinyint,
-		id_pengiriman_eks bigint,
+		id_pengiriman_ekspedisi bigint,
 		status text,
 		created_at timestamp,
 		updated_at timestamp,
@@ -1715,745 +2404,18 @@ func (b BidKurirEksScheduler) ParseToCUDType() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"id":                b.ID,
-		"id_bid":            b.IdBid,
-		"id_kurir":          b.IdKurir,
-		"urutan":            b.Urutan,
-		"id_pengiriman_eks": b.IdPengirimanEks,
-		"status":            b.Status,
-		"created_at":        b.CreatedAt,
-		"updated_at":        b.UpdatedAt,
-		"deleted_at":        deletedAtInterface,
+		"id":                      b.ID,
+		"id_bid":                  b.IdBid,
+		"id_kurir":                b.IdKurir,
+		"urutan":                  b.Urutan,
+		"id_pengiriman_ekspedisi": b.IdPengirimanEks,
+		"status":                  b.Status,
+		"created_at":              b.CreatedAt,
+		"updated_at":              b.UpdatedAt,
+		"deleted_at":              deletedAtInterface,
 	}
 }
 
 // ///////////////////////////////////////////////////////////////////////////////////////////
 // SOT REPLICA TABLES
 // ///////////////////////////////////////////////////////////////////////////////////////////
-
-func (e EntitySocialMedia) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		entity_id bigint,
-		whatsapp text,
-		facebook text,
-		tik_tok text,
-		instagram text,
-		metadata blob,
-		entity_type text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, e.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", e.TableNameSotReplica())
-	return nil
-}
-
-func (k Komentar) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_barang_induk int,
-		id_entity bigint,
-		jenis_entity text,
-		komentar text,
-		is_seller boolean,
-		dibalas bigint,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, k.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", k.TableNameSotReplica())
-	return nil
-}
-
-func (k KomentarChild) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_komentar bigint,
-		id_entity bigint,
-		jenis_entity text,
-		isi_komentar text,
-		is_seller boolean,
-		mention text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, k.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", k.TableNameSotReplica())
-	return nil
-}
-
-func (k Keranjang) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_pengguna bigint,
-		id_seller int,
-		id_barang_induk int,
-		id_kategori bigint,
-		jumlah smallint,
-		status text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, k.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", k.TableNameSotReplica())
-	return nil
-}
-
-func (b BarangDisukai) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_pengguna bigint,
-		id_barang_induk int,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, b.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
-	return nil
-}
-
-func (b BarangWishlist) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_pengguna bigint,
-		id_barang_induk int,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, b.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
-	return nil
-}
-
-func (a AlamatPengguna) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_pengguna bigint,
-		panggilan_alamat text,
-		nomor_telephone text,
-		nama_alamat text,
-		provinsi text,
-		kota text,
-		kode_pos text,
-		kode_negara text,
-		deskripsi text,
-		longitude double,
-		latitude double,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, a.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", a.TableNameSotReplica())
-	return nil
-}
-
-func (w Wishlist) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_pengguna bigint,
-		id_barang_induk int,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, w.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", w.TableNameSotReplica())
-	return nil
-}
-
-func (r Review) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_pengguna bigint,
-		id_barang_induk int,
-		rating float,
-		ulasan text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, r.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", r.TableNameSotReplica())
-	return nil
-}
-
-func (r ReviewLike) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_pengguna bigint,
-		id_review bigint,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, r.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", r.TableNameSotReplica())
-	return nil
-}
-
-func (r ReviewDislike) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_pengguna bigint,
-		id_review bigint,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, r.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", r.TableNameSotReplica())
-	return nil
-}
-
-func (j Jenis_Seller) TableNameSotReplica() string {
-	return "jenis_seller_sot_replica"
-}
-
-func (j Jenis_Seller) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_seller int,
-		validation_status text,
-		alasan text,
-		alasan_admin text,
-		target_jenis text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, j.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", j.TableNameSotReplica())
-	return nil
-}
-
-func (j BatalTransaksi) TableNameSotReplica() string {
-	return "batal_transaksi_sot_replica"
-}
-
-func (b BatalTransaksi) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_transaksi bigint,
-		dibatalkan_oleh text,
-		alasan text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, b.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
-	return nil
-}
-
-func (j Follower) TableNameSotReplica() string {
-	return "follower_sot_replica"
-}
-
-func (f Follower) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_follower bigint,
-		id_followed bigint,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, f.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", f.TableNameSotReplica())
-	return nil
-}
-
-func (j AlamatGudang) TableNameSotReplica() string {
-	return "alamat_gudang_sot_replica"
-}
-
-func (a AlamatGudang) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_seller int,
-		panggilan_alamat text,
-		nomor_telephone text,
-		nama_alamat text,
-		provinsi text,
-		kota text,
-		kode_pos text,
-		kode_negara text,
-		deskripsi text,
-		longitude double,
-		latitude double,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, a.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", a.TableNameSotReplica())
-	return nil
-}
-
-func (j DistributorData) TableNameSotReplica() string {
-	return "distributor_data_sot_replica"
-}
-
-func (d DistributorData) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	// REVISI: tambah created_at, updated_at, deleted_at sesuai sot_models
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		seller_id int,
-		nama_perusahaan text,
-		nib text,
-		npwp text,
-		dokumen_izin_distributor_url text,
-		alasan text,
-		status text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, d.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", d.TableNameSotReplica())
-	return nil
-}
-
-// REVISI: CreateSotReplicaTable untuk BrandData sebelumnya tidak ada, sekarang ditambahkan
-func (b BrandData) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		seller_id int,
-		nama_perusahaan text,
-		negara_asal text,
-		lembaga_pendaftaran text,
-		nomor_pendaftaran_merek text,
-		sertifikat_merek_url text,
-		dokumen_perwakilan_url text,
-		nib text,
-		npwp text,
-		alasan text,
-		status text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, b.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
-	return nil
-}
-
-// REVISI: CreateSotReplicaTable untuk Etalase sebelumnya salah (pakai skema BrandData)
-func (e Etalase) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		seller_id int,
-		nama text,
-		deskripsi text,
-		jumlah_barang int,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, e.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", e.TableNameSotReplica())
-	return nil
-}
-
-func (j BarangKeEtalase) TableNameSotReplica() string {
-	return "barang_ke_etalase_sot_replica"
-}
-
-func (b BarangKeEtalase) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_etalase bigint,
-		id_barang_induk bigint,
-		PRIMARY KEY (id)
-	)`, b.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
-	return nil
-}
-
-func (j DiskonProduk) TableNameSotReplica() string {
-	return "diskon_produk_sot_replica"
-}
-
-func (d DiskonProduk) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		seller_id int,
-		nama text,
-		deskripsi text,
-		diskon_persen double,
-		berlaku_mulai timestamp,
-		berlaku_sampai timestamp,
-		status text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, d.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", d.TableNameSotReplica())
-	return nil
-}
-
-func (j BarangDiDiskon) TableNameSotReplica() string {
-	return "barang_di_diskon_sot_replica"
-}
-
-func (b BarangDiDiskon) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	// REVISI: hapus deleted_at (hard delete sesuai sot_models)
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		seller_id int,
-		id_diskon bigint,
-		id_barang_induk int,
-		id_kategori_barang bigint,
-		status text,
-		created_at timestamp,
-		updated_at timestamp,
-		PRIMARY KEY (id)
-	)`, b.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
-	return nil
-}
-
-func (j InformasiKurir) TableNameSotReplica() string {
-	return "informasi_kurir_sot_replica"
-}
-
-func (i InformasiKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_kurir bigint,
-		tanggal_lahir text,
-		alasan text,
-		ktp boolean,
-		informasi_sim boolean,
-		status text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, i.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", i.TableNameSotReplica())
-	return nil
-}
-
-func (j InformasiKendaraanKurir) TableNameSotReplica() string {
-	return "informasi_kendaraan_kurir_sot_replica"
-}
-
-func (i InformasiKendaraanKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_kurir bigint,
-		jenis_kendaraan text,
-		nama_kendaraan text,
-		roda_kendaraan text,
-		stnk boolean,
-		bpkb boolean,
-		no_rangka text,
-		no_mesin text,
-		status text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, i.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", i.TableNameSotReplica())
-	return nil
-}
-
-func (j AlamatKurir) TableNameSotReplica() string {
-	return "alamat_kurir_sot_replica"
-}
-
-func (a AlamatKurir) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_kurir bigint,
-		panggilan_alamat text,
-		nomor_telephone text,
-		nama_alamat text,
-		provinsi text,
-		kota text,
-		kode_negara text,
-		kode_pos text,
-		deskripsi text,
-		longitude double,
-		latitude double,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, a.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", a.TableNameSotReplica())
-	return nil
-}
-
-func (j BidKurirData) TableNameSotReplica() string {
-	return "bid_kurir_data_sot_replica"
-}
-
-func (b BidKurirData) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_kurir bigint,
-		jenis_pengiriman text,
-		mode text,
-		provinsi text,
-		kota text,
-		is_ekspedisi boolean,
-		alamat text,
-		longitude double,
-		latitude double,
-		max_kg smallint,
-		slot_tersisa int,
-		dimulai timestamp,
-		selesai timestamp,
-		jenis_kendaraan text,
-		status text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, b.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
-	return nil
-}
-
-func (j BidKurirNonEksScheduler) TableNameSotReplica() string {
-	return "bid_kurir_non_eks_scheduler_sot_replica"
-}
-
-func (b BidKurirNonEksScheduler) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_bid bigint,
-		id_kurir bigint,
-		urutan tinyint,
-		id_pengiriman bigint,
-		status text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, b.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
-	return nil
-}
-
-func (j BidKurirEksScheduler) TableNameSotReplica() string {
-	return "bid_kurir_eks_scheduler_sot_replica"
-}
-
-func (b BidKurirEksScheduler) CreateSotReplicaTable(ctx context.Context, session *gocql.Session) error {
-	query := fmt.Sprintf(`
-	CREATE TABLE IF NOT EXISTS %s (
-		id bigint,
-		id_bid bigint,
-		id_kurir bigint,
-		urutan tinyint,
-		id_pengiriman_eks bigint,
-		status text,
-		created_at timestamp,
-		updated_at timestamp,
-		deleted_at timestamp,
-		PRIMARY KEY (id)
-	)`, b.TableNameSotReplica())
-
-	if err := session.Query(query).ExecContext(ctx); err != nil {
-		fmt.Println("Gagal eksekusi query:", err)
-		return err
-	}
-
-	fmt.Printf("Berhasil Eksekusi query membuat tabel sot_replica %s\n", b.TableNameSotReplica())
-	return nil
-}

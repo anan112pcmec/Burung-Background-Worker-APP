@@ -6,7 +6,6 @@ import (
 	"time"
 
 	gocql "github.com/apache/cassandra-gocql-driver/v2"
-	"gorm.io/gorm"
 )
 
 type MediaPenggunaProfilFoto struct {
@@ -17,7 +16,6 @@ type MediaPenggunaProfilFoto struct {
 	Format     string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
-	DeletedAt  gorm.DeletedAt
 }
 
 func (MediaPenggunaProfilFoto) TableNameHistorical() string {
@@ -34,7 +32,6 @@ func (m MediaPenggunaProfilFoto) CreateHistoricalTable(ctx context.Context, sess
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -52,10 +49,6 @@ func (m MediaPenggunaProfilFoto) CreateHistoricalTable(ctx context.Context, sess
 
 func (m MediaPenggunaProfilFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":          m.ID,
@@ -64,7 +57,6 @@ func (m MediaPenggunaProfilFoto) ParseToCUDType() map[string]interface{} {
 		"format":      m.Format,
 		"created_at":  m.CreatedAt,
 		"updated_at":  m.UpdatedAt,
-		"deleted_at":  deletedAtInterface,
 	}
 }
 
@@ -80,7 +72,6 @@ type MediaSellerProfilFoto struct {
 	Format    string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
 }
 
 func (MediaSellerProfilFoto) PathName() string {
@@ -97,7 +88,6 @@ func (m MediaSellerProfilFoto) CreateHistoricalTable(ctx context.Context, sessio
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -115,10 +105,6 @@ func (m MediaSellerProfilFoto) CreateHistoricalTable(ctx context.Context, sessio
 
 func (m MediaSellerProfilFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":         m.ID,
@@ -127,7 +113,6 @@ func (m MediaSellerProfilFoto) ParseToCUDType() map[string]interface{} {
 		"format":     m.Format,
 		"created_at": m.CreatedAt,
 		"updated_at": m.UpdatedAt,
-		"deleted_at": deletedAtInterface,
 	}
 }
 
@@ -143,7 +128,6 @@ type MediaSellerBannerFoto struct {
 	Format    string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
 }
 
 func (MediaSellerBannerFoto) PathName() string {
@@ -160,7 +144,6 @@ func (m MediaSellerBannerFoto) CreateHistoricalTable(ctx context.Context, sessio
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -178,10 +161,6 @@ func (m MediaSellerBannerFoto) CreateHistoricalTable(ctx context.Context, sessio
 
 func (m MediaSellerBannerFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":         m.ID,
@@ -190,7 +169,6 @@ func (m MediaSellerBannerFoto) ParseToCUDType() map[string]interface{} {
 		"format":     m.Format,
 		"created_at": m.CreatedAt,
 		"updated_at": m.UpdatedAt,
-		"deleted_at": deletedAtInterface,
 	}
 }
 
@@ -205,7 +183,7 @@ type MediaSellerTokoFisikFoto struct {
 	Key       string
 	Format    string
 	CreatedAt time.Time
-	DeletedAt gorm.DeletedAt
+	UpdatedAt time.Time
 }
 
 func (MediaSellerTokoFisikFoto) PathName() string {
@@ -221,7 +199,7 @@ func (m MediaSellerTokoFisikFoto) CreateHistoricalTable(ctx context.Context, ses
 		key text,
 		format text,
 		created_at timestamp,
-		deleted_at timestamp,
+		updated_ad timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -239,10 +217,6 @@ func (m MediaSellerTokoFisikFoto) CreateHistoricalTable(ctx context.Context, ses
 
 func (m MediaSellerTokoFisikFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":         m.ID,
@@ -250,7 +224,7 @@ func (m MediaSellerTokoFisikFoto) ParseToCUDType() map[string]interface{} {
 		"key":        m.Key,
 		"format":     m.Format,
 		"created_at": m.CreatedAt,
-		"deleted_at": deletedAtInterface,
+		"updated_at": m.UpdatedAt,
 	}
 }
 
@@ -266,7 +240,6 @@ type MediaKurirProfilFoto struct {
 	Format    string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
 }
 
 func (MediaKurirProfilFoto) PathName() string {
@@ -283,7 +256,6 @@ func (m MediaKurirProfilFoto) CreateHistoricalTable(ctx context.Context, session
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -301,10 +273,6 @@ func (m MediaKurirProfilFoto) CreateHistoricalTable(ctx context.Context, session
 
 func (m MediaKurirProfilFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":         m.ID,
@@ -313,7 +281,6 @@ func (m MediaKurirProfilFoto) ParseToCUDType() map[string]interface{} {
 		"format":     m.Format,
 		"created_at": m.CreatedAt,
 		"updated_at": m.UpdatedAt,
-		"deleted_at": deletedAtInterface,
 	}
 }
 
@@ -329,7 +296,6 @@ type MediaEtalaseFoto struct {
 	Format    string
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt
 }
 
 func (MediaEtalaseFoto) PathName() string {
@@ -346,7 +312,6 @@ func (m MediaEtalaseFoto) CreateHistoricalTable(ctx context.Context, session *go
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -364,10 +329,6 @@ func (m MediaEtalaseFoto) CreateHistoricalTable(ctx context.Context, session *go
 
 func (m MediaEtalaseFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":         m.ID,
@@ -376,7 +337,6 @@ func (m MediaEtalaseFoto) ParseToCUDType() map[string]interface{} {
 		"format":     m.Format,
 		"created_at": m.CreatedAt,
 		"updated_at": m.UpdatedAt,
-		"deleted_at": deletedAtInterface,
 	}
 }
 
@@ -391,7 +351,7 @@ type MediaBarangIndukFoto struct {
 	Key           string
 	Format        string
 	CreatedAt     time.Time
-	DeletedAt     gorm.DeletedAt
+	UpdatedAt     time.Time
 }
 
 func (MediaBarangIndukFoto) PathName() string {
@@ -407,7 +367,7 @@ func (m MediaBarangIndukFoto) CreateHistoricalTable(ctx context.Context, session
 		key text,
 		format text,
 		created_at timestamp,
-		deleted_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -425,10 +385,6 @@ func (m MediaBarangIndukFoto) CreateHistoricalTable(ctx context.Context, session
 
 func (m MediaBarangIndukFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":              m.ID,
@@ -436,7 +392,6 @@ func (m MediaBarangIndukFoto) ParseToCUDType() map[string]interface{} {
 		"key":             m.Key,
 		"format":          m.Format,
 		"created_at":      m.CreatedAt,
-		"deleted_at":      deletedAtInterface,
 	}
 }
 
@@ -452,7 +407,6 @@ type MediaBarangIndukVideo struct {
 	Format        string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
-	DeletedAt     gorm.DeletedAt
 }
 
 func (MediaBarangIndukVideo) PathName() string {
@@ -469,7 +423,6 @@ func (m MediaBarangIndukVideo) CreateHistoricalTable(ctx context.Context, sessio
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -487,10 +440,6 @@ func (m MediaBarangIndukVideo) CreateHistoricalTable(ctx context.Context, sessio
 
 func (m MediaBarangIndukVideo) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":              m.ID,
@@ -499,7 +448,6 @@ func (m MediaBarangIndukVideo) ParseToCUDType() map[string]interface{} {
 		"format":          m.Format,
 		"created_at":      m.CreatedAt,
 		"updated_at":      m.UpdatedAt,
-		"deleted_at":      deletedAtInterface,
 	}
 }
 
@@ -517,7 +465,6 @@ type MediaKategoriBarangFoto struct {
 	Format           string
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
-	DeletedAt        gorm.DeletedAt
 }
 
 func (MediaKategoriBarangFoto) PathName() string {
@@ -535,7 +482,6 @@ func (m MediaKategoriBarangFoto) CreateHistoricalTable(ctx context.Context, sess
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -553,10 +499,6 @@ func (m MediaKategoriBarangFoto) CreateHistoricalTable(ctx context.Context, sess
 
 func (m MediaKategoriBarangFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":                 m.ID,
@@ -566,7 +508,6 @@ func (m MediaKategoriBarangFoto) ParseToCUDType() map[string]interface{} {
 		"format":             m.Format,
 		"created_at":         m.CreatedAt,
 		"updated_at":         m.UpdatedAt,
-		"deleted_at":         deletedAtInterface,
 	}
 }
 
@@ -582,7 +523,6 @@ type MediaDistributorDataDokumen struct {
 	Format            string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
-	DeletedAt         gorm.DeletedAt
 }
 
 func (MediaDistributorDataDokumen) PathName() string {
@@ -599,7 +539,6 @@ func (m MediaDistributorDataDokumen) CreateHistoricalTable(ctx context.Context, 
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -617,10 +556,6 @@ func (m MediaDistributorDataDokumen) CreateHistoricalTable(ctx context.Context, 
 
 func (m MediaDistributorDataDokumen) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":                  m.ID,
@@ -629,7 +564,6 @@ func (m MediaDistributorDataDokumen) ParseToCUDType() map[string]interface{} {
 		"format":              m.Format,
 		"created_at":          m.CreatedAt,
 		"updated_at":          m.UpdatedAt,
-		"deleted_at":          deletedAtInterface,
 	}
 }
 
@@ -645,7 +579,6 @@ type MediaDistributorDataNPWPFoto struct {
 	Format            string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
-	DeletedAt         gorm.DeletedAt
 }
 
 func (MediaDistributorDataNPWPFoto) PathName() string {
@@ -662,7 +595,6 @@ func (m MediaDistributorDataNPWPFoto) CreateHistoricalTable(ctx context.Context,
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -680,11 +612,6 @@ func (m MediaDistributorDataNPWPFoto) CreateHistoricalTable(ctx context.Context,
 
 func (m MediaDistributorDataNPWPFoto) ParseToCUDType() map[string]interface{} {
 	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
-
 	return map[string]interface{}{
 		"id":                  m.ID,
 		"id_distributor_data": m.IdDistributorData,
@@ -692,7 +619,6 @@ func (m MediaDistributorDataNPWPFoto) ParseToCUDType() map[string]interface{} {
 		"format":              m.Format,
 		"created_at":          m.CreatedAt,
 		"updated_at":          m.UpdatedAt,
-		"deleted_at":          deletedAtInterface,
 	}
 }
 
@@ -708,7 +634,6 @@ type MediaDistributorDataNIBFoto struct {
 	Format            string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
-	DeletedAt         gorm.DeletedAt
 }
 
 func (MediaDistributorDataNIBFoto) PathName() string {
@@ -725,7 +650,6 @@ func (m MediaDistributorDataNIBFoto) CreateHistoricalTable(ctx context.Context, 
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -742,10 +666,6 @@ func (m MediaDistributorDataNIBFoto) CreateHistoricalTable(ctx context.Context, 
 }
 
 func (m MediaDistributorDataNIBFoto) ParseToCUDType() map[string]interface{} {
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":                  m.ID,
@@ -754,7 +674,6 @@ func (m MediaDistributorDataNIBFoto) ParseToCUDType() map[string]interface{} {
 		"format":              m.Format,
 		"created_at":          m.CreatedAt,
 		"updated_at":          m.UpdatedAt,
-		"deleted_at":          deletedAtInterface,
 	}
 }
 
@@ -770,7 +689,6 @@ type MediaDistributorDataSuratKerjasamaDokumen struct {
 	Format            string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
-	DeletedAt         gorm.DeletedAt
 }
 
 func (MediaDistributorDataSuratKerjasamaDokumen) PathName() string {
@@ -787,7 +705,6 @@ func (m MediaDistributorDataSuratKerjasamaDokumen) CreateHistoricalTable(ctx con
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -804,11 +721,6 @@ func (m MediaDistributorDataSuratKerjasamaDokumen) CreateHistoricalTable(ctx con
 }
 
 func (m MediaDistributorDataSuratKerjasamaDokumen) ParseToCUDType() map[string]interface{} {
-	// Memeriksa apakah DeletedAt di GORM valid sebelum di-insert
-	var deletedAtInterface interface{} = nil
-	if m.DeletedAt.Valid {
-		deletedAtInterface = m.DeletedAt.Time
-	}
 
 	return map[string]interface{}{
 		"id":                  m.ID,
@@ -817,7 +729,6 @@ func (m MediaDistributorDataSuratKerjasamaDokumen) ParseToCUDType() map[string]i
 		"format":              m.Format,
 		"created_at":          m.CreatedAt,
 		"updated_at":          m.UpdatedAt,
-		"deleted_at":          deletedAtInterface,
 	}
 }
 
@@ -831,6 +742,8 @@ type MediaBrandDataPerwakilanDokumen struct {
 	BrandData   BrandData
 	Key         string
 	Format      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (MediaBrandDataPerwakilanDokumen) PathName() string {
@@ -845,6 +758,8 @@ func (m MediaBrandDataPerwakilanDokumen) CreateHistoricalTable(ctx context.Conte
 		id_brand_data bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -866,6 +781,8 @@ func (m MediaBrandDataPerwakilanDokumen) ParseToCUDType() map[string]interface{}
 		"id_brand_data": m.IdBrandData,
 		"key":           m.Key,
 		"format":        m.Format,
+		"created_at":    m.CreatedAt,
+		"updated_at":    m.UpdatedAt,
 	}
 }
 
@@ -879,6 +796,8 @@ type MediaBrandDataSertifikatFoto struct {
 	BrandData   BrandData
 	Key         string
 	Format      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (MediaBrandDataSertifikatFoto) PathName() string {
@@ -893,6 +812,8 @@ func (m MediaBrandDataSertifikatFoto) CreateHistoricalTable(ctx context.Context,
 		id_brand_data bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -914,6 +835,8 @@ func (m MediaBrandDataSertifikatFoto) ParseToCUDType() map[string]interface{} {
 		"id_brand_data": m.IdBrandData,
 		"key":           m.Key,
 		"format":        m.Format,
+		"created_at":    m.CreatedAt,
+		"updated_at":    m.UpdatedAt,
 	}
 }
 
@@ -927,6 +850,8 @@ type MediaBrandDataNIBFoto struct {
 	BrandData   BrandData
 	Key         string
 	Format      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (MediaBrandDataNIBFoto) PathName() string {
@@ -941,6 +866,8 @@ func (m MediaBrandDataNIBFoto) CreateHistoricalTable(ctx context.Context, sessio
 		id_brand_data bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -962,6 +889,8 @@ func (m MediaBrandDataNIBFoto) ParseToCUDType() map[string]interface{} {
 		"id_brand_data": m.IdBrandData,
 		"key":           m.Key,
 		"format":        m.Format,
+		"created_at":    m.CreatedAt,
+		"updated_at":    m.UpdatedAt,
 	}
 }
 
@@ -975,6 +904,8 @@ type MediaBrandDataNPWPFoto struct {
 	BrandData   BrandData
 	Key         string
 	Format      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (MediaBrandDataNPWPFoto) PathName() string {
@@ -989,6 +920,8 @@ func (m MediaBrandDataNPWPFoto) CreateHistoricalTable(ctx context.Context, sessi
 		id_brand_data bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1010,6 +943,8 @@ func (m MediaBrandDataNPWPFoto) ParseToCUDType() map[string]interface{} {
 		"id_brand_data": m.IdBrandData,
 		"key":           m.Key,
 		"format":        m.Format,
+		"created_at":    m.CreatedAt,
+		"updated_at":    m.UpdatedAt,
 	}
 }
 
@@ -1023,6 +958,8 @@ type MediaBrandDataLogoFoto struct {
 	BrandData   BrandData
 	Key         string
 	Format      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (MediaBrandDataLogoFoto) PathName() string {
@@ -1037,6 +974,8 @@ func (m MediaBrandDataLogoFoto) CreateHistoricalTable(ctx context.Context, sessi
 		id_brand_data bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1058,6 +997,8 @@ func (m MediaBrandDataLogoFoto) ParseToCUDType() map[string]interface{} {
 		"id_brand_data": m.IdBrandData,
 		"key":           m.Key,
 		"format":        m.Format,
+		"created_at":    m.CreatedAt,
+		"updated_at":    m.UpdatedAt,
 	}
 }
 
@@ -1071,6 +1012,8 @@ type MediaBrandDataSuratKerjasamaDokumen struct {
 	BrandData   BrandData
 	Key         string
 	Format      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (MediaBrandDataSuratKerjasamaDokumen) PathName() string {
@@ -1084,6 +1027,8 @@ func (m MediaBrandDataSuratKerjasamaDokumen) CreateHistoricalTable(ctx context.C
 		id bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1101,9 +1046,11 @@ func (m MediaBrandDataSuratKerjasamaDokumen) CreateHistoricalTable(ctx context.C
 
 func (m MediaBrandDataSuratKerjasamaDokumen) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
-		"id":     m.ID,
-		"key":    m.Key,
-		"format": m.Format,
+		"id":         m.ID,
+		"key":        m.Key,
+		"format":     m.Format,
+		"created_at": m.CreatedAt,
+		"updated_at": m.UpdatedAt,
 	}
 }
 
@@ -1117,6 +1064,8 @@ type MediaInformasiKendaraanKurirKendaraanFoto struct {
 	InformasiKendaraanKurir   InformasiKendaraanKurir
 	Key                       string
 	Format                    string
+	CreatedAt                 time.Time
+	UpdatedAt                 time.Time
 }
 
 func (MediaInformasiKendaraanKurirKendaraanFoto) PathName() string {
@@ -1131,6 +1080,8 @@ func (m MediaInformasiKendaraanKurirKendaraanFoto) CreateHistoricalTable(ctx con
 		id_informasi_kendaraan_kurir bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1152,6 +1103,8 @@ func (m MediaInformasiKendaraanKurirKendaraanFoto) ParseToCUDType() map[string]i
 		"id_informasi_kendaraan_kurir": m.IdInformasiKendaraanKurir,
 		"key":                          m.Key,
 		"format":                       m.Format,
+		"created_at":                   m.CreatedAt,
+		"updated_at":                   m.UpdatedAt,
 	}
 }
 
@@ -1165,6 +1118,8 @@ type MediaInformasiKendaraanKurirBPKBFoto struct {
 	InformasiKendaraanKurir   InformasiKendaraanKurir
 	Key                       string
 	Format                    string
+	CreatedAt                 time.Time
+	UpdatedAt                 time.Time
 }
 
 func (MediaInformasiKendaraanKurirBPKBFoto) PathName() string {
@@ -1180,6 +1135,8 @@ func (m MediaInformasiKendaraanKurirBPKBFoto) CreateHistoricalTable(ctx context.
 		id_informasi_kendaraan_kurir bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1201,6 +1158,8 @@ func (m MediaInformasiKendaraanKurirBPKBFoto) ParseToCUDType() map[string]interf
 		"id_informasi_kendaraan_kurir": m.IdInformasiKendaraanKurir,
 		"key":                          m.Key,
 		"format":                       m.Format,
+		"created_at":                   m.CreatedAt,
+		"updated_at":                   m.UpdatedAt,
 	}
 }
 
@@ -1214,6 +1173,8 @@ type MediaInformasiKendaraanKurirSTNKFoto struct {
 	InformasiKendaraanKurir   InformasiKendaraanKurir
 	Key                       string
 	Format                    string
+	CreatedAt                 time.Time
+	UpdatedAt                 time.Time
 }
 
 func (MediaInformasiKendaraanKurirSTNKFoto) PathName() string {
@@ -1228,6 +1189,8 @@ func (m MediaInformasiKendaraanKurirSTNKFoto) CreateHistoricalTable(ctx context.
 		id_informasi_kendaraan_kurir bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1249,6 +1212,8 @@ func (m MediaInformasiKendaraanKurirSTNKFoto) ParseToCUDType() map[string]interf
 		"id_informasi_kendaraan_kurir": m.IdInformasiKendaraanKurir,
 		"key":                          m.Key,
 		"format":                       m.Format,
+		"created_at":                   m.CreatedAt,
+		"updated_at":                   m.UpdatedAt,
 	}
 }
 
@@ -1262,6 +1227,8 @@ type MediaInformasiKurirKTPFoto struct {
 	InformasiKurir   InformasiKurir
 	Key              string
 	Format           string
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
 }
 
 func (MediaInformasiKurirKTPFoto) PathName() string {
@@ -1276,6 +1243,8 @@ func (m MediaInformasiKurirKTPFoto) CreateHistoricalTable(ctx context.Context, s
 		id_informasi_kurir bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1297,6 +1266,8 @@ func (m MediaInformasiKurirKTPFoto) ParseToCUDType() map[string]interface{} {
 		"id_informasi_kurir": m.IdInformasiKurir,
 		"key":                m.Key,
 		"format":             m.Format,
+		"created_at":         m.CreatedAt,
+		"updated_at":         m.UpdatedAt,
 	}
 }
 
@@ -1305,11 +1276,13 @@ func (MediaInformasiKurirKTPFoto) TableNameHistorical() string {
 }
 
 type MediaReviewFoto struct {
-	ID       int64
-	IdReview int64
-	Review   Review
-	Key      string
-	Format   string
+	ID        int64
+	IdReview  int64
+	Review    Review
+	Key       string
+	Format    string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func (MediaReviewFoto) PathName() string {
@@ -1324,6 +1297,8 @@ func (m MediaReviewFoto) CreateHistoricalTable(ctx context.Context, session *goc
 		id_review bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1341,10 +1316,12 @@ func (m MediaReviewFoto) CreateHistoricalTable(ctx context.Context, session *goc
 
 func (m MediaReviewFoto) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
-		"id":        m.ID,
-		"id_review": m.IdReview,
-		"key":       m.Key,
-		"format":    m.Format,
+		"id":         m.ID,
+		"id_review":  m.IdReview,
+		"key":        m.Key,
+		"format":     m.Format,
+		"created_at": m.CreatedAt,
+		"updated_at": m.UpdatedAt,
 	}
 }
 
@@ -1353,11 +1330,13 @@ func (MediaReviewFoto) TableNameHistorical() string {
 }
 
 type MediaReviewVideo struct {
-	ID       int64
-	IdReview int64
-	Review   Review
-	Key      string
-	Format   string
+	ID        int64
+	IdReview  int64
+	Review    Review
+	Key       string
+	Format    string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 func (MediaReviewVideo) PathName() string {
@@ -1372,6 +1351,8 @@ func (m MediaReviewVideo) CreateHistoricalTable(ctx context.Context, session *go
 		id_review bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1389,10 +1370,12 @@ func (m MediaReviewVideo) CreateHistoricalTable(ctx context.Context, session *go
 
 func (m MediaReviewVideo) ParseToCUDType() map[string]interface{} {
 	return map[string]interface{}{
-		"id":        m.ID,
-		"id_review": m.IdReview,
-		"key":       m.Key,
-		"format":    m.Format,
+		"id":         m.ID,
+		"id_review":  m.IdReview,
+		"key":        m.Key,
+		"format":     m.Format,
+		"created_at": m.CreatedAt,
+		"updated_at": m.UpdatedAt,
 	}
 }
 
@@ -1406,6 +1389,8 @@ type MediaTransaksiApprovedFoto struct {
 	Transaksi   Transaksi
 	Key         string
 	Format      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (MediaTransaksiApprovedFoto) PathName() string {
@@ -1420,6 +1405,8 @@ func (m MediaTransaksiApprovedFoto) CreateHistoricalTable(ctx context.Context, s
 		id_transaksi bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1441,6 +1428,8 @@ func (m MediaTransaksiApprovedFoto) ParseToCUDType() map[string]interface{} {
 		"id_transaksi": m.IdTransaksi,
 		"key":          m.Key,
 		"format":       m.Format,
+		"created_at":   m.CreatedAt,
+		"updated_at":   m.UpdatedAt,
 	}
 }
 
@@ -1454,6 +1443,8 @@ type MediaTransaksiApprovedVideo struct {
 	Transaksi   Transaksi
 	Key         string
 	Format      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (MediaTransaksiApprovedVideo) PathName() string {
@@ -1468,6 +1459,8 @@ func (m MediaTransaksiApprovedVideo) CreateHistoricalTable(ctx context.Context, 
 		id_transaksi bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1489,6 +1482,8 @@ func (m MediaTransaksiApprovedVideo) ParseToCUDType() map[string]interface{} {
 		"id_transaksi": m.IdTransaksi,
 		"key":          m.Key,
 		"format":       m.Format,
+		"created_at":   m.CreatedAt,
+		"updated_at":   m.UpdatedAt,
 	}
 }
 
@@ -1502,6 +1497,8 @@ type MediaPengirimanPickedUpFoto struct {
 	Pengiriman   Pengiriman
 	Key          string
 	Format       string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 func (MediaPengirimanPickedUpFoto) PathName() string {
@@ -1516,6 +1513,8 @@ func (m MediaPengirimanPickedUpFoto) CreateHistoricalTable(ctx context.Context, 
 		id_pengiriman bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1537,6 +1536,8 @@ func (m MediaPengirimanPickedUpFoto) ParseToCUDType() map[string]interface{} {
 		"id_pengiriman": m.IdPengiriman,
 		"key":           m.Key,
 		"format":        m.Format,
+		"created_at":    m.CreatedAt,
+		"updated_at":    m.UpdatedAt,
 	}
 }
 
@@ -1550,6 +1551,8 @@ type MediaPengirimanSampaiFoto struct {
 	Pengiriman   Pengiriman
 	Key          string
 	Format       string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 func (MediaPengirimanSampaiFoto) PathName() string {
@@ -1565,6 +1568,8 @@ func (m MediaPengirimanSampaiFoto) CreateHistoricalTable(ctx context.Context, se
 		id_pengiriman bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1586,6 +1591,8 @@ func (m MediaPengirimanSampaiFoto) ParseToCUDType() map[string]interface{} {
 		"id_pengiriman": m.IdPengiriman,
 		"key":           m.Key,
 		"format":        m.Format,
+		"created_at":    m.CreatedAt,
+		"updated_at":    m.UpdatedAt,
 	}
 }
 
@@ -1599,6 +1606,8 @@ type MediaPengirimanEkspedisiPickedUpFoto struct {
 	PengirimanEkspedisi   PengirimanEkspedisi
 	Key                   string
 	Format                string
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
 }
 
 func (MediaPengirimanEkspedisiPickedUpFoto) PathName() string {
@@ -1613,6 +1622,8 @@ func (m MediaPengirimanEkspedisiPickedUpFoto) CreateHistoricalTable(ctx context.
 		id_pengiriman_ekspedisi bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1634,6 +1645,8 @@ func (m MediaPengirimanEkspedisiPickedUpFoto) ParseToCUDType() map[string]interf
 		"id_pengiriman_ekspedisi": m.IdPengirimanEkspedisi,
 		"key":                     m.Key,
 		"format":                  m.Format,
+		"created_at":              m.CreatedAt,
+		"updated_at":              m.UpdatedAt,
 	}
 }
 
@@ -1647,6 +1660,8 @@ type MediaPengirimanEkspedisiSampaiAgentFoto struct {
 	PengirimanEkspedisi   PengirimanEkspedisi
 	Key                   string
 	Format                string
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
 }
 
 func (MediaPengirimanEkspedisiSampaiAgentFoto) PathName() string {
@@ -1661,6 +1676,8 @@ func (m MediaPengirimanEkspedisiSampaiAgentFoto) CreateHistoricalTable(ctx conte
 		id_pengiriman_ekspedisi bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		tahun_update int,
 		bulan_update int,
 		event_time timestamp,
@@ -1682,6 +1699,8 @@ func (m MediaPengirimanEkspedisiSampaiAgentFoto) ParseToCUDType() map[string]int
 		"id_pengiriman_ekspedisi": m.IdPengirimanEkspedisi,
 		"key":                     m.Key,
 		"format":                  m.Format,
+		"created_at":              m.CreatedAt,
+		"updated_at":              m.UpdatedAt,
 	}
 }
 
@@ -1697,6 +1716,8 @@ func (m MediaPenggunaProfilFoto) CreateSotReplicaTable(ctx context.Context, sess
 		id_pengguna bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		created_at timestamp,
 		updated_at timestamp,
 		deleted_at timestamp,
@@ -1722,7 +1743,6 @@ func (m MediaSellerProfilFoto) CreateSotReplicaTable(ctx context.Context, sessio
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -1745,7 +1765,6 @@ func (m MediaSellerBannerFoto) CreateSotReplicaTable(ctx context.Context, sessio
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -1767,7 +1786,7 @@ func (m MediaSellerTokoFisikFoto) CreateSotReplicaTable(ctx context.Context, ses
 		key text,
 		format text,
 		created_at timestamp,
-		deleted_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -1790,7 +1809,6 @@ func (m MediaKurirProfilFoto) CreateSotReplicaTable(ctx context.Context, session
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -1813,7 +1831,6 @@ func (m MediaEtalaseFoto) CreateSotReplicaTable(ctx context.Context, session *go
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -1835,7 +1852,7 @@ func (m MediaBarangIndukFoto) CreateSotReplicaTable(ctx context.Context, session
 		key text,
 		format text,
 		created_at timestamp,
-		deleted_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -1858,7 +1875,6 @@ func (m MediaBarangIndukVideo) CreateSotReplicaTable(ctx context.Context, sessio
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -1882,7 +1898,6 @@ func (m MediaKategoriBarangFoto) CreateSotReplicaTable(ctx context.Context, sess
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -1905,7 +1920,6 @@ func (m MediaDistributorDataDokumen) CreateSotReplicaTable(ctx context.Context, 
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -1928,7 +1942,6 @@ func (m MediaDistributorDataNPWPFoto) CreateSotReplicaTable(ctx context.Context,
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -1951,7 +1964,6 @@ func (m MediaDistributorDataNIBFoto) CreateSotReplicaTable(ctx context.Context, 
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -1974,7 +1986,6 @@ func (m MediaDistributorDataSuratKerjasamaDokumen) CreateSotReplicaTable(ctx con
 		format text,
 		created_at timestamp,
 		updated_at timestamp,
-		deleted_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -1995,6 +2006,8 @@ func (m MediaBrandDataPerwakilanDokumen) CreateSotReplicaTable(ctx context.Conte
 		id_brand_data bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2015,6 +2028,8 @@ func (m MediaBrandDataSertifikatFoto) CreateSotReplicaTable(ctx context.Context,
 		id_brand_data bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2035,6 +2050,8 @@ func (m MediaBrandDataNIBFoto) CreateSotReplicaTable(ctx context.Context, sessio
 		id_brand_data bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2055,6 +2072,8 @@ func (m MediaBrandDataNPWPFoto) CreateSotReplicaTable(ctx context.Context, sessi
 		id_brand_data bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2075,6 +2094,8 @@ func (m MediaBrandDataLogoFoto) CreateSotReplicaTable(ctx context.Context, sessi
 		id_brand_data bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2094,6 +2115,8 @@ func (m MediaBrandDataSuratKerjasamaDokumen) CreateSotReplicaTable(ctx context.C
 		id bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2114,6 +2137,8 @@ func (m MediaInformasiKendaraanKurirKendaraanFoto) CreateSotReplicaTable(ctx con
 		id_informasi_kendaraan_kurir bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2134,6 +2159,8 @@ func (m MediaInformasiKendaraanKurirBPKBFoto) CreateSotReplicaTable(ctx context.
 		id_informasi_kendaraan_kurir bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2154,6 +2181,8 @@ func (m MediaInformasiKendaraanKurirSTNKFoto) CreateSotReplicaTable(ctx context.
 		id_informasi_kendaraan_kurir bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2174,6 +2203,8 @@ func (m MediaInformasiKurirKTPFoto) CreateSotReplicaTable(ctx context.Context, s
 		id_informasi_kurir bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2194,6 +2225,8 @@ func (m MediaReviewFoto) CreateSotReplicaTable(ctx context.Context, session *goc
 		id_review bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2214,6 +2247,8 @@ func (m MediaReviewVideo) CreateSotReplicaTable(ctx context.Context, session *go
 		id_review bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2234,6 +2269,8 @@ func (m MediaTransaksiApprovedFoto) CreateSotReplicaTable(ctx context.Context, s
 		id_transaksi bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2254,6 +2291,8 @@ func (m MediaTransaksiApprovedVideo) CreateSotReplicaTable(ctx context.Context, 
 		id_transaksi bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2274,6 +2313,8 @@ func (m MediaPengirimanPickedUpFoto) CreateSotReplicaTable(ctx context.Context, 
 		id_pengiriman bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2294,6 +2335,8 @@ func (m MediaPengirimanSampaiFoto) CreateSotReplicaTable(ctx context.Context, se
 		id_pengiriman bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2314,6 +2357,8 @@ func (m MediaPengirimanEkspedisiPickedUpFoto) CreateSotReplicaTable(ctx context.
 		id_pengiriman_ekspedisi bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 
@@ -2334,6 +2379,8 @@ func (m MediaPengirimanEkspedisiSampaiAgentFoto) CreateSotReplicaTable(ctx conte
 		id_pengiriman_ekspedisi bigint,
 		key text,
 		format text,
+		created_at timestamp,
+		updated_at timestamp,
 		PRIMARY KEY (id)
 	)`, m.TableNameSotReplica())
 

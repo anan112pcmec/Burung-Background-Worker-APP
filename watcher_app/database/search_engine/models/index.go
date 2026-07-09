@@ -68,6 +68,7 @@ type Transaksi struct {
 	IsEkspedisi         bool        `json:"is_ekspedisi"`
 	SellerPaid          int64       `json:"seller_paid"`
 	KurirPaid           int64       `json:"kurir_paid"`
+	SistemPaid          int64       `json:"sistem_paid"`
 	EkspedisiPaid       int64       `json:"ekspedisi_paid"`
 	Total               int64       `json:"total"`
 	Reviewed            bool        `json:"reviewed"`
